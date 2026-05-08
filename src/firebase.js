@@ -1,9 +1,8 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 // Firebase configuration
-// Note: In a real app, use import.meta.env for security. 
-// Here we use the provided configuration for immediate fix.
 const firebaseConfig = {
   apiKey: "AIzaSyCQfBc4tbjqKrrej7svqAZ9waX0fTMhBA0",
   authDomain: "lotto24-63f1d.firebaseapp.com",
@@ -15,13 +14,15 @@ const firebaseConfig = {
 
 let app;
 let db;
+let auth;
 
 try {
   app = initializeApp(firebaseConfig);
   db = getFirestore(app);
+  auth = getAuth(app);
   console.log("%c[Firebase] Connection Successful", "color: white; background: #10B981; padding: 2px 5px; border-radius: 3px;");
 } catch (error) {
   console.error("[Firebase] Connection Failed:", error);
 }
 
-export { db };
+export { db, auth };

@@ -12,6 +12,7 @@ import ManualNumbers from './pages/ManualNumbers';
 import WinningStores from './pages/WinningStores';
 import Guide from './pages/Guide';
 import Admin from './pages/Admin';
+import AdminLotteryPage from './pages/AdminLotteryPage';
 import QRMinTest from './pages/QRMinTest';
 
 import ErrorBoundary from './components/ErrorBoundary';
@@ -35,6 +36,7 @@ function App() {
             <Route path="winning-stores" element={<WinningStores />} />
             <Route path="guide" element={<Guide />} />
             <Route path="admin" element={<Admin />} />
+            <Route path="admin-lottery" element={<AdminLotteryPage />} />
             <Route path="*" element={<Home />} />
           </Route>
         </Routes>
