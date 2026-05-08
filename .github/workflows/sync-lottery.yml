@@ -2,16 +2,18 @@ name: Sync Lottery Results
 
 on:
   schedule:
-    # 로또 6/45: 매주 토요일 21:20 KST (12:20 UTC)
+    # Lotto 6/45: Every Saturday 21:20 KST / 12:20 UTC
     - cron: "20 12 * * 6"
-    # 연금복권 720+: 매주 목요일 20:00 KST (11:00 UTC)
+
+    # Pension Lottery 720+: Every Thursday 20:00 KST / 11:00 UTC
     - cron: "0 11 * * 4"
+
   workflow_dispatch:
     inputs:
       mode:
-        description: 'Sync Mode (lotto, pension, all)'
+        description: "Sync Mode"
         required: true
-        default: 'all'
+        default: "all"
         type: choice
         options:
           - lotto
@@ -21,33 +23,40 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/checkout@v4
+        uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run Sync Script
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
-          if [ "${{ github.event_name }}" == "schedule" ]; then
-            # 스케줄 실행 시 요일에 따라 모드 결정
-            DAY_OF_WEEK=$(date +%u)
-            if [ "$DAY_OF_WEEK" == "6" ]; then
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "FIREBASE_SERVICE_ACCOUNT secret is missing."
+            exit 1
+          fi
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "${{ github.event.schedule }}" = "20 12 * * 6" ]; then
+              echo "Running Lotto 6/45 auto sync..."
               npm run sync:lotto
-            elif [ "$DAY_OF_WEEK" == "4" ]; then
+            elif [ "${{ github.event.schedule }}" = "0 11 * * 4" ]; then
+              echo "Running Pension Lottery 720+ auto sync..."
               npm run sync:pension
             else
+              echo "Unknown schedule. Running all sync..."
               npm run sync:latest
             fi
           else
-            # 수동 실행 시 입력값 사용
+            echo "Running manual sync mode: ${{ github.event.inputs.mode }}"
             node scripts/syncLatestResults.js ${{ github.event.inputs.mode }}
           fi
