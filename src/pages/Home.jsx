@@ -62,10 +62,34 @@ const Home = () => {
     fetchData();
   }, []);
 
+  // 관리자 모드 진입을 위한 숨겨진 터치 상태
+  const [adminTouchCount, setAdminTouchCount] = useState(0);
+  const [lastTouchTime, setLastTouchTime] = useState(0);
+
+  const handleAdminSecretTouch = () => {
+    const now = Date.now();
+    // 3초 이상 멈추면 초기화
+    if (now - lastTouchTime > 3000) {
+      setAdminTouchCount(1);
+    } else {
+      const newCount = adminTouchCount + 1;
+      if (newCount >= 7) {
+        setAdminTouchCount(0);
+        navigate('/admin-lottery');
+        return;
+      }
+      setAdminTouchCount(newCount);
+    }
+    setLastTouchTime(now);
+  };
+
   return (
     <div className="container page-transition" style={{ paddingBottom: '120px', paddingTop: '16px' }}>
       <header className="flex-between mb-24" style={{ padding: '4px 0' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div 
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}
+          onClick={handleAdminSecretTouch}
+        >
           <Logo size={40} />
           <h1 className="title-xl" style={{ lineHeight: 1, fontSize: '1.5rem', marginBottom: 0 }}>복권24</h1>
         </div>
