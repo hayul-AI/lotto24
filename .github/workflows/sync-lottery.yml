@@ -58,5 +58,12 @@ jobs:
             fi
           else
             echo "Running manual sync mode: ${{ github.event.inputs.mode }}"
-            node scripts/syncLatestResults.js ${{ github.event.inputs.mode }}
+
+            if [ "${{ github.event.inputs.mode }}" = "lotto" ]; then
+              npm run sync:lotto
+            elif [ "${{ github.event.inputs.mode }}" = "pension" ]; then
+              npm run sync:pension
+            else
+              npm run sync:latest
+            fi
           fi
