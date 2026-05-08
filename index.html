@@ -2,7 +2,7 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="manifest" href="/manifest.json" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>복권24</title>
@@ -29,23 +29,20 @@
         transition: opacity 0.3s ease-out;
       }
       #splash-screen img {
-        /* 이미지 크기를 고정하거나 화면에 맞게 조절 (확대 애니메이션 없음) */
         width: 100%;
         height: 100%;
-        /* 이미지 원본 비율을 유지하면서 전체를 채우거나(cover), 잘리지 않게(contain) 선택 가능 */
-        /* 요청하신 '첨부한 사진 그대로'를 위해 cover를 사용하여 전체 화면을 채웁니다. */
-        object-fit: cover;
+        /* 이미지가 찌그러지지 않게 contain 적용 (배경이 흰색이므로 자연스러움) */
+        object-fit: contain;
         display: block;
       }
-      .fade-out {
-        opacity: 0;
-        pointer-events: none;
+      .hidden {
+        display: none !important;
       }
     </style>
   </head>
   <body>
     <div id="splash-screen">
-      <img src="/splash.png" alt="Splash Screen" />
+      <img src="splash.png" alt="Splash Screen" />
     </div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
@@ -53,10 +50,7 @@
       window.hideSplashScreen = function() {
         const splash = document.getElementById('splash-screen');
         if (splash) {
-          splash.classList.add('fade-out');
-          setTimeout(() => {
-            splash.style.display = 'none';
-          }, 300);
+          splash.classList.add('hidden');
         }
       };
     </script>

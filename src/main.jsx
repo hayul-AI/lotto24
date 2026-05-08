@@ -27,11 +27,6 @@ try {
 
   const root = ReactDOM.createRoot(rootElement);
   root.render(<App />);
-  
-  // 앱 렌더링 시작 직후 스플래시 화면 숨김 처리
-  if (window.hideSplashScreen) {
-    window.hideSplashScreen();
-  }
 } catch (err) {
   alert("Critical Initialization Error: " + err.message);
   if (document.body) {

@@ -1,7 +1,14 @@
+import React, { useEffect } from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
 import { Home as HomeIcon, MapPin, Ticket, Search, QrCode, Hash } from 'lucide-react';
 
 const Layout = () => {
+  useEffect(() => {
+    if (window.hideSplashScreen) {
+      window.hideSplashScreen();
+    }
+  }, []);
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: 'var(--bg-app)' }}>
       {/* Main Content Area */}
