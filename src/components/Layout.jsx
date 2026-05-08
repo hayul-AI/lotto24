@@ -1,6 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
 import { Home as HomeIcon, MapPin, Ticket, Search, QrCode, Hash } from 'lucide-react';
-import DebugPanel from './DebugPanel';
 
 const Layout = () => {
   return (
@@ -19,7 +18,6 @@ const Layout = () => {
         <NavItem to="/my-tickets" icon={<Ticket size={24} />} label="확인목록" />
       </nav>
 
-      <DebugPanel />
     </div>
   );
 };

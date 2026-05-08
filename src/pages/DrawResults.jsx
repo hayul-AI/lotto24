@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Search, AlertTriangle } from 'lucide-react';
-import { getAllLottoResults, getAllPensionResults } from '../services/lottoService';
 import LottoBall from '../components/LottoBall';
 import { formatDate, formatCurrencyKRW, formatDrawNo } from '../utils/formatters';
+import { db } from '../firebase';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 
 const DrawResults = () => {
   const navigate = useNavigate();
@@ -14,18 +15,28 @@ const DrawResults = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const loadData = async (t) => {
+  useEffect(() => {
     setLoading(true);
     setError(null);
     setCurrentIdx(0);
     setSearchInput('');
-    const { data, error: err } = t === 'LOTTO' ? await getAllLottoResults() : await getAllPensionResults();
-    if (err) setError(err);
-    setAllData(data || []);
-    setLoading(false);
-  };
 
-  useEffect(() => { loadData(tab); }, [tab]);
+    const collectionName = tab === 'LOTTO' ? 'lotto_results' : 'pension_results';
+    const q = query(collection(db, collectionName), orderBy("drawNo", "desc"), limit(200));
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAllData(results);
+      setLoading(false);
+      if (results.length === 0) setError('NO_DATA');
+    }, (err) => {
+      console.error(`${tab} fetch error:`, err);
+      setError(err.message);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [tab]);
 
   const current = allData[currentIdx] || null;
   const goPrev = () => { if (currentIdx < allData.length - 1) setCurrentIdx(currentIdx + 1); };
@@ -34,7 +45,7 @@ const DrawResults = () => {
   const handleSearch = () => {
     const no = parseInt(searchInput);
     if (isNaN(no)) return;
-    const idx = allData.findIndex(d => d.drawNo === no);
+    const idx = allData.findIndex(d => Number(d.drawNo) === no);
     if (idx >= 0) setCurrentIdx(idx);
     else alert(`${no}회차 데이터가 없습니다.`);
   };
@@ -146,7 +157,6 @@ const DrawResults = () => {
 const PensionDetail = ({ data }) => {
   if (!data?.group || !Array.isArray(data?.numbers)) return <p className="text-caption">번호 정보 없음</p>;
   
-  // 연한 녹색 테마
   const bgColor = '#E8F5E9'; // Light Green
   const textColor = '#2E7D32'; // Dark Green
 
@@ -176,7 +186,6 @@ const NoDataCard = () => (
   <div className="card" style={{ textAlign: 'center', padding: '40px 20px' }}>
     <AlertTriangle size={40} color="#F5B700" style={{ marginBottom: '16px' }} />
     <p style={{ fontWeight: '800', marginBottom: '8px' }}>Firestore 데이터가 없습니다</p>
-    <code style={{ display: 'block', marginTop: '12px', padding: '12px', backgroundColor: '#F1F5F9', borderRadius: '8px', fontSize: '0.85rem', fontWeight: '700', color: '#1E3A8A' }}>npm run seed:full</code>
   </div>
 );
 

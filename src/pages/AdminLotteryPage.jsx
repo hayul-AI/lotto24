@@ -37,7 +37,7 @@ const AdminLotteryPage = () => {
   const [pensionForm, setPensionForm] = useState({
     drawNo: '', drawDate: '', group: '',
     numbers: ['', '', '', '', '', ''],
-    firstPrizeAmount: '7000000', firstWinnerCount: '2'
+    firstPrizeAmount: '', firstWinnerCount: ''
   });
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const AdminLotteryPage = () => {
     navigate('/');
   };
 
-  // [자동 갱신] 로또 최신 회차 가져오기 (CORS 우회를 위해 직접 fetch 사용)
+  // [자동 갱신] 로또 최신 회차 가져오기
   const autoSyncLotto = async () => {
     if (!window.confirm("동행복권 API를 통해 최신 로또 회차를 자동으로 가져오시겠습니까?")) return;
     
@@ -95,19 +95,10 @@ const AdminLotteryPage = () => {
     setMessage({ type: 'info', text: '로또 최신 회차 확인 중...' });
     
     try {
-      // 1. 현재 최신 회차 파악
       let lastNo = syncStatus.lotto?.lastSuccessDrawNo || 0;
-      if (!lastNo) {
-        const q = query(collection(db, "lotto_results"), orderBy("drawNo", "desc"), limit(1));
-        const snap = await getDocs(q);
-        if (!snap.empty) lastNo = snap.docs[0].data().drawNo;
-      }
-      
       const targetNo = (Number(lastNo) || 1100) + 1;
       const url = `https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=${targetNo}`;
       
-      // 클라이언트 측 fetch (동행복권 API는 특정 환경에서 CORS 이슈가 있을 수 있으나, 
-      // 이전에 사용자가 작동 확인한 URL이므로 시도함)
       const response = await fetch(url).catch(() => null);
       if (!response) throw new Error("API 접근 실패 (네트워크 또는 CORS)");
       
@@ -116,7 +107,6 @@ const AdminLotteryPage = () => {
         throw new Error(`새로운 회차가 아직 발표되지 않았거나 가져올 수 없습니다. (현재: ${lastNo}회)`);
       }
 
-      // 2. 데이터 저장
       const numbers = [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6].map(Number);
       const lottoData = {
         drawNo: Number(data.drwNo),
@@ -149,7 +139,6 @@ const AdminLotteryPage = () => {
     }
   };
 
-  // [자동 갱신] 연금복권 (현재 공식 API가 없으므로 상태만 체크하거나 알림)
   const autoSyncPension = async () => {
     setMessage({ type: 'info', text: '연금복권은 현재 공식 JSON API가 제공되지 않습니다. 하단의 수동 보정을 이용해 주세요.' });
     setShowManual(true);
@@ -170,19 +159,26 @@ const AdminLotteryPage = () => {
       ].sort((a, b) => a - b);
 
       const data = {
-        drawNo, drawDate: lottoForm.drawDate, numbers,
+        drawNo,
+        numbers,
         bonusNo: Number(lottoForm.bonusNo),
+        drawDate: lottoForm.drawDate,
         firstPrizeAmount: Number(lottoForm.firstPrizeAmount || 0),
-        verified: true, source: "admin_manual", updatedAt: serverTimestamp()
+        verified: true,
+        source: "admin_manual",
+        updatedAt: serverTimestamp()
       };
 
       await setDoc(doc(db, 'lotto_results', String(drawNo)), data, { merge: true });
       await setDoc(doc(db, 'sync_status', 'lotto'), {
-        target: "lotto", lastStatus: "manual_success", lastSuccessDrawNo: drawNo,
-        lastRunAt: serverTimestamp(), source: "admin_manual"
+        target: "lotto",
+        lastStatus: "manual_success",
+        lastSuccessDrawNo: drawNo,
+        lastRunAt: serverTimestamp(),
+        source: "admin_manual"
       }, { merge: true });
 
-      setMessage({ type: 'success', text: `${drawNo}회차 로또 수동 저장 완료!` });
+      setMessage({ type: 'success', text: `${drawNo}회차 로또 저장 완료!` });
       fetchSyncStatus();
     } catch (err) {
       setMessage({ type: 'error', text: `저장 실패: ${err.message}` });
@@ -199,21 +195,30 @@ const AdminLotteryPage = () => {
       const drawNo = Number(pensionForm.drawNo);
       const numbers = pensionForm.numbers.map(Number);
       const data = {
-        drawNo, drawDate: pensionForm.drawDate,
-        firstPrizeAmount: Number(pensionForm.firstPrizeAmount),
+        drawNo,
+        drawDate: pensionForm.drawDate,
+        firstPrizeAmount: Number(pensionForm.firstPrizeAmount || 0),
         firstPrizeGroup: pensionForm.group,
-        firstPrizeNumber: { group: pensionForm.group, numbers: numbers },
-        firstWinnerCount: Number(pensionForm.firstWinnerCount),
-        verified: true, source: "admin_manual", updatedAt: serverTimestamp()
+        firstPrizeNumber: {
+          group: pensionForm.group,
+          numbers: numbers
+        },
+        firstWinnerCount: Number(pensionForm.firstWinnerCount || 0),
+        verified: true,
+        source: "admin_manual",
+        updatedAt: serverTimestamp()
       };
 
       await setDoc(doc(db, 'pension_results', String(drawNo)), data, { merge: true });
       await setDoc(doc(db, 'sync_status', 'pension'), {
-        target: "pension", lastStatus: "manual_success", lastSuccessDrawNo: drawNo,
-        lastRunAt: serverTimestamp(), source: "admin_manual"
+        target: "pension",
+        lastStatus: "manual_success",
+        lastSuccessDrawNo: drawNo,
+        lastRunAt: serverTimestamp(),
+        source: "admin_manual"
       }, { merge: true });
 
-      setMessage({ type: 'success', text: `${drawNo}회차 연금복권 수동 저장 완료!` });
+      setMessage({ type: 'success', text: `${drawNo}회차 연금복권 저장 완료!` });
       fetchSyncStatus();
     } catch (err) {
       setMessage({ type: 'error', text: `저장 실패: ${err.message}` });
@@ -224,7 +229,6 @@ const AdminLotteryPage = () => {
     return <div className="container flex-center" style={{ minHeight: '80vh' }}><RefreshCw className="animate-spin" /></div>;
   }
 
-  // 로그인 화면 (생략 가능, 기존 유지)
   if (!user) {
     return (
       <div className="container page-transition" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
@@ -264,13 +268,11 @@ const AdminLotteryPage = () => {
         </button>
       </header>
 
-      {/* 실시간 상태 정보 */}
       <div className="grid-2 mb-24">
         <StatusCard title="로또 6/45" no={syncStatus.lotto?.lastSuccessDrawNo} color="var(--primary-blue)" />
         <StatusCard title="연금 720+" no={syncStatus.pension?.lastSuccessDrawNo} color="#E11D48" />
       </div>
 
-      {/* 자동 갱신 섹션 */}
       <section className="mb-24">
         <h3 className="title-sm mb-12" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Zap size={18} color="#F59E0B" fill="#F59E0B" /> 원터치 자동 갱신</h3>
         <div className="card" style={{ padding: '20px', border: '2px solid #FEF3C7', backgroundColor: '#FFFBEB' }}>
@@ -294,13 +296,9 @@ const AdminLotteryPage = () => {
               연금복권 지금 갱신 (상태 체크)
             </button>
           </div>
-          <p className="text-caption mt-12" style={{ textAlign: 'center', fontSize: '0.7rem' }}>
-            * 동행복권 공식 데이터를 실시간으로 가져와 Firestore에 저장합니다.
-          </p>
         </div>
       </section>
 
-      {/* 수동 보정 섹션 (접힘 방식) */}
       <section>
         <button 
           onClick={() => setShowManual(!showManual)}
@@ -367,6 +365,10 @@ const AdminLotteryPage = () => {
                       </div>
                     </div>
                   </div>
+                  <div className="grid-2 mb-12">
+                    <Input label="1등 금액 (월)" value={pensionForm.firstPrizeAmount} onChange={v => setPensionForm({...pensionForm, firstPrizeAmount: v})} />
+                    <Input label="당첨자 수" value={pensionForm.firstWinnerCount} onChange={v => setPensionForm({...pensionForm, firstWinnerCount: v})} />
+                  </div>
                   <button type="submit" disabled={loading} className="btn-cta w-full" style={{ backgroundColor: '#E11D48' }}>수동 저장</button>
                 </form>
               )}
@@ -375,7 +377,6 @@ const AdminLotteryPage = () => {
         )}
       </section>
 
-      {/* 하단 알림 */}
       {message.text && (
         <div className="card mt-20" style={{ 
           display: 'flex', alignItems: 'center', gap: '12px', 

@@ -4,63 +4,58 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/manifest.json" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>복권24 - 로딩 테스트</title>
-    <script>
-      // 자바스크립트 로딩 감시 전역 변수
-      window.MAIN_JS_STARTED = false;
-      window.onerror = function(msg, url, lineNo, columnNo, error) {
-        var message = [
-          'Message: ' + msg,
-          'URL: ' + url,
-          'Line: ' + lineNo,
-          'Column: ' + columnNo,
-          'Error object: ' + JSON.stringify(error)
-        ].join('\n');
-        alert("Global Error Caught:\n" + message);
-        return false;
-      };
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>복권24</title>
     <style>
-      #debug-overlay {
-        position: fixed; top: 10px; right: 10px; padding: 10px;
-        background: rgba(0,0,0,0.8); color: lime; font-family: monospace;
-        font-size: 10px; z-index: 10000; border-radius: 5px;
+      body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        overflow: hidden;
+      }
+      #splash-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.3s ease-out;
+      }
+      #splash-screen img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+      .fade-out {
+        opacity: 0;
+        pointer-events: none;
       }
     </style>
   </head>
   <body>
-    <div id="debug-overlay">Checking JS Status...</div>
+    <div id="splash-screen">
+      <img src="/splash.png" alt="복권24 로딩" />
+    </div>
     <div id="root"></div>
-
-    <script type="module">
-      console.log("Inline Module Script Executed");
-      document.getElementById('debug-overlay').innerText = "Inline Module OK. Waiting for Main JS...";
-      window.MAIN_JS_STARTED = true;
-    </script>
-
-    <script>
-      // 7초 후에도 메인 스크립트가 반응 없으면 상세 진단 출력
-      setTimeout(function() {
-        if (!window.MAIN_JS_STARTED) {
-          document.body.innerHTML = `
-            <div style="padding: 30px; font-family: sans-serif; text-align: center;">
-              <h2 style="color: #E11D48;">자바스크립트 로드 실패</h2>
-              <p>브라우저가 보안 또는 호환성 문제로 스크립트를 차단했습니다.</p>
-              <div style="background: #f1f5f9; padding: 15px; border-radius: 10px; margin: 20px 0; text-align: left; font-size: 12px;">
-                <b>상태 요약:</b><br/>
-                - Inline Module: ${window.MAIN_JS_STARTED ? 'OK' : 'FAIL'}<br/>
-                - User Agent: ${navigator.userAgent}
-              </div>
-              <button onclick="location.reload(true)" style="padding: 12px 24px; background: #4F46E5; color: white; border: none; border-radius: 8px;">새로고침 시도</button>
-            </div>
-          `;
-        } else {
-          document.getElementById('debug-overlay').style.display = 'none';
-        }
-      }, 7000);
-    </script>
-    
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // 앱이 로드되면 스플래시 화면을 숨기는 함수
+      window.hideSplashScreen = function() {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+          splash.classList.add('fade-out');
+          setTimeout(() => {
+            splash.style.display = 'none';
+          }, 300);
+        }
+      };
+    </script>
   </body>
 </html>

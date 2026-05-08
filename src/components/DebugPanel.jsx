@@ -51,6 +51,9 @@ const DebugPanel = () => {
 
   useEffect(() => { if (open) refresh(); }, [open]);
 
+  // 개발 환경(development)이 아닐 경우 아무것도 렌더링하지 않음
+  if (import.meta.env.PROD) return null;
+
   if (!open) return (
     <button onClick={() => setOpen(true)} style={{
       position: 'fixed', bottom: '110px', right: '16px', zIndex: 9999,

@@ -7,59 +7,54 @@ import PensionNumbers from '../components/PensionNumbers';
 import Logo from '../components/Logo';
 import { formatDate, formatCurrencyKRW, formatDrawNo } from '../utils/formatters';
 
+import { db } from '../firebase';
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+
 const Home = () => {
   const navigate = useNavigate();
-  const [lottoList, setLottoList] = useState([]);
-  const [pensionList, setPensionList] = useState([]);
   const [lotto, setLotto] = useState(null);
   const [pension, setPension] = useState(null);
+  const [lottoList, setLottoList] = useState([]);
+  const [pensionList, setPensionList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [lottoError, setLottoError] = useState(null);
   const [pensionError, setPensionError] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [showLottoGuide, setShowLottoGuide] = useState(false);
   const [showPensionGuide, setShowPensionGuide] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const [lRes, pRes] = await Promise.all([
-        getAllLottoResults(),
-        getAllPensionResults()
-      ]);
-      
-      if (lRes.data && lRes.data.length > 0) {
-        setLottoList(lRes.data);
-        setLotto(lRes.data[0]);
-      } else if (lRes.error) setLottoError(lRes.error);
-
-      if (pRes.data && pRes.data.length > 0) {
-        setPensionList(pRes.data);
-        setPension(pRes.data[0]);
-      } else if (pRes.error) setPensionError(pRes.error);
-
-      setLoading(false);
-
-      try {
-        const bgLRes = await getAllLottoResults(true);
-        const bgPRes = await getAllPensionResults(true);
-        
-        if (bgLRes.data && bgLRes.data.length > 0) {
-          setLottoList(bgLRes.data);
-          if (!lRes.data || bgLRes.data[0].drawNo !== lRes.data[0].drawNo) {
-            setLotto(bgLRes.data[0]);
-          }
-        }
-        
-        if (bgPRes.data && bgPRes.data.length > 0) {
-          setPensionList(bgPRes.data);
-          if (!pRes.data || bgPRes.data[0].drawNo !== pRes.data[0].drawNo) {
-            setPension(bgPRes.data[0]);
-          }
-        }
-      } catch (e) {
-        console.log("백그라운드 동기화 보류:", e);
+    // 1. 로또 실시간 리스너 (최신순 100개 목록 + 최신 1개 상세)
+    const lottoQuery = query(collection(db, "lotto_results"), orderBy("drawNo", "desc"), limit(100));
+    const unsubscribeLotto = onSnapshot(lottoQuery, (snapshot) => {
+      const results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      if (results.length > 0) {
+        setLottoList(results);
+        setLotto(results[0]);
       }
+      setLoading(false);
+    }, (err) => {
+      console.error("Lotto sync error:", err);
+      setLottoError(err.message);
+      setLoading(false);
+    });
+
+    // 2. 연금복권 실시간 리스너
+    const pensionQuery = query(collection(db, "pension_results"), orderBy("drawNo", "desc"), limit(100));
+    const unsubscribePension = onSnapshot(pensionQuery, (snapshot) => {
+      const results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      if (results.length > 0) {
+        setPensionList(results);
+        setPension(results[0]);
+      }
+    }, (err) => {
+      console.error("Pension sync error:", err);
+      setPensionError(err.message);
+    });
+
+    return () => {
+      unsubscribeLotto();
+      unsubscribePension();
     };
-    fetchData();
   }, []);
 
   // 관리자 모드 진입을 위한 숨겨진 터치 상태
