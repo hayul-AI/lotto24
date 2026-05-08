@@ -1,13 +1,6 @@
 name: Sync Lottery Results
 
 on:
-  schedule:
-    # Lotto 6/45: Every Saturday 21:20 KST / 12:20 UTC
-    - cron: "20 12 * * 6"
-
-    # Pension Lottery 720+: Every Thursday 20:00 KST / 11:00 UTC
-    - cron: "0 11 * * 4"
-
   workflow_dispatch:
     inputs:
       mode:
@@ -19,6 +12,10 @@ on:
           - lotto
           - pension
           - all
+
+  schedule:
+    - cron: "20 12 * * 6"
+    - cron: "0 11 * * 4"
 
 jobs:
   sync:
@@ -57,19 +54,6 @@ jobs:
               npm run sync:latest
             fi
           else
-<<<<<<< HEAD
-            case "${{ github.event.inputs.mode }}" in
-              "lotto")
-                npm run sync:lotto
-                ;;
-              "pension")
-                npm run sync:pension
-                ;;
-              *)
-                npm run sync:latest
-                ;;
-            esac
-=======
             echo "Running manual sync mode: ${{ github.event.inputs.mode }}"
 
             if [ "${{ github.event.inputs.mode }}" = "lotto" ]; then
@@ -79,5 +63,4 @@ jobs:
             else
               npm run sync:latest
             fi
->>>>>>> 23201591b649cb106c5650bf5164581fc004f99b
           fi
