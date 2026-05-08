@@ -1,5 +1,5 @@
-const { fetchLatestLotto } = require('./fetchLatestLotto');
-const { fetchLatestPension } = require('./fetchLatestPension');
+const { fetchLatestLotto } = require('./fetchLatestLotto.cjs');
+const { fetchLatestPension } = require('./fetchLatestPension.cjs');
 
 async function runSync() {
   const mode = process.argv[2] || 'all'; // lotto, pension, all

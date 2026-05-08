@@ -1,4 +1,4 @@
-const { db, FieldValue } = require('./firebaseAdmin');
+const { db, FieldValue } = require('./firebaseAdmin.cjs');
 
 /**
  * 연금복권 720+ 최신 회차 데이터 자동 수집

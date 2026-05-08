@@ -20,9 +20,9 @@
     "cap:android": "npm run build && npx cap sync android && npx cap open android",
     "cap:copy": "npm run build && npx cap copy",
     "cap:run:android": "npm run build && npx cap sync android && npx cap run android",
-    "sync:latest": "node scripts/syncLatestResults.js",
-    "sync:lotto": "node scripts/syncLatestResults.js lotto",
-    "sync:pension": "node scripts/syncLatestResults.js pension"
+    "sync:latest": "node scripts/syncLatestResults.cjs",
+    "sync:lotto": "node scripts/syncLatestResults.cjs lotto",
+    "sync:pension": "node scripts/syncLatestResults.cjs pension"
   },
   "dependencies": {
     "@capacitor-mlkit/barcode-scanning": "^8.1.0",

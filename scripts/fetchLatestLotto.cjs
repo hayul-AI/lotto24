@@ -1,4 +1,4 @@
-const { db, FieldValue } = require('./firebaseAdmin');
+const { db, FieldValue } = require('./firebaseAdmin.cjs');
 
 /**
  * 로또 6/45 최신 회차 데이터 가져오기 및 Firestore 업데이트
