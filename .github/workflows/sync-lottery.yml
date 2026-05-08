@@ -57,6 +57,7 @@ jobs:
               npm run sync:latest
             fi
           else
+<<<<<<< HEAD
             case "${{ github.event.inputs.mode }}" in
               "lotto")
                 npm run sync:lotto
@@ -68,4 +69,15 @@ jobs:
                 npm run sync:latest
                 ;;
             esac
+=======
+            echo "Running manual sync mode: ${{ github.event.inputs.mode }}"
+
+            if [ "${{ github.event.inputs.mode }}" = "lotto" ]; then
+              npm run sync:lotto
+            elif [ "${{ github.event.inputs.mode }}" = "pension" ]; then
+              npm run sync:pension
+            else
+              npm run sync:latest
+            fi
+>>>>>>> 23201591b649cb106c5650bf5164581fc004f99b
           fi
