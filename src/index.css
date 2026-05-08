@@ -1,0 +1,203 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+:root {
+  /* Toss-style Premium Palette */
+  --bg-app: #F7F9FC;
+  --bg-white: #FFFFFF;
+  
+  --primary-blue: #1E3A8A; /* Deep Blue */
+  --primary-blue-light: #E0E7FF;
+  --accent-gold: #F5B700;
+  
+  --text-main: #1A1F27;
+  --text-sub: #4E5968;
+  --text-muted: #8B95A1;
+  --text-blue: #3182F6;
+  
+  --status-success: #2ECC71;
+  --status-error: #E74C3C;
+  --status-info: #3498DB;
+  
+  --shadow-card: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-floating: 0 16px 32px rgba(0, 0, 0, 0.08);
+  
+  --radius-xl: 24px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-app);
+  color: var(--text-main);
+  line-height: 1.6;
+  overflow-x: hidden;
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--bg-app);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Typography System */
+h1, h2, h3, h4 {
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.title-xl { font-size: 1.75rem; font-weight: 800; line-height: 1.3; }
+.title-lg { font-size: 1.5rem; font-weight: 700; line-height: 1.4; }
+.title-md { font-size: 1.25rem; font-weight: 700; }
+.text-body { font-size: 1rem; color: var(--text-sub); }
+.text-caption { font-size: 0.875rem; color: var(--text-muted); }
+
+/* Premium Card Component */
+.card {
+  background-color: var(--bg-white);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-clickable:active {
+  transform: scale(0.98);
+}
+
+/* Button System */
+.btn-cta {
+  background-color: var(--primary-blue);
+  color: white;
+  padding: 18px 24px;
+  border-radius: var(--radius-lg);
+  border: none;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-cta:active {
+  transform: translateY(2px);
+  filter: brightness(0.9);
+}
+
+.btn-sub {
+  background-color: var(--primary-blue-light);
+  color: var(--primary-blue);
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Lotto Ball - 3D Realistic Glossy */
+.lotto-ball {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: white;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15), inset -4px -4px 8px rgba(0,0,0,0.2);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.lotto-ball::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  width: 12px;
+  height: 8px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  filter: blur(1px);
+}
+
+/* Floating Bottom Nav - iOS Style */
+.floating-nav {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  max-width: 400px;
+  height: 72px;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 28px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: var(--shadow-floating);
+  z-index: 2000;
+  padding: 0 12px;
+}
+
+/* Common Layout Helpers */
+.container {
+  padding: 24px 20px;
+}
+
+@media (max-width: 375px) {
+  .container {
+    padding: 20px 14px;
+  }
+}
+
+.flex-between { display: flex; justify-content: space-between; align-items: center; }
+.flex-center { display: flex; justify-content: center; align-items: center; }
+.gap-12 { gap: 12px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.mb-32 { margin-bottom: 32px; }
+
+/* Skeleton Loading */
+.skeleton {
+  background: linear-gradient(90deg, #F2F4F7 25%, #E5E8EB 50%, #F2F4F7 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Fade Transitions */
+.page-transition {
+  animation: pageFadeIn 0.4s ease-out;
+}
+
+@keyframes pageFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

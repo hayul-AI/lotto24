@@ -1,0 +1,20 @@
+[
+  {
+    "drawNo": 1,
+    "drawDate": "2002-12-07",
+    "numbers": [10, 23, 29, 33, 37, 40],
+    "bonusNo": 16,
+    "firstPrizeAmount": 0,
+    "verified": true,
+    "source": "manual_json"
+  },
+  {
+    "drawNo": 1110,
+    "drawDate": "2024-03-09",
+    "numbers": [3, 7, 11, 20, 22, 41],
+    "bonusNo": 24,
+    "firstPrizeAmount": 2800000000,
+    "verified": true,
+    "source": "manual_json"
+  }
+]

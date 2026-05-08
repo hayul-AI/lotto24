@@ -1,0 +1,3617 @@
+[
+  {
+    "drawNo": 200,
+    "drawDate": "2026-05-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    "firstPrizeAmount": 700000000,
+    "verified": true,
+    "source": "manual_json"
+  },
+  {
+    "drawNo": 199,
+    "drawDate": "2026-04-24",
+    "prizeNumbers": {
+      "grade": 5,
+      "winning": [
+        9,
+        8,
+        7,
+        6,
+        5,
+        4
+      ]
+    },
+    "firstPrizeAmount": 700000000,
+    "verified": true,
+    "source": "manual_json"
+  },
+  {
+    "drawNo": 198,
+    "drawDate": "2026-03-10",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        6,
+        4,
+        3,
+        5,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 2,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 197,
+    "drawDate": "2026-03-10",
+    "prizeNumbers": {
+      "grade": 3,
+      "winning": [
+        1,
+        4,
+        8,
+        4,
+        7,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 2,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 196,
+    "drawDate": "2026-03-10",
+    "prizeNumbers": {
+      "grade": 2,
+      "winning": [
+        4,
+        8,
+        6,
+        0,
+        0,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 2,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 195,
+    "drawDate": "2026-02-10",
+    "prizeNumbers": {
+      "grade": 5,
+      "winning": [
+        1,
+        3,
+        5,
+        1,
+        2,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 2,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 194,
+    "drawDate": "2026-02-10",
+    "prizeNumbers": {
+      "grade": 3,
+      "winning": [
+        6,
+        6,
+        7,
+        9,
+        9,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 193,
+    "drawDate": "2026-02-10",
+    "prizeNumbers": {
+      "grade": 3,
+      "winning": [
+        8,
+        0,
+        8,
+        2,
+        4,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 192,
+    "drawDate": "2026-01-10",
+    "prizeNumbers": {
+      "grade": 4,
+      "winning": [
+        3,
+        2,
+        7,
+        3,
+        3,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 191,
+    "drawDate": "2026-01-10",
+    "prizeNumbers": {
+      "grade": 3,
+      "winning": [
+        4,
+        6,
+        0,
+        9,
+        8,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 190,
+    "drawDate": "2026-01-10",
+    "prizeNumbers": {
+      "grade": 2,
+      "winning": [
+        1,
+        3,
+        2,
+        3,
+        0,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 189,
+    "drawDate": "2026-04-10",
+    "prizeNumbers": {
+      "grade": 3,
+      "winning": [
+        0,
+        2,
+        0,
+        9,
+        8,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 188,
+    "drawDate": "2026-03-10",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        1,
+        0,
+        4,
+        5,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 2,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 187,
+    "drawDate": "2026-03-10",
+    "prizeNumbers": {
+      "grade": 5,
+      "winning": [
+        2,
+        8,
+        2,
+        0,
+        6,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 186,
+    "drawDate": "2026-03-10",
+    "prizeNumbers": {
+      "grade": 5,
+      "winning": [
+        6,
+        8,
+        1,
+        0,
+        9,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 185,
+    "drawDate": "2026-02-10",
+    "prizeNumbers": {
+      "grade": 4,
+      "winning": [
+        0,
+        0,
+        5,
+        2,
+        2,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 1,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 184,
+    "drawDate": "2026-02-10",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        2,
+        5,
+        8,
+        6,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "firstWinnerCount": 2,
+    "verified": true,
+    "source": "dummy_generator"
+  },
+  {
+    "drawNo": 183,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        1,
+        9,
+        0,
+        9,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 182,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        6,
+        7,
+        7,
+        6,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 181,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        2,
+        2,
+        5,
+        7,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 180,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        6,
+        6,
+        2,
+        7,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 179,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        2,
+        6,
+        8,
+        4,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 178,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        9,
+        1,
+        6,
+        6,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 177,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        2,
+        2,
+        5,
+        9,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 176,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        1,
+        7,
+        0,
+        3,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 175,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        1,
+        0,
+        1,
+        4,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 174,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        9,
+        9,
+        2,
+        4,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 173,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        4,
+        2,
+        6,
+        3,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 172,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        1,
+        5,
+        2,
+        5,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 171,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        3,
+        5,
+        9,
+        9,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 170,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        1,
+        4,
+        1,
+        5,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 169,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        6,
+        8,
+        2,
+        1,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 168,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        8,
+        0,
+        5,
+        3,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 167,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        9,
+        5,
+        1,
+        4,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 166,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        0,
+        8,
+        7,
+        1,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 165,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        5,
+        9,
+        6,
+        5,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 164,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        6,
+        6,
+        7,
+        5,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 163,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        1,
+        5,
+        1,
+        3,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 162,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        8,
+        3,
+        0,
+        8,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 161,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        1,
+        3,
+        3,
+        8,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 160,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        3,
+        4,
+        4,
+        1,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 159,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        0,
+        6,
+        1,
+        7,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 158,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        2,
+        5,
+        9,
+        6,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 157,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        5,
+        5,
+        3,
+        7,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 156,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        9,
+        8,
+        4,
+        6,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 155,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        2,
+        3,
+        8,
+        2,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 154,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        7,
+        9,
+        1,
+        7,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 153,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        5,
+        4,
+        6,
+        1,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 152,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        3,
+        1,
+        3,
+        1,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 151,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        3,
+        0,
+        4,
+        6,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 150,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        3,
+        7,
+        1,
+        4,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 149,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        0,
+        1,
+        4,
+        6,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 148,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        0,
+        4,
+        6,
+        0,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 147,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        6,
+        5,
+        9,
+        4,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 146,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        8,
+        3,
+        2,
+        1,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 145,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        2,
+        4,
+        5,
+        5,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 144,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        0,
+        3,
+        7,
+        6,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 143,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        1,
+        5,
+        5,
+        7,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 142,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        1,
+        7,
+        9,
+        6,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 141,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        4,
+        0,
+        7,
+        2,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 140,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        3,
+        0,
+        5,
+        7,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 139,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        5,
+        2,
+        7,
+        0,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 138,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        5,
+        2,
+        7,
+        6,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 137,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        9,
+        2,
+        4,
+        3,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 136,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        9,
+        7,
+        1,
+        4,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 135,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        3,
+        0,
+        5,
+        9,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 134,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        5,
+        4,
+        0,
+        0,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 133,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        9,
+        8,
+        8,
+        8,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 132,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        5,
+        8,
+        6,
+        6,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 131,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        6,
+        1,
+        4,
+        2,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 130,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        7,
+        0,
+        1,
+        3,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 129,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        5,
+        2,
+        9,
+        7,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 128,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        2,
+        0,
+        6,
+        1,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 127,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        9,
+        1,
+        5,
+        3,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 126,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        6,
+        7,
+        3,
+        9,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 125,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        4,
+        7,
+        2,
+        0,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 124,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        7,
+        1,
+        5,
+        6,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 123,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        3,
+        3,
+        9,
+        6,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 122,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        0,
+        0,
+        2,
+        0,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 121,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        6,
+        5,
+        4,
+        4,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 120,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        8,
+        1,
+        5,
+        8,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 119,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        4,
+        4,
+        7,
+        3,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 118,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        1,
+        7,
+        4,
+        3,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 117,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        1,
+        2,
+        2,
+        5,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 116,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        2,
+        3,
+        4,
+        1,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 115,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        6,
+        7,
+        0,
+        2,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 114,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        5,
+        6,
+        6,
+        5,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 113,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        1,
+        7,
+        9,
+        4,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 112,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        6,
+        3,
+        5,
+        7,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 111,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        4,
+        5,
+        5,
+        9,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 110,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        2,
+        3,
+        0,
+        8,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 109,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        2,
+        3,
+        9,
+        2,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 108,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        4,
+        9,
+        4,
+        4,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 107,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        8,
+        9,
+        8,
+        7,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 106,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        8,
+        4,
+        8,
+        5,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 105,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        4,
+        0,
+        5,
+        5,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 104,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        1,
+        5,
+        5,
+        9,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 103,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        6,
+        8,
+        8,
+        6,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 102,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        3,
+        2,
+        0,
+        3,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 101,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        8,
+        7,
+        2,
+        7,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 100,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        6,
+        4,
+        5,
+        4,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 99,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        6,
+        5,
+        7,
+        3,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 98,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        8,
+        3,
+        7,
+        3,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 97,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        7,
+        1,
+        6,
+        2,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 96,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        7,
+        3,
+        2,
+        2,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 95,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        9,
+        7,
+        1,
+        4,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 94,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        3,
+        0,
+        7,
+        7,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 93,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        8,
+        1,
+        8,
+        8,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 92,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        8,
+        2,
+        3,
+        8,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 91,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        6,
+        3,
+        9,
+        4,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 90,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        5,
+        0,
+        6,
+        6,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 89,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        2,
+        1,
+        5,
+        4,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 88,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        6,
+        9,
+        2,
+        6,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 87,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        2,
+        5,
+        5,
+        1,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 86,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        4,
+        1,
+        2,
+        2,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 85,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        2,
+        1,
+        6,
+        3,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 84,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        5,
+        7,
+        5,
+        0,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 83,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        4,
+        0,
+        6,
+        2,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 82,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        2,
+        6,
+        2,
+        8,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 81,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        0,
+        8,
+        4,
+        2,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 80,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        4,
+        9,
+        7,
+        9,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 79,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        8,
+        6,
+        1,
+        2,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 78,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        1,
+        7,
+        1,
+        1,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 77,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        4,
+        7,
+        5,
+        1,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 76,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        2,
+        8,
+        3,
+        3,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 75,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        1,
+        6,
+        8,
+        1,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 74,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        2,
+        2,
+        5,
+        9,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 73,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        4,
+        4,
+        8,
+        0,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 72,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        3,
+        2,
+        5,
+        4,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 71,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        0,
+        6,
+        4,
+        3,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 70,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        2,
+        1,
+        1,
+        2,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 69,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        3,
+        8,
+        1,
+        1,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 68,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        1,
+        8,
+        8,
+        3,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 67,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        4,
+        2,
+        6,
+        7,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 66,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        8,
+        8,
+        2,
+        7,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 65,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        0,
+        1,
+        0,
+        3,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 64,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        9,
+        5,
+        3,
+        6,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 63,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        9,
+        6,
+        1,
+        3,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 62,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        8,
+        2,
+        2,
+        4,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 61,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        6,
+        7,
+        7,
+        7,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 60,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        5,
+        4,
+        5,
+        2,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 59,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        3,
+        8,
+        6,
+        4,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 58,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        5,
+        1,
+        9,
+        2,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 57,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        3,
+        1,
+        4,
+        3,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 56,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        7,
+        4,
+        1,
+        4,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 55,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        9,
+        3,
+        2,
+        3,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 54,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        7,
+        3,
+        2,
+        7,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 53,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        7,
+        7,
+        1,
+        8,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 52,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        5,
+        1,
+        8,
+        6,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 51,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        0,
+        7,
+        1,
+        6,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 50,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        4,
+        2,
+        9,
+        9,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 49,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        8,
+        7,
+        2,
+        0,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 48,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        2,
+        6,
+        1,
+        1,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 47,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        5,
+        1,
+        5,
+        8,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 46,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        8,
+        8,
+        9,
+        3,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 45,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        9,
+        6,
+        4,
+        7,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 44,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        9,
+        2,
+        8,
+        9,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 43,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        9,
+        5,
+        4,
+        5,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 42,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        7,
+        2,
+        2,
+        0,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 41,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        9,
+        6,
+        9,
+        2,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 40,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        3,
+        0,
+        1,
+        4,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 39,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        5,
+        6,
+        6,
+        2,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 38,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        9,
+        0,
+        1,
+        9,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 37,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        8,
+        1,
+        4,
+        9,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 36,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        9,
+        5,
+        0,
+        9,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 35,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        3,
+        0,
+        6,
+        7,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 34,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        9,
+        7,
+        7,
+        1,
+        0
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 33,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        9,
+        4,
+        7,
+        5,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 32,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        3,
+        2,
+        1,
+        3,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 31,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        5,
+        8,
+        7,
+        5,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 30,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        2,
+        0,
+        8,
+        2,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 29,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        9,
+        2,
+        2,
+        8,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 28,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        7,
+        2,
+        5,
+        4,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 27,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        9,
+        4,
+        3,
+        4,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 26,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        4,
+        7,
+        2,
+        6,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 25,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        8,
+        3,
+        8,
+        0,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 24,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        2,
+        9,
+        7,
+        2,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 23,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        9,
+        8,
+        2,
+        3,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 22,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        7,
+        0,
+        7,
+        8,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 21,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        8,
+        4,
+        5,
+        7,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 20,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        2,
+        5,
+        8,
+        0,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 19,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        4,
+        1,
+        1,
+        7,
+        5
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 18,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        3,
+        2,
+        0,
+        5,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 17,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        3,
+        0,
+        3,
+        3,
+        7,
+        7
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 16,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        1,
+        7,
+        7,
+        3,
+        9,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 15,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        7,
+        8,
+        7,
+        7,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 14,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        0,
+        3,
+        7,
+        1,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 13,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        4,
+        5,
+        7,
+        0,
+        1
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 12,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        8,
+        1,
+        8,
+        0,
+        6,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 11,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        2,
+        5,
+        5,
+        0,
+        9
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 10,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        8,
+        9,
+        1,
+        1,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 9,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        4,
+        9,
+        4,
+        5,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 8,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        3,
+        1,
+        2,
+        6,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 7,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        0,
+        1,
+        7,
+        8,
+        9,
+        6
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 6,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        4,
+        2,
+        0,
+        2,
+        6,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 5,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        5,
+        9,
+        7,
+        7,
+        0,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 4,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        2,
+        2,
+        8,
+        7,
+        7,
+        8
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 3,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        7,
+        6,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 2,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        6,
+        5,
+        7,
+        9,
+        5,
+        3
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  },
+  {
+    "drawNo": 1,
+    "drawDate": "2020-01-01",
+    "prizeNumbers": {
+      "grade": 1,
+      "winning": [
+        9,
+        5,
+        7,
+        8,
+        1,
+        4
+      ]
+    },
+    "firstPrizeAmount": 7000000000,
+    "verified": true,
+    "source": "dummy_all"
+  }
+]

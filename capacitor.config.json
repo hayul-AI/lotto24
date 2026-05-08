@@ -1,0 +1,9 @@
+{
+  "appId": "com.hotplmedia.bokgwon24",
+  "appName": "복권24",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "http",
+    "hostname": "localhost"
+  }
+}

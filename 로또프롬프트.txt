@@ -1,0 +1,21 @@
+cd "C:\dev\LOTTO24"
+npm run build
+npx cap sync android
+
+Android Studio에서 다시 Run ▶
+
+
+
+로또 추첨시간
+매주 토요일 20 : 35분 경
+
+
+연금복권 추첨시간
+매주 목요일 19 : 05분 경
+
+
+로또 6/45
+토요일 21:20 KST 자동 업데이트
+
+연금복권720+
+목요일 20:00 KST 자동 업데이트

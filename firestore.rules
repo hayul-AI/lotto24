@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 시딩용 임시 허용 (시딩 후 write: if false로 복원 권장)
+    match /lotto_results/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /pension_results/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /lottery_stores/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /winning_stores/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+    
+    match /{document=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

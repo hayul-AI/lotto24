@@ -1,0 +1,1570 @@
+[
+  {
+    "drawNo": 1222,
+    "drawDate": "2026-05-02",
+    "numbers": [
+      4,
+      11,
+      17,
+      22,
+      32,
+      41
+    ],
+    "bonusNo": 34,
+    "firstPrizeAmount": 2850000000,
+    "verified": true,
+    "source": "manual_json"
+  },
+  {
+    "drawNo": 1221,
+    "drawDate": "2026-04-25",
+    "numbers": [
+      1,
+      12,
+      16,
+      19,
+      23,
+      43
+    ],
+    "bonusNo": 38,
+    "firstPrizeAmount": 2100000000,
+    "verified": true,
+    "source": "manual_json"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  },
+  {
+    "numbers": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "verified": true,
+    "source": "dhlottery_api"
+  }
+]
