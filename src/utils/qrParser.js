@@ -1,9 +1,6 @@
 /**
  * 복권 QR 코드를 분석하여 로또 6/45 또는 연금복권 720+인지 판별하고 정보를 추출합니다.
  */
-/**
- * 복권 QR 코드를 분석하여 로또 6/45 또는 연금복권 720+인지 판별하고 정보를 추출합니다.
- */
 export const parseLotteryQr = (decodedText) => {
   const rawQr = String(decodedText || "").trim();
   
@@ -153,8 +150,8 @@ export const parsePensionQr = (decodedText) => {
   }
 
   // 연금복권 데이터 형식: {회차4}{조1}{번호6} = 총 11자리
-  // 최근 회차는 3자리일 수도 있으므로 최소 10자리 이상 체크
-  if (v && v.length >= 10 && v.length <= 13) {
+  // 최근 회차는 3자리일 수도 있으므로 9~13자리까지 허용
+  if (v && v.length >= 9 && v.length <= 13) {
     const numberStr = v.substring(v.length - 6);
     const groupStr = v.substring(v.length - 7, v.length - 6);
     const drawNoStr = v.substring(0, v.length - 7);

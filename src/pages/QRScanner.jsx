@@ -41,7 +41,7 @@ const QRScannerPage = () => {
       if (isNative) {
         const timer = setTimeout(() => {
           startScanner();
-        }, 400);
+        }, 800);
 
         // 5초 후에도 여전히 로딩 중이면 강제 취소/홈 이동 (행 방지)
         const timeoutTimer = setTimeout(() => {
@@ -89,8 +89,13 @@ const QRScannerPage = () => {
       if (navigator.vibrate) navigator.vibrate(100);
       navigate("/qr-result", { state: { rawQr: url, parsed }, replace: true });
     } else {
-      setError("동행복권 QR 주소를 인식할 수 없습니다.");
-      setTimeout(() => setError(""), 3000);
+      // 파싱 실패 시에는 '카메라 에러'가 아니므로 전용 알림
+      alert("복권 QR 코드를 인식할 수 없습니다. 다시 시도해 주세요.");
+      // 다시 스캔할 수 있도록 상태 초기화
+      isDecodedRef.current = false;
+      if (!isNative) {
+        startScanner();
+      }
     }
   };
 
@@ -266,11 +271,11 @@ const QRScannerPage = () => {
         {error ? (
           <div style={{ textAlign: "center", padding: "40px 20px" }}>
             <AlertCircle size={48} color="#EF4444" style={{ margin: "0 auto 20px" }} />
-            <p style={{ color: "#1E293B", fontWeight: "900", fontSize: "1.1rem", marginBottom: "8px" }}>카메라를 사용할 수 없습니다</p>
+            <p style={{ color: "#1E293B", fontWeight: "900", fontSize: "1.1rem", marginBottom: "8px" }}>카메라 연결 오류</p>
             <p style={{ color: "#64748B", fontSize: "0.9rem", lineHeight: "1.5", marginBottom: "24px" }}>
               {error}
             </p>
-            <button onClick={startScanner} style={ctaBtnStyle}>다시 시도하기</button>
+            <button onClick={() => { setError(""); startScanner(); }} style={ctaBtnStyle}>카메라 다시 켜기</button>
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: "20px", opacity: 0.6 }}>
