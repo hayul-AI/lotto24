@@ -8,7 +8,7 @@ export const parseLotteryQr = (decodedText) => {
   const rawQr = String(decodedText || "").trim();
   
   // 1. 연금복권 패턴 감지 (URL에 연금복권 관련 키워드가 있는 경우)
-  const isPensionPattern = /pension|720|연금|l720|game720|lotto720/i.test(rawQr);
+  const isPensionPattern = /pension|720|연금|l720|game720|lotto720|gr=|jo=|drwNo=|drawNo=/i.test(rawQr);
 
   if (isPensionPattern) {
     const pensionResult = parsePensionQr(rawQr);
@@ -121,12 +121,16 @@ export const parseLottoQr = (decodedText) => {
 export const parsePensionQr = (decodedText) => {
   const rawQr = String(decodedText || "").trim();
   let v = "";
+  let searchParams = {};
 
   // 1. URL에서 v 파라미터 추출 시도
   try {
     if (rawQr.includes('?')) {
       const url = new URL(rawQr);
       v = url.searchParams.get("v") || "";
+      url.searchParams.forEach((val, key) => {
+        searchParams[key] = val;
+      });
     }
   } catch (e) {}
 
@@ -141,6 +145,8 @@ export const parsePensionQr = (decodedText) => {
     v = rawQr.replace(/[^0-9pP]/g, '');
   }
 
+  const originalV = v;
+
   // 'p' 접두사 제거
   if (v.toLowerCase().startsWith('p')) {
     v = v.substring(1);
@@ -149,7 +155,6 @@ export const parsePensionQr = (decodedText) => {
   // 연금복권 데이터 형식: {회차4}{조1}{번호6} = 총 11자리
   // 최근 회차는 3자리일 수도 있으므로 최소 10자리 이상 체크
   if (v && v.length >= 10 && v.length <= 13) {
-    // 뒤에서부터 6자리는 번호, 그 앞 1자리는 조, 나머지는 회차
     const numberStr = v.substring(v.length - 6);
     const groupStr = v.substring(v.length - 7, v.length - 6);
     const drawNoStr = v.substring(0, v.length - 7);
@@ -159,12 +164,18 @@ export const parsePensionQr = (decodedText) => {
     const drawNo = Number(drawNoStr);
 
     if (numberArr.length === 6 && !isNaN(drawNo) && !isNaN(group)) {
+      console.log("[PENSION QR PARSED]", {
+        drawNo,
+        group: groupStr,
+        numbers: numberArr
+      });
+
       return {
         success: true,
         data: {
           type: "pension720",
           drawNo: drawNo,
-          group: groupStr, // 구체 요구사항 6번에 따라 String으로 전달 시도 (혹은 필요 시 처리)
+          group: groupStr,
           numbers: numberArr,
           fullNumber: `${groupStr}조 ${numberStr}`,
           rawQr: rawQr
@@ -172,6 +183,13 @@ export const parsePensionQr = (decodedText) => {
       };
     }
   }
+
+  console.warn("[PENSION QR DETECT FAILED]", {
+    rawText: rawQr,
+    v: originalV,
+    searchParams,
+    reason: "연금복권 형식이 아니거나 번호 추출 실패"
+  });
 
   return { success: false, reason: "연금복권 형식이 아닙니다.", rawQr };
 };

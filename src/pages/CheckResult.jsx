@@ -38,7 +38,7 @@ const CheckResult = () => {
       }
 
       if (!parsed || parsed.type === "unknown") {
-        setError("QR 코드를 파싱할 수 없거나 지원하지 않는 형식입니다.");
+        setError("지원하지 않는 QR 형식입니다.");
         setParsedData({ rawQr });
         setLoading(false);
         return;
@@ -51,12 +51,14 @@ const CheckResult = () => {
       } else if (parsed.type === "pension720") {
         await handlePensionCheck(parsed);
       } else {
-        setError("지원하지 않는 복권 형식입니다.");
+        setError("지원하지 않는 QR 형식입니다.");
       }
 
     } catch (err) {
       console.error(err);
-      if (err.message.includes("데이터가 아직 없습니다")) {
+      if (err.message.includes("등록되지 않았습니다")) {
+        setError(err.message);
+      } else if (err.message.includes("번호를 읽을 수 없습니다")) {
         setError(err.message);
       } else {
         setError("결과를 확인하는 중 오류가 발생했습니다.");
@@ -90,7 +92,9 @@ const CheckResult = () => {
 
   const handlePensionCheck = async (parsed) => {
     const drawNo = Number(parsed.drawNo);
-    if (isNaN(drawNo)) throw new Error("유효하지 않은 회차 번호입니다.");
+    if (isNaN(drawNo) || !parsed.group || !parsed.numbers) {
+      throw new Error("연금복권 번호를 읽을 수 없습니다.");
+    }
 
     const { data: winInfo, error: fetchErr } = await getPensionResultByDrawNo(drawNo);
     if (fetchErr || !winInfo) {
