@@ -80,17 +80,47 @@ const QRScannerPage = () => {
   }, []);
 
   // ── 결과 페이지 이동 ──
-  const goToResult = (url) => {
-    console.log("[QR SCAN RAW]", url);
-    const parsed = parseLotteryQr(url);
+  const goToResult = (rawText) => {
+    // 1. 무조건 로그 먼저 출력
+    console.log("[QR SCAN RAW]", rawText);
+    console.log("[QR SCAN RAW TYPE]", typeof rawText);
+    console.log("[QR SCAN RAW LENGTH]", rawText?.length);
+
+    // 2. 유효성 체크
+    if (!rawText || typeof rawText !== "string") {
+      alert("QR 주소를 읽을 수 없습니다.");
+      isDecodedRef.current = false;
+      if (!isNative) startScanner();
+      return;
+    }
+
+    // 3. 파싱 시도
+    const parsed = parseLotteryQr(rawText);
+
+    // 4. 결과에 따른 분기
     if (parsed && parsed.type !== "unknown") {
-      localStorage.setItem("bokgwon24_last_qr_raw", url);
-      setDebug(prev => ({ ...prev, lastText: url }));
+      localStorage.setItem("bokgwon24_last_qr_raw", rawText);
+      setDebug(prev => ({ ...prev, lastText: rawText }));
+      
       if (navigator.vibrate) navigator.vibrate(100);
-      navigate("/qr-result", { state: { rawQr: url, parsed }, replace: true });
+      
+      // 로또 또는 연금복권 결과 페이지로 이동
+      navigate("/qr-result", { state: { rawQr: rawText, parsed }, replace: true });
     } else {
-      // 파싱 실패 시에는 '카메라 에러'가 아니므로 전용 알림
-      alert("복권 QR 코드를 인식할 수 없습니다. 다시 시도해 주세요.");
+      // 5. 실패 로그
+      console.warn("[QR PARSE FAILED]", {
+        rawText,
+        reason: parsed?.reason || "unknown format"
+      });
+
+      // 6. 에러 메시지 처리
+      let errorMsg = "지원하지 않는 QR 형식입니다.";
+      if (parsed?.reason === "연금복권 번호를 읽을 수 없습니다.") {
+        errorMsg = "연금복권 번호를 읽을 수 없습니다.";
+      }
+      
+      alert(errorMsg);
+
       // 다시 스캔할 수 있도록 상태 초기화
       isDecodedRef.current = false;
       if (!isNative) {
