@@ -196,47 +196,9 @@ const QRScannerPage = () => {
     setShowScanner(false);
   };
 
-  // ── 렌더링 분기: 웹 스캐너 모드 ──
-  if (showScanner) {
-    return (
-      <div style={{ position: "fixed", inset: 0, background: "#000", zIndex: 100 }}>
-        <video ref={videoRef} muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        <button onClick={stopScanner} style={{ position: "absolute", top: 16, left: 16, zIndex: 10, width: 44, height: 44, borderRadius: "50%", background: "rgba(0,0,0,0.6)", color: "#fff", border: "none" }}>
-          <ChevronLeft size={24} />
-        </button>
-      </div>
-    );
-  }
-
-  // ── 렌더링 분기: 네이티브 스캐닝 중 (안내 페이지 제거됨) ──
-  if (isNative) {
-    return (
-      <div className="full-flex-center" style={{ minHeight: "100vh", backgroundColor: "white", flexDirection: "column", gap: "20px", padding: "20px" }}>
-        <Loader2 className="animate-spin" size={48} color="var(--primary-blue)" />
-        <div style={{ textAlign: "center" }}>
-          <p style={{ fontWeight: "900", fontSize: "1.2rem", color: "#1E293B", marginBottom: "8px" }}>QR 스캐너를 여는 중...</p>
-          <p style={{ color: "#64748B", fontSize: "0.9rem" }}>잠시만 기다려 주세요.</p>
-        </div>
-        <div style={{ marginTop: "20px", width: "100%", maxWidth: "200px" }}>
-          <button 
-            onClick={() => navigate("/", { replace: true })}
-            style={{ 
-              width: "100%", padding: "12px", borderRadius: "12px", border: "1px solid #E2E8F0",
-              backgroundColor: "white", color: "#64748B", fontWeight: "800", fontSize: "0.9rem"
-            }}
-          >
-            취소하고 돌아가기
-          </button>
-        </div>
-        <p style={{ fontSize: "0.7rem", color: "#CBD5E1", textAlign: "center", marginTop: "20px" }}>
-          장시간 응답이 없으면 버튼을 눌러주세요.
-        </p>
-      </div>
-    );
-  }
-
+  // ── 렌더링 ──
   return (
-    <div style={{ backgroundColor: "#F8FAFC", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ backgroundColor: "#F8FAFC", minHeight: "100vh", display: "flex", flexDirection: "column", position: "relative" }}>
       <header style={{ background: "#fff", padding: "16px 20px", display: "flex", alignItems: "center", borderBottom: "1px solid #E2E8F0" }}>
         <button onClick={() => navigate(-1)} style={{ background: "none", border: "none", fontSize: 24, color: "#64748B" }}>
           <ChevronLeft size={28} />
@@ -245,13 +207,12 @@ const QRScannerPage = () => {
       </header>
 
       <main style={{ flex: 1, padding: "24px 20px" }}>
-        {/* 웹 브라우저 UI (네이티브는 위에서 return됨) */}
         <div style={{ background: "#EEF2FF", borderRadius: 20, padding: "20px", border: "1px solid #C7D2FE", marginBottom: 24 }}>
-          <p style={{ fontWeight: 900, color: "#312E81", fontSize: "1rem", marginBottom: 12 }}>📱 이렇게 확인하세요</p>
+          <p style={{ fontWeight: 900, color: "#312E81", fontSize: "1rem", marginBottom: 12 }}>📱 당첨 확인 방법</p>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <Step n="1" text="휴대폰 카메라로 복권 QR을 찍으세요" />
-            <Step n="2" text="화면에 뜬 주소를 길게 눌러 복사하세요" />
-            <Step n="3" text='[붙여넣기] 버튼을 누르면 자동 확인됩니다' />
+            <Step n="2" text="주소를 복사하거나 직접 스캔하세요" />
+            <Step n="3" text='[붙여넣기] 또는 [실시간 스캔] 이용' />
           </div>
         </div>
 
@@ -276,7 +237,7 @@ const QRScannerPage = () => {
             <ImageIcon size={18} /> 사진 분석
           </label>
           <button onClick={startScanner} style={{ ...subBtnStyle, flex: 1 }}>
-            <Camera size={18} /> 실시간 스캔 (Beta)
+            <Camera size={18} /> 실시간 스캔
           </button>
         </div>
 
@@ -286,6 +247,44 @@ const QRScannerPage = () => {
           </p>
         )}
       </main>
+
+      {/* 웹 스캐너 화면 overlay */}
+      {showScanner && (
+        <div style={{ position: "fixed", inset: 0, background: "#000", zIndex: 100 }}>
+          <video ref={videoRef} muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <button onClick={stopScanner} style={{ position: "absolute", top: 16, left: 16, zIndex: 10, width: 44, height: 44, borderRadius: "50%", background: "rgba(0,0,0,0.6)", color: "#fff", border: "none" }}>
+            <ChevronLeft size={24} />
+          </button>
+        </div>
+      )}
+
+      {/* 네이티브 스캐너 실행 중 overlay */}
+      {isNative && (isStartingRef.current || isScanningRef.current) && (
+        <div className="full-flex-center" style={{ 
+          position: "fixed", inset: 0, zIndex: 200, backgroundColor: "rgba(255,255,255,0.95)",
+          flexDirection: "column", gap: "20px", padding: "20px" 
+        }}>
+          <Loader2 className="animate-spin" size={48} color="var(--primary-blue)" />
+          <div style={{ textAlign: "center" }}>
+            <p style={{ fontWeight: "900", fontSize: "1.2rem", color: "#1E293B", marginBottom: "8px" }}>네이티브 스캐너를 여는 중...</p>
+            <p style={{ color: "#64748B", fontSize: "0.9rem" }}>스캐너가 열리면 카메라를 QR에 대주세요.</p>
+          </div>
+          <button 
+            onClick={() => {
+              isStartingRef.current = false;
+              isScanningRef.current = false;
+              // 강제로 네이티브 모드를 끄고 웹 UI를 보여줌
+              setDebug(prev => ({ ...prev, isNative: false }));
+            }}
+            style={{ 
+              marginTop: "20px", padding: "12px 24px", borderRadius: "12px", border: "1px solid #E2E8F0",
+              backgroundColor: "white", color: "#64748B", fontWeight: "800", fontSize: "0.9rem"
+            }}
+          >
+            취소하고 웹 스캐너 사용하기
+          </button>
+        </div>
+      )}
     </div>
   );
 };
