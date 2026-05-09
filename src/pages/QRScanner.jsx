@@ -6,7 +6,7 @@ import { BarcodeScanner } from "@capacitor-mlkit/barcode-scanning";
 import { parseLotteryQr } from "../utils/qrParser";
 import { isNativeApp as checkIsNative } from "../utils/platform";
 import { scanNativeQrCode } from "../services/nativeQrScanner";
-import { Loader2, Camera, Clipboard, Image as ImageIcon, ChevronLeft } from "lucide-react";
+import { Loader2, Camera, Clipboard, Image as ImageIcon, ChevronLeft, AlertCircle } from "lucide-react";
 
 const QRScannerPage = () => {
   const navigate = useNavigate();
@@ -36,42 +36,42 @@ const QRScannerPage = () => {
 
   // ── 초기화 및 자동 스캔 ──
   useEffect(() => {
-    // 네이티브 앱인 경우 즉시 스캔 실행
-    if (isNative) {
-      const timer = setTimeout(() => {
+    const init = async () => {
+      // 네이티브 앱인 경우 즉시 스캔 실행
+      if (isNative) {
+        const timer = setTimeout(() => {
+          startScanner();
+        }, 400);
+
+        // 5초 후에도 여전히 로딩 중이면 강제 취소/홈 이동 (행 방지)
+        const timeoutTimer = setTimeout(() => {
+          if (isStartingRef.current) {
+            console.warn("Native scanner initialization timed out.");
+            navigate("/", { replace: true });
+          }
+        }, 5500);
+
+        return () => {
+          clearTimeout(timer);
+          clearTimeout(timeoutTimer);
+        };
+      } else {
+        // 웹 환경에서도 즉시 실시간 스캔 시작 시도
         startScanner();
-      }, 400);
+      }
 
-      // 5초 후에도 여전히 로딩 중이면 강제 취소/홈 이동 (행 방지)
-      const timeoutTimer = setTimeout(() => {
-        if (isStartingRef.current) {
-          console.warn("Native scanner initialization timed out.");
-          navigate("/", { replace: true });
-        }
-      }, 5500);
+      // 웹 환경에서는 클립보드 자동 감지
+      if (!isNative) {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text && text.includes("dhlottery.co.kr")) {
+            setUrlInput(text);
+          }
+        } catch {}
+      }
+    };
 
-      return () => {
-        clearTimeout(timer);
-        clearTimeout(timeoutTimer);
-      };
-    }
-
-    // 웹 환경에서는 클립보드 자동 감지
-    (async () => {
-      try {
-        const text = await navigator.clipboard.readText();
-        if (text && text.includes("dhlottery.co.kr")) {
-          setUrlInput(text);
-        }
-      } catch {}
-    })();
-
-    // PWA Share Target
-    const params = new URLSearchParams(window.location.search);
-    const shared = params.get("url") || params.get("text");
-    if (shared && shared.includes("dhlottery")) {
-      goToResult(shared);
-    }
+    init();
 
     return () => {
       stopScanner();
@@ -156,7 +156,6 @@ const QRScannerPage = () => {
         }
       } catch (err) {
         console.warn("Native scan error:", err);
-        // 에러 발생 시에도 홈으로 즉시 이동하여 낙차 없는 경험 제공
         navigate("/", { replace: true });
       } finally {
         isStartingRef.current = false;
@@ -166,25 +165,42 @@ const QRScannerPage = () => {
     }
 
     if (scannerRef.current) return;
-    setShowScanner(true);
+    setError("");
+    isDecodedRef.current = false;
 
     try {
-      const scanner = new QrScanner(
-        videoRef.current,
-        (result) => {
-          const text = typeof result === "string" ? result : result?.data;
-          if (text && !isDecodedRef.current) {
-            isDecodedRef.current = true;
-            stopScanner();
-            goToResult(text);
-          }
-        },
-        { preferredCamera: "environment", highlightScanRegion: true, maxScansPerSecond: 25 }
-      );
-      scannerRef.current = scanner;
-      await scanner.start();
+      setShowScanner(true);
+      
+      setTimeout(async () => {
+        if (!videoRef.current) {
+          setError("카메라 초기화 실패");
+          setShowScanner(false);
+          return;
+        }
+
+        try {
+          const scanner = new QrScanner(
+            videoRef.current,
+            (result) => {
+              const text = typeof result === "string" ? result : result?.data;
+              if (text && !isDecodedRef.current) {
+                isDecodedRef.current = true;
+                stopScanner();
+                goToResult(text);
+              }
+            },
+            { preferredCamera: "environment", highlightScanRegion: true, maxScansPerSecond: 25 }
+          );
+          scannerRef.current = scanner;
+          await scanner.start();
+        } catch (err) {
+          console.error("Web scanner start error:", err);
+          setError("카메라 권한이 필요합니다. 설정에서 허용해주세요.");
+          setShowScanner(false);
+        }
+      }, 100);
     } catch (err) {
-      alert("카메라 실패: " + err.message);
+      setError("스캐너 준비 중 오류가 발생했습니다.");
       setShowScanner(false);
     }
   };
@@ -197,65 +213,22 @@ const QRScannerPage = () => {
     setShowScanner(false);
   };
 
-  // ── 렌더링 ──
   return (
     <div style={{ backgroundColor: "#F8FAFC", minHeight: "100vh", display: "flex", flexDirection: "column", position: "relative" }}>
-      <header style={{ background: "#fff", padding: "16px 20px", display: "flex", alignItems: "center", borderBottom: "1px solid #E2E8F0" }}>
-        <button onClick={() => navigate(-1)} style={{ background: "none", border: "none", fontSize: 24, color: "#64748B" }}>
-          <ChevronLeft size={28} />
-        </button>
-        <h1 style={{ flex: 1, textAlign: "center", fontSize: "1.1rem", fontWeight: 800, color: "#1E293B", marginRight: 28 }}>QR 당첨 확인</h1>
-      </header>
-
-      <main style={{ flex: 1, padding: "24px 20px" }}>
-        <div style={{ background: "#EEF2FF", borderRadius: 20, padding: "20px", border: "1px solid #C7D2FE", marginBottom: 24 }}>
-          <p style={{ fontWeight: 900, color: "#312E81", fontSize: "1rem", marginBottom: 12 }}>📱 당첨 확인 방법</p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <Step n="1" text="휴대폰 카메라로 복권 QR을 찍으세요" />
-            <Step n="2" text="주소를 복사하거나 직접 스캔하세요" />
-            <Step n="3" text='[붙여넣기] 또는 [실시간 스캔] 이용' />
-          </div>
-        </div>
-
-        <button onClick={handlePaste} style={ctaBtnStyle}>
-          <Clipboard size={22} /> 주소 붙여넣기로 바로 확인
-        </button>
-
-        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-          <input
-            type="text"
-            value={urlInput}
-            onChange={(e) => setUrlInput(e.target.value)}
-            placeholder="https://qr.dhlottery.co.kr/..."
-            style={inputStyle}
-          />
-          <button onClick={handleSubmit} style={okBtnStyle}>확인</button>
-        </div>
-
-        <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-          <label style={{ ...subBtnStyle, flex: 1 }}>
-            <input type="file" accept="image/*" capture="environment" onChange={handlePhoto} style={{ display: "none" }} />
-            <ImageIcon size={18} /> 사진 분석
-          </label>
-          <button onClick={startScanner} style={{ ...subBtnStyle, flex: 1 }}>
-            <Camera size={18} /> 실시간 스캔
-          </button>
-        </div>
-
-        {error && (
-          <p style={{ color: "#EF4444", fontSize: "0.85rem", fontWeight: 700, textAlign: "center", marginTop: 12 }}>
-            ⚠️ {error}
-          </p>
-        )}
-      </main>
-
       {/* 웹 스캐너 화면 overlay */}
       {showScanner && (
-        <div style={{ position: "fixed", inset: 0, background: "#000", zIndex: 100 }}>
+        <div style={{ position: "fixed", inset: 0, background: "#000", zIndex: 1000 }}>
           <video ref={videoRef} muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-          <button onClick={stopScanner} style={{ position: "absolute", top: 16, left: 16, zIndex: 10, width: 44, height: 44, borderRadius: "50%", background: "rgba(0,0,0,0.6)", color: "#fff", border: "none" }}>
-            <ChevronLeft size={24} />
-          </button>
+          <div style={{ position: "absolute", top: 16, left: 16, right: 16, display: "flex", justifyContent: "space-between", zIndex: 10 }}>
+            <button onClick={stopScanner} style={circleBtnStyle}>
+              <ChevronLeft size={24} />
+            </button>
+          </div>
+          <div style={{ position: "absolute", bottom: 40, left: 0, right: 0, display: "flex", justifyContent: "center", zIndex: 10 }}>
+            <p style={{ color: "white", background: "rgba(0,0,0,0.5)", padding: "8px 16px", borderRadius: "20px", fontSize: "0.9rem", fontWeight: "700" }}>
+              사각형 안에 QR 코드를 맞춰주세요
+            </p>
+          </div>
         </div>
       )}
 
@@ -271,21 +244,74 @@ const QRScannerPage = () => {
             <p style={{ color: "#64748B", fontSize: "0.9rem" }}>스캐너가 열리면 카메라를 QR에 대주세요.</p>
           </div>
           <button 
-            onClick={() => {
-              isStartingRef.current = false;
-              isScanningRef.current = false;
-              // 강제로 네이티브 모드를 끄고 웹 UI를 보여줌
-              setDebug(prev => ({ ...prev, isNative: false }));
-            }}
+            onClick={() => navigate("/", { replace: true })}
             style={{ 
               marginTop: "20px", padding: "12px 24px", borderRadius: "12px", border: "1px solid #E2E8F0",
               backgroundColor: "white", color: "#64748B", fontWeight: "800", fontSize: "0.9rem"
             }}
           >
-            취소하고 웹 스캐너 사용하기
+            취소하고 돌아가기
           </button>
         </div>
       )}
+
+      <header style={{ background: "#fff", padding: "16px 20px", display: "flex", alignItems: "center", borderBottom: "1px solid #E2E8F0" }}>
+        <button onClick={() => navigate(-1)} style={{ background: "none", border: "none", fontSize: 24, color: "#64748B" }}>
+          <ChevronLeft size={28} />
+        </button>
+        <h1 style={{ flex: 1, textAlign: "center", fontSize: "1.1rem", fontWeight: 800, color: "#1E293B", marginRight: 28 }}>QR 당첨 확인</h1>
+      </header>
+
+      <main style={{ flex: 1, padding: "24px 20px", display: "flex", flexDirection: "column" }}>
+        {error ? (
+          <div style={{ textAlign: "center", padding: "40px 20px" }}>
+            <AlertCircle size={48} color="#EF4444" style={{ margin: "0 auto 20px" }} />
+            <p style={{ color: "#1E293B", fontWeight: "900", fontSize: "1.1rem", marginBottom: "8px" }}>카메라를 사용할 수 없습니다</p>
+            <p style={{ color: "#64748B", fontSize: "0.9rem", lineHeight: "1.5", marginBottom: "24px" }}>
+              {error}
+            </p>
+            <button onClick={startScanner} style={ctaBtnStyle}>다시 시도하기</button>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px", opacity: 0.6 }}>
+            <div style={{ background: "#EEF2FF", borderRadius: 20, padding: "20px", border: "1px solid #C7D2FE" }}>
+              <p style={{ fontWeight: 900, color: "#312E81", fontSize: "1rem", marginBottom: 12 }}>📱 당첨 확인 방법</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <Step n="1" text="휴대폰 카메라로 복권 QR을 찍으세요" />
+                <Step n="2" text="주소를 복사하거나 직접 스캔하세요" />
+                <Step n="3" text='[붙여넣기] 또는 [실시간 스캔] 이용' />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div style={{ marginTop: "auto" }}>
+          <p style={{ textAlign: "center", color: "#94A3B8", fontSize: "0.8rem", fontWeight: "700", marginBottom: "16px" }}>
+            카메라 인식이 안 될 경우 아래 방법을 이용하세요
+          </p>
+          
+          <button onClick={handlePaste} style={{ ...subBtnStyle, marginBottom: "12px", background: "#F8FAFC" }}>
+            <Clipboard size={18} /> 복사한 주소 붙여넣기
+          </button>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            <label style={{ ...subBtnStyle, flex: 1 }}>
+              <input type="file" accept="image/*" capture="environment" onChange={handlePhoto} style={{ display: "none" }} />
+              <ImageIcon size={18} /> 사진 불러오기
+            </label>
+            <div style={{ flex: 1, display: "flex", gap: "8px" }}>
+              <input
+                type="text"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                placeholder="주소 직접 입력"
+                style={{ ...inputStyle, padding: "10px" }}
+              />
+              <button onClick={handleSubmit} style={okBtnStyle}>확인</button>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
@@ -296,6 +322,11 @@ const Step = ({ n, text }) => (
     <p style={{ color: "#4338CA", fontSize: "0.85rem", fontWeight: 700 }}>{text}</p>
   </div>
 );
+
+const circleBtnStyle = {
+  width: 44, height: 44, borderRadius: "50%", background: "rgba(0,0,0,0.6)", color: "#fff", border: "none",
+  display: "flex", alignItems: "center", justifyContent: "center"
+};
 
 const ctaBtnStyle = {
   width: "100%", padding: "18px", borderRadius: "18px", border: "none",
