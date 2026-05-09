@@ -102,26 +102,40 @@ async function fetchLatestLotto() {
     const lottoRef = db.collection('lotto_results');
     const latestSnapshot = await lottoRef.orderBy('drawNo', 'desc').limit(1).get();
     let firestoreMaxDrawNo = 0;
+    let existingDocData = null;
+
     if (!latestSnapshot.empty) {
-      firestoreMaxDrawNo = Number(latestSnapshot.docs[0].data().drawNo);
+      existingDocData = latestSnapshot.docs[0].data();
+      firestoreMaxDrawNo = Number(existingDocData.drawNo);
     }
     console.log(`🔍 Firestore Max DrawNo: ${firestoreMaxDrawNo}`);
 
+    // 2. [검증] 기존 최신 문서가 이미 유효한지 확인
+    const isExistingValid = existingDocData && 
+                           existingDocData.verified === true && 
+                           Array.isArray(existingDocData.numbers) && 
+                           existingDocData.numbers.length === 6 && 
+                           existingDocData.bonusNo;
+    
+    console.log(`📝 Existing latest doc valid: ${isExistingValid ? 'YES' : 'NO'}`);
+
     let finalResult = null;
+    let finalMode = "";
 
-    // 2. [1순위] API를 통해 다음 회차 조회
-    finalResult = await fetchLottoByAPI(firestoreMaxDrawNo + 1);
+    // 3. [1순위] API를 통해 다음 회차 조회
+    const nextDrawNo = firestoreMaxDrawNo + 1;
+    console.log(`📡 Checking next drawNo: ${nextDrawNo}`);
+    finalResult = await fetchLottoByAPI(nextDrawNo);
+    if (finalResult) finalMode = "saved_new_draw";
 
-    // 3. [2순위] API를 통해 현재 최대 회차 재검증 (최신 데이터 보정 목적)
-    if (!finalResult) {
-      finalResult = await fetchLottoByAPI(firestoreMaxDrawNo);
-    }
-
-    // 4. [3순위] smarPage HTML 파싱 (Fallback)
+    // 4. [2순위] smarPage HTML 파싱 (Fallback)
     if (!finalResult) {
       try {
         finalResult = await fetchFromSmarPage();
-        if (finalResult) console.log(`✅ [SmarPage] Successfully fetched drawNo: ${finalResult.drawNo}`);
+        if (finalResult) {
+          console.log(`✅ [SmarPage] Successfully fetched drawNo: ${finalResult.drawNo}`);
+          finalMode = "saved_from_smarpage";
+        }
       } catch (e) {
         console.warn(`⚠️ [SmarPage] Fallback failed:`, e.message);
       }
@@ -129,23 +143,42 @@ async function fetchLatestLotto() {
 
     // 5. 최종 결과 처리
     if (finalResult) {
-      if (finalResult.drawNo < firestoreMaxDrawNo) {
-        console.warn(`⚠️ Warning: Result drawNo (${finalResult.drawNo}) is smaller than Firestore max (${firestoreMaxDrawNo}). Skipping save.`);
-      } else {
+      // 새 데이터가 있거나 기존보다 최신인 경우 저장
+      if (finalResult.drawNo >= firestoreMaxDrawNo) {
         await lottoRef.doc(String(finalResult.drawNo)).set(finalResult, { merge: true });
-        console.log(`💾 Saved to lotto_results / docId: ${finalResult.drawNo}`);
+        console.log(`💾 Saved to lotto_results / docId: ${finalResult.drawNo} (Mode: ${finalMode})`);
 
         await db.collection('sync_status').doc('lotto').set({
           target: "lotto",
           lastStatus: "success",
           lastSuccessDrawNo: finalResult.drawNo,
           lastRunAt: FieldValue.serverTimestamp(),
-          source: "github_actions_auto"
+          source: "github_actions_auto",
+          message: `Success: ${finalMode}`
         }, { merge: true });
-        console.log(`📊 sync_status/lotto Update: SUCCESS`);
+        console.log(`📊 sync_status/lotto Update: SUCCESS (${finalMode})`);
+      } else {
+        console.warn(`⚠️ Warning: Result drawNo (${finalResult.drawNo}) is smaller than Firestore max (${firestoreMaxDrawNo}). Skipping save.`);
       }
     } else {
-      throw new Error("All lotto sync sources failed (API & SmarPage)");
+      // 새 데이터를 못 찾았을 때
+      if (isExistingValid) {
+        // 기존 데이터가 정상이라면 성공으로 간주
+        console.log(`✨ No newer draw found. Existing latest Firestore data (${firestoreMaxDrawNo}) is already valid. Ending as SUCCESS.`);
+        
+        await db.collection('sync_status').doc('lotto').set({
+          target: "lotto",
+          lastStatus: "success",
+          lastSuccessDrawNo: firestoreMaxDrawNo,
+          lastRunAt: FieldValue.serverTimestamp(),
+          source: "github_actions_auto",
+          message: "No newer draw found. Existing latest data is valid."
+        }, { merge: true });
+        console.log(`📊 sync_status/lotto Update: SUCCESS (no_new_draw_existing_valid)`);
+      } else {
+        // 기존 데이터도 없고 새 데이터도 못 찾았을 때만 에러
+        throw new Error("All sources failed AND existing Firestore latest data is missing or invalid.");
+      }
     }
 
     console.log(`⭐ Lotto sync process finished.`);
