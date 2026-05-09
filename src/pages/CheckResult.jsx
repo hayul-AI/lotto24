@@ -56,10 +56,12 @@ const CheckResult = () => {
 
     } catch (err) {
       console.error(err);
-      if (err.message.includes("등록되지 않았습니다")) {
-        setError(err.message);
-      } else if (err.message.includes("번호를 읽을 수 없습니다")) {
-        setError(err.message);
+      const msg = err.message;
+      if (msg.includes("등록되지 않았습니다") || 
+          msg.includes("번호를 읽을 수 없습니다") || 
+          msg.includes("회차/조 정보를 해석할 수 없습니다") ||
+          msg.includes("해석 규칙이 필요합니다")) {
+        setError(msg);
       } else {
         setError("결과를 확인하는 중 오류가 발생했습니다.");
       }
@@ -91,6 +93,12 @@ const CheckResult = () => {
   };
 
   const handlePensionCheck = async (parsed) => {
+    // 회차 정보가 없는 경우 (pd...s... 형식 등)
+    if (!parsed.drawNo || !parsed.group) {
+      const numbersStr = Array.isArray(parsed.numbers) ? parsed.numbers.join("") : "알 수 없음";
+      throw new Error(`연금복권 QR을 인식했습니다.\n번호: ${numbersStr}\n연금복권 QR은 인식했지만 회차/조 정보를 해석할 수 없습니다. QR 원문을 확인한 뒤 파싱 규칙을 추가해야 합니다.`);
+    }
+
     const drawNo = Number(parsed.drawNo);
     if (isNaN(drawNo) || !parsed.group || !parsed.numbers) {
       throw new Error("연금복권 번호를 읽을 수 없습니다.");
@@ -197,7 +205,28 @@ const CheckResult = () => {
       <div style={{ backgroundColor: 'white', borderRadius: '28px', padding: '32px 20px', textAlign: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
         <AlertCircle size={56} color="#F59E0B" style={{ margin: '0 auto 20px' }} />
         <h2 style={{ fontSize: '1.3rem', fontWeight: '900', color: '#1E293B', marginBottom: '12px' }}>확인 불가 안내</h2>
-        <p style={{ color: '#64748B', lineHeight: '1.6', marginBottom: '24px', fontSize: '0.95rem', fontWeight: '600' }}>{error}</p>
+        <div style={{ color: '#64748B', lineHeight: '1.6', marginBottom: '24px', fontSize: '0.95rem', fontWeight: '600', whiteSpace: 'pre-wrap' }}>
+          {error}
+        </div>
+        
+        {parsedData?.rawText && (
+          <div style={{ 
+            marginTop: '20px', padding: '12px', background: '#F8FAFC', borderRadius: '12px', 
+            border: '1px solid #E2E8F0', textAlign: 'left', marginBottom: '24px' 
+          }}>
+            <p style={{ fontSize: '0.75rem', fontWeight: '800', color: '#94A3B8', marginBottom: '8px' }}>디버그 정보 (QR 원문)</p>
+            <code style={{ fontSize: '0.7rem', color: '#475569', wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
+              {parsedData.rawText}
+            </code>
+            {parsedData.qrValue && (
+              <div style={{ marginTop: '8px', borderTop: '1px dashed #CBD5E1', paddingTop: '8px' }}>
+                <p style={{ fontSize: '0.75rem', fontWeight: '800', color: '#94A3B8', marginBottom: '4px' }}>추출된 값 (v)</p>
+                <code style={{ fontSize: '0.7rem', color: '#4F46E5' }}>{parsedData.qrValue}</code>
+              </div>
+            )}
+          </div>
+        )}
+
         <button onClick={() => navigate('/scanner')} style={{ width: '100%', padding: '16px', borderRadius: '16px', border: 'none', backgroundColor: '#2563EB', color: 'white', fontWeight: '800', fontSize: '1rem' }}>다시 스캔하기</button>
       </div>
     </div>
