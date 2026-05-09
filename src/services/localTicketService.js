@@ -43,6 +43,40 @@ export const normalizeHistoryItem = (item) => {
         ? item.result.results
         : [];
 
+  // 하위 호환성: 당첨금 정보가 없으면 재계산 시도
+  let totalPrizeAmount = item?.totalPrizeAmount ?? 0;
+  let totalPrizeLabel = item?.totalPrizeLabel ?? "";
+  let hasUnknownPrizeAmount = item?.hasUnknownPrizeAmount ?? false;
+  let winCount = item?.winCount ?? results.filter(r => (r.rank || 0) > 0).length;
+
+  if (totalPrizeAmount === 0 && totalPrizeLabel === "" && winCount > 0) {
+    const isLotto = (item?.type || item?.parsed?.type) === "lotto645";
+    
+    if (isLotto) {
+      let calcAmt = 0;
+      results.forEach(r => {
+        if (r.rank === 5) calcAmt += 5000;
+        else if (r.rank === 4) calcAmt += 50000;
+        else if (r.rank >= 1 && r.rank <= 3) {
+          if (r.prizeAmount) calcAmt += r.prizeAmount;
+          else hasUnknownPrizeAmount = true;
+        }
+      });
+      totalPrizeAmount = calcAmt;
+      if (calcAmt > 0) totalPrizeLabel = `${calcAmt.toLocaleString("ko-KR")}원`;
+      else if (hasUnknownPrizeAmount) totalPrizeLabel = "당첨금 확인 필요";
+    } else {
+      // 연금복권
+      const mainResult = results[0];
+      if (mainResult && mainResult.rank > 0) {
+        totalPrizeLabel = mainResult.prizeLabel || mainResult.prize || "";
+        const amt = Number(totalPrizeLabel.replace(/[^0-9]/g, ''));
+        if (amt > 0) totalPrizeAmount = amt;
+        else hasUnknownPrizeAmount = true;
+      }
+    }
+  }
+
   return {
     id: item?.id || `history_${Date.now()}_${Math.random().toString(36).slice(2)}`,
     type: item?.type || item?.parsed?.type || "lotto645",
@@ -53,6 +87,10 @@ export const normalizeHistoryItem = (item) => {
     games,
     results,
     topRank: Number(item?.topRank ?? 0),
+    totalPrizeAmount,
+    totalPrizeLabel,
+    hasUnknownPrizeAmount,
+    winCount,
     winningNumbers: item?.winningNumbers || item?.result?.winningNumbers || [],
     bonusNo: item?.bonusNo ?? item?.result?.bonusNo ?? null,
     parsed: item?.parsed || null,

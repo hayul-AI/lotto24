@@ -73,7 +73,10 @@ const MyTickets = () => {
           {isPension ? `${game?.group || '?'}조` : (game?.label || '-')}
         </td>
         <td style={{ ...tdStyle, color: (gameResult?.rank > 0) ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '1rem' }}>
-          {gameResult?.rank > 0 ? `${gameResult.rank}등` : '낙첨'}
+          <div>{gameResult?.rank > 0 ? `${gameResult.rank}등` : '낙첨'}</div>
+          {gameResult?.rank > 0 && gameResult.prizeLabel && (
+            <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748B', marginTop: '2px' }}>{gameResult.prizeLabel}</div>
+          )}
         </td>
         <td style={{ ...tdStyle, textAlign: 'left', padding: '12px 8px' }}>
           <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
@@ -222,6 +225,20 @@ const MyTickets = () => {
                       <Trash2 size={18} />
                     </button>
                   </div>
+
+                  {/* 당첨 요약 바 */}
+                  {record.topRank > 0 && (
+                    <div style={{ padding: '10px 18px', backgroundColor: '#FFFBEB', borderBottom: '1px solid #FEF3C7', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: '800', color: '#B45309' }}>
+                        {record.type === 'lotto645' ? `${record.games.length}게임 중 ${record.winCount}게임 당첨` : '당첨'}
+                      </span>
+                      {record.totalPrizeLabel && (
+                        <span style={{ fontSize: '0.9rem', fontWeight: '950', color: '#92400E' }}>
+                          총 {record.totalPrizeLabel}{record.hasUnknownPrizeAmount && record.totalPrizeAmount > 0 ? ' + 미확인 당첨금' : ''}
+                        </span>
+                      )}
+                    </div>
+                  )}
 
                   {/* 메인 결과표 영역 */}
                   <div 

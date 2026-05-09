@@ -9,6 +9,11 @@ import { checkPensionRank } from '../utils/checkPensionResult';
 import { normalizeHistoryItem } from '../services/localTicketService';
 import { nanoid } from 'nanoid';
 
+const formatWon = (amount) => {
+  if (amount == null || amount === 0) return "";
+  return `${Number(amount).toLocaleString("ko-KR")}원`;
+};
+
 const PENSION_PRIZE_LABELS = {
   "1등": "매월 700만원 x 20년",
   "2등": "매월 100만원 x 10년",
@@ -31,6 +36,7 @@ const CheckResult = () => {
   const [winningInfo, setWinningInfo] = useState(null);
   const [results, setResults] = useState([]);
   const [topRank, setTopRank] = useState(0);
+  const [totalPrize, setTotalPrize] = useState({ amount: 0, label: "", hasUnknown: false, winCount: 0 });
   const [debugInfo, setDebugInfo] = useState(null);
 
   const SHOW_DEBUG = import.meta.env.DEV || location.search.includes('debug=true');
@@ -101,18 +107,49 @@ const CheckResult = () => {
     
     setWinningInfo(winInfo);
     
+    let hasUnknown = false;
+    let winCount = 0;
     const gameResults = parsed.games.map(game => {
       const win = checkLottoWinning(game, winInfo);
-      return { ...game, ...win };
+      let prizeAmount = 0;
+      let prizeLabel = "";
+
+      if (win.rank === 5) {
+        prizeAmount = 5000;
+        prizeLabel = "5,000원";
+      } else if (win.rank === 4) {
+        prizeAmount = 50000;
+        prizeLabel = "50,000원";
+      } else if (win.rank === 3) {
+        prizeAmount = winInfo.thirdPrizeAmount || 0;
+        prizeLabel = prizeAmount > 0 ? formatWon(prizeAmount) : "당첨금 확인 필요";
+        if (!prizeAmount) hasUnknown = true;
+      } else if (win.rank === 2) {
+        prizeAmount = winInfo.secondPrizeAmount || 0;
+        prizeLabel = prizeAmount > 0 ? formatWon(prizeAmount) : "당첨금 확인 필요";
+        if (!prizeAmount) hasUnknown = true;
+      } else if (win.rank === 1) {
+        prizeAmount = winInfo.firstPrizeAmount || 0;
+        prizeLabel = prizeAmount > 0 ? formatWon(prizeAmount) : "당첨금 확인 필요";
+        if (!prizeAmount) hasUnknown = true;
+      }
+
+      if (win.rank > 0) winCount++;
+
+      return { ...game, ...win, prizeAmount, prizeLabel };
     });
+
+    const totalAmt = gameResults.reduce((sum, g) => sum + (g.prizeAmount || 0), 0);
+    const totalLabel = totalAmt > 0 ? formatWon(totalAmt) : (winCount > 0 ? "당첨금 확인 필요" : "");
 
     const validRanks = gameResults.filter(r => r.rank > 0).map(r => r.rank);
     const bestRank = validRanks.length > 0 ? Math.min(...validRanks) : 0;
     
     setResults(gameResults);
     setTopRank(bestRank);
+    setTotalPrize({ amount: totalAmt, label: totalLabel, hasUnknown, winCount });
 
-    saveToHistory(parsed, winInfo, gameResults, bestRank);
+    saveToHistory(parsed, winInfo, gameResults, bestRank, { amount: totalAmt, label: totalLabel, hasUnknown, winCount });
   };
 
   const handlePensionCheck = async (parsed) => {
@@ -224,25 +261,42 @@ const CheckResult = () => {
         { grade: Number(winGroup), winning: winNumbers.map(Number) }
       );
       
+      let prizeAmount = 0;
+      let prizeLabel = winResult.prize || "";
+      let hasUnknown = false;
+
+      // 연금복권 금액 추출 (예: "1,000원" -> 1000)
+      if (winResult.rank >= 3) {
+        prizeAmount = Number(prizeLabel.replace(/[^0-9]/g, '')) || 0;
+      } else if (winResult.rank > 0) {
+        // 1, 2등은 매월 지급이므로 금액 합산에서 제외하거나 0으로 처리 (유저 요청에 따름)
+        prizeAmount = 0;
+        hasUnknown = true; 
+      }
+
       const gameResults = [{
         label: "A",
         numbers: ticketNumbers,
         group: myGroup,
         rank: winResult.rank,
-        prize: winResult.prize,
+        prizeAmount: prizeAmount,
+        prizeLabel: prizeLabel,
         resultLabel: winResult.label
       }];
 
+      const totalLabel = winResult.rank > 0 ? prizeLabel : "";
+
       setResults(gameResults);
       setTopRank(winResult.rank);
-      saveToHistory(parsed, winInfo, gameResults, winResult.rank);
+      setTotalPrize({ amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 });
+      saveToHistory(parsed, winInfo, gameResults, winResult.rank, { amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 });
     } catch (checkErr) {
       console.error("[PENSION CHECK ERROR]", checkErr);
       throw checkErr;
     }
   };
 
-  const saveToHistory = (parsed, winInfo, gameResults, bestRank) => {
+  const saveToHistory = (parsed, winInfo, gameResults, bestRank, prizeSummary) => {
     try {
       const storageKey = "bokgwon24_qr_history";
       const historyRaw = localStorage.getItem(storageKey) || "[]";
@@ -262,6 +316,10 @@ const CheckResult = () => {
         bonusNo: winInfo?.bonusNo,
         results: gameResults,
         topRank: bestRank,
+        totalPrizeAmount: prizeSummary?.amount || 0,
+        totalPrizeLabel: prizeSummary?.label || "",
+        hasUnknownPrizeAmount: prizeSummary?.hasUnknown || false,
+        winCount: prizeSummary?.winCount || 0,
         checkedAt: new Date().toISOString()
       });
 
@@ -442,24 +500,31 @@ const CheckResult = () => {
                 <>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <Trophy size={24} color="#F59E0B" />
-                    <h2 style={{ fontSize: '1.05rem', fontWeight: '950', color: '#92400E' }}>
-                      {parsedData?.type === 'pension720' ? (results[0]?.resultLabel || `${topRank}등`) : `${topRank}등`} 당첨! 축하합니다
-                    </h2>
+                    <div style={{ textAlign: 'left' }}>
+                      <h2 style={{ fontSize: '1.05rem', fontWeight: '950', color: '#92400E' }}>
+                        {parsedData?.type === 'pension720' ? (results[0]?.resultLabel || `${topRank}등`) : `${topRank}등`} 당첨! 축하합니다
+                      </h2>
+                      {parsedData?.type === 'lotto645' && totalPrize.winCount > 1 && (
+                        <p style={{ fontSize: '0.8rem', color: '#B45309', fontWeight: '700' }}>총 {totalPrize.winCount}게임 당첨</p>
+                      )}
+                    </div>
                   </div>
-                  {parsedData?.type === 'pension720' && (() => {
-                    const label = results[0]?.resultLabel || `${topRank}등`;
-                    const prizeLabel = PENSION_PRIZE_LABELS[label];
-                    if (prizeLabel) {
-                      return (
-                        <div style={{ marginTop: '2px', padding: '6px 16px', backgroundColor: 'rgba(245, 158, 11, 0.15)', borderRadius: '10px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-                          <p style={{ fontSize: '1rem', fontWeight: '950', color: '#B45309' }}>
-                            당첨금: {prizeLabel}
-                          </p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  })()}
+                  
+                  {totalPrize.label && (
+                    <div style={{ 
+                      marginTop: '8px', 
+                      padding: '10px 20px', 
+                      backgroundColor: 'rgba(245, 158, 11, 0.15)', 
+                      borderRadius: '12px',
+                      border: '1px solid rgba(245, 158, 11, 0.2)'
+                    }}>
+                      <p style={{ fontSize: '0.8rem', fontWeight: '800', color: '#B45309', marginBottom: '2px' }}>총 당첨금액</p>
+                      <p style={{ fontSize: '1.2rem', fontWeight: '950', color: '#B45309' }}>
+                        {totalPrize.label}
+                        {totalPrize.hasUnknown && totalPrize.amount > 0 && <span style={{ fontSize: '0.85rem', marginLeft: '4px' }}>+ 미확인 당첨금</span>}
+                      </p>
+                    </div>
+                  )}
                 </>
               ) : (
                 <>
@@ -493,7 +558,10 @@ const CheckResult = () => {
                       {parsedData?.type === 'lotto645' ? res.label : `${res.group}조`}
                     </td>
                     <td style={{ ...tdStyle, color: res.rank > 0 ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '0.9rem' }}>
-                      {res.rank > 0 ? (res.resultLabel || res.label || `${res.rank}등`) : '낙첨'}
+                      <div>{res.rank > 0 ? (res.resultLabel || res.label || `${res.rank}등`) : '낙첨'}</div>
+                      {res.rank > 0 && res.prizeLabel && (
+                        <div style={{ fontSize: '0.7rem', fontWeight: '700', color: '#64748B', marginTop: '2px' }}>{res.prizeLabel}</div>
+                      )}
                     </td>
                     <td style={{ ...tdStyle, textAlign: 'left', padding: '10px 8px' }}>
                       <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
