@@ -72,7 +72,10 @@ const MyTickets = () => {
     const displayNumberText = isPension ? (game.numberText || record.numberText || (game.numbers ? game.numbers.join("") : "") || record.selectedNumber || "-") : "";
     
     let displayRankText = "-";
-    if (gameResult) {
+    if (isPension) {
+      // 연금복권은 record에 이미 정규화된 result가 있으면 그것을 우선 사용
+      displayRankText = record.result || game.rank || "-";
+    } else if (gameResult) {
       if (gameResult.rank > 0) {
         displayRankText = gameResult.resultLabel || gameResult.label || `${gameResult.rank}등`;
       } else if (gameResult.resultStatus === "pending") {
@@ -132,9 +135,9 @@ const MyTickets = () => {
       <tr key={game.label} style={{ borderBottom: '1px solid #F1F5F9' }}>
         {isPension ? (
           <>
+            {ResultCell}
             {LabelCell}
             {NumbersCell}
-            {ResultCell}
           </>
         ) : (
           <>
@@ -247,7 +250,7 @@ const MyTickets = () => {
                       </span>
                       {(record?.topRank ?? 0) > 0 && (
                         <span style={{ backgroundColor: '#FEF3C7', color: '#B45309', fontSize: '0.8rem', fontWeight: '900', padding: '3px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                          <Trophy size={14} /> {record.topRank}등
+                          {record.topRank}등
                         </span>
                       )}
                     </div>
@@ -290,9 +293,9 @@ const MyTickets = () => {
                         <tr style={{ backgroundColor: '#FBFCFE', borderBottom: '1.5px solid #F1F5F9' }}>
                           {record.type === 'pension720' ? (
                             <>
+                              <th style={{ ...thStyle, width: '20%' }}>결과</th>
                               <th style={{ ...thStyle, width: '15%' }}>조</th>
-                              <th style={{ ...thStyle, textAlign: 'left', width: '60%' }}>번호</th>
-                              <th style={{ ...thStyle, width: '25%' }}>결과</th>
+                              <th style={{ ...thStyle, textAlign: 'left', width: '65%' }}>번호</th>
                             </>
                           ) : (
                             <>

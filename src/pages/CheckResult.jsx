@@ -284,19 +284,34 @@ const CheckResult = () => {
         resultLabel: winResult.label
       }];
 
-      const totalLabel = winResult.rank > 0 ? prizeLabel : "";
+      const totalLabel = winResult.rank > 0 ? prizeLabel : (winResult.rank === 0 ? "낙첨" : "추첨전");
+
+      const pensionResultData = {
+        lotteryType: "pension720",
+        drawNo: parsed.drawNo,
+        resultStatus: winResult.rank > 0 ? "win" : (winResult.rank === 0 ? "lose" : "pending"),
+        rank: winResult.rank > 0 ? `${winResult.rank}등` : (winResult.rank === 0 ? "낙첨" : "추첨전"),
+        result: winResult.rank > 0 ? `${winResult.rank}등` : (winResult.rank === 0 ? "낙첨" : "추첨전"),
+        group: myGroup,
+        numberText: diagnostics.numberText,
+        numbers: ticketNumbers,
+        prizeAmount: prizeAmount,
+        prizeLabel: prizeLabel,
+        totalPrizeAmount: prizeAmount,
+        totalPrizeLabel: totalLabel
+      };
 
       setResults(gameResults);
       setTopRank(winResult.rank);
       setTotalPrize({ amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 });
-      saveToHistory(parsed, winInfo, gameResults, winResult.rank, { amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 });
+      saveToHistory(parsed, winInfo, gameResults, winResult.rank, { amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 }, pensionResultData);
     } catch (checkErr) {
       console.error("[PENSION CHECK ERROR]", checkErr);
       throw checkErr;
     }
   };
 
-  const saveToHistory = (parsed, winInfo, gameResults, bestRank, prizeSummary) => {
+  const saveToHistory = (parsed, winInfo, gameResults, bestRank, prizeSummary, extraData = null) => {
     try {
       const storageKey = "bokgwon24_qr_history";
       const historyRaw = localStorage.getItem(storageKey) || "[]";
@@ -320,7 +335,8 @@ const CheckResult = () => {
         totalPrizeLabel: prizeSummary?.label || "",
         hasUnknownPrizeAmount: prizeSummary?.hasUnknown || false,
         winCount: prizeSummary?.winCount || 0,
-        checkedAt: new Date().toISOString()
+        checkedAt: new Date().toISOString(),
+        ...(extraData || {})
       });
 
       if (!newRecord) return;
@@ -499,10 +515,9 @@ const CheckResult = () => {
               {topRank > 0 ? (
                 <>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <Trophy size={24} color="#F59E0B" />
                     <div style={{ textAlign: 'left' }}>
                       <h2 style={{ fontSize: '1.05rem', fontWeight: '950', color: '#92400E' }}>
-                        {parsedData?.type === 'pension720' ? (results[0]?.resultLabel || `${topRank}등`) : `${topRank}등`} 당첨! 축하합니다
+                        {parsedData?.type === 'pension720' ? (results[0]?.resultLabel || `${topRank}등`) : `${topRank}등`} 당첨 축하합니다
                       </h2>
                       {parsedData?.type === 'lotto645' && totalPrize.winCount > 1 && (
                         <p style={{ fontSize: '0.8rem', color: '#B45309', fontWeight: '700' }}>총 {totalPrize.winCount}게임 당첨</p>
@@ -528,7 +543,6 @@ const CheckResult = () => {
                 </>
               ) : (
                 <>
-                  <CheckCircle2 size={24} color="#94A3B8" />
                   <h2 style={{ fontSize: '1.05rem', fontWeight: '950', color: '#475569' }}>낙첨되었습니다</h2>
                 </>
               )}
@@ -548,9 +562,9 @@ const CheckResult = () => {
                 <tr>
                   {parsedData?.type === 'pension720' ? (
                     <>
+                      <th style={{ ...thStyle, width: '25%' }}>결과</th>
                       <th style={{ ...thStyle, width: '15%' }}>조</th>
                       <th style={{ ...thStyle, textAlign: 'left', width: '60%' }}>번호</th>
-                      <th style={{ ...thStyle, width: '25%' }}>결과</th>
                     </>
                   ) : (
                     <>
@@ -618,9 +632,9 @@ const CheckResult = () => {
                     <tr key={i} style={{ borderBottom: i === results.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
                       {isPension ? (
                         <>
+                          {ResultCell}
                           {LabelCell}
                           {NumbersCell}
-                          {ResultCell}
                         </>
                       ) : (
                         <>

@@ -88,8 +88,8 @@ const QRScannerPage = () => {
           isScannedRef.current = true;
           goToResult(result.decodedText);
         } else {
-          // 취소한 경우 에러 메시지 표시 (안내 화면 대신)
-          setError("스캔이 취소되었습니다.");
+          // 사용자가 취소한 경우 (X 버튼 등) 에러 없이 홈으로 이동
+          navigate("/", { replace: true });
         }
       } catch (err) {
         console.warn("Native scan error:", err);
@@ -147,6 +147,7 @@ const QRScannerPage = () => {
       scannerRef.current = null;
     }
     setShowScanner(false);
+    navigate("/", { replace: true });
   };
 
   const goHome = () => navigate("/");

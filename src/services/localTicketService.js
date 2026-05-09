@@ -91,13 +91,14 @@ export const normalizeHistoryItem = (item) => {
     totalPrizeLabel,
     hasUnknownPrizeAmount,
     winCount,
-    // 연금복권 필드 보강
+    // 연금복권 필드 보강 및 우선순위 적용
+    result: item?.result || item?.rank || (item?.resultStatus === "win" ? (item?.rank || "당첨") : (item?.resultStatus === "lose" ? "낙첨" : (item?.resultStatus === "pending" ? "추첨전" : "-"))),
     group: item?.group || item?.selectedGroup || item?.pensionGroup || "-",
     numberText: item?.numberText || item?.scannedNumberText || (Array.isArray(item?.numbers) ? item?.numbers.join("") : "") || item?.selectedNumber || "-",
     winningNumbers: item?.winningNumbers || item?.result?.winningNumbers || [],
     bonusNo: item?.bonusNo ?? item?.result?.bonusNo ?? null,
     parsed: item?.parsed || null,
-    result: item?.result || null
+    resultData: item?.result || null
   };
 };
 
