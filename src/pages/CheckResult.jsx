@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Trophy, AlertCircle, CheckCircle2, Info, Loader2, ExternalLink, Heart } from 'lucide-react';
-import { getLottoResultByDrawNo, getPensionResultByDrawNo } from '../services/lottoService';
+import { getLottoResultByDrawNo, getPensionResultByDrawNo, getPensionResultsDebug, getPensionDocStatus } from '../services/lottoService';
 import LottoBall from '../components/LottoBall';
 import { parseLotteryQr } from '../utils/qrParser';
 import { checkLottoWinning } from '../utils/checkLottoResult';
@@ -16,9 +16,9 @@ const CheckResult = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [parsedData, setParsedData] = useState(null);
-  const [winningInfo, setWinningInfo] = useState(null);
   const [results, setResults] = useState([]);
   const [topRank, setTopRank] = useState(0);
+  const [debugInfo, setDebugInfo] = useState(null);
 
   useEffect(() => {
     initCheck();
@@ -93,55 +93,93 @@ const CheckResult = () => {
   };
 
   const handlePensionCheck = async (parsed) => {
-    // 회차 정보가 없는 경우 (pd...s... 형식 등)
-    if (!parsed.drawNo || !parsed.group) {
-      const numbersStr = Array.isArray(parsed.numbers) ? parsed.numbers.join("") : "알 수 없음";
-      throw new Error(`연금복권 QR을 인식했습니다.\n번호: ${numbersStr}\n연금복권 QR은 인식했지만 회차/조 정보를 해석할 수 없습니다. QR 원문을 확인한 뒤 파싱 규칙을 추가해야 합니다.`);
+    // 디버그 정보 초기화
+    const diagnostics = {
+      rawText: parsed.rawText,
+      qrValue: parsed.qrValue,
+      leftPart: parsed.leftPart,
+      numberText: parsed.numberText,
+      candidates: [],
+      latestDocs: []
+    };
+
+    // 후보군 생성 (사용자 요청 기반)
+    const candidates = [];
+    if (parsed.leftPart && parsed.leftPart.length === 7) {
+      // 후보 A: pd120 + drawNo(3) + group(1)
+      candidates.push({ 
+        drawNo: Number(parsed.leftPart.substring(3, 6)), 
+        group: parsed.leftPart.substring(6, 7),
+        rule: "pd120 + 315 + 1"
+      });
+      // 후보 B: pd120 + drawNo(2) + group(2)
+      candidates.push({ 
+        drawNo: Number(parsed.leftPart.substring(3, 5)), 
+        group: parsed.leftPart.substring(5, 7),
+        rule: "pd120 + 31 + 51"
+      });
+      // 후보 C: pd1203 + drawNo(3)
+      candidates.push({ 
+        drawNo: Number(parsed.leftPart.substring(4, 7)), 
+        group: null,
+        rule: "pd1203 + 151"
+      });
     }
 
-    const drawNo = Number(parsed.drawNo);
-    if (isNaN(drawNo) || !parsed.group || !parsed.numbers) {
+    // 기존 파서 결과가 있다면 그것도 후보에 추가
+    if (parsed.drawNo && !candidates.some(c => c.drawNo === parsed.drawNo)) {
+      candidates.push({ drawNo: parsed.drawNo, group: parsed.group, rule: "default parser" });
+    }
+
+    // 각 후보에 대해 Firestore 존재 여부 확인
+    for (const c of candidates) {
+      const status = await getPensionDocStatus(c.drawNo);
+      c.exists = status.exists;
+      c.data = status.data;
+    }
+    diagnostics.candidates = candidates;
+
+    // 최신 문서 5개 조회
+    const latest = await getPensionResultsDebug(5);
+    diagnostics.latestDocs = latest.data || [];
+
+    setDebugInfo(diagnostics);
+
+    console.log("[PENSION QR DEBUG]", diagnostics);
+
+    // 1. 실제 존재하는 문서 찾기
+    const winnerCandidate = candidates.find(c => c.exists);
+
+    if (!winnerCandidate) {
+      throw new Error(`연금복권 QR은 인식했지만 해당 회차 결과가 등록되어 있지 않습니다.\n(조회된 후보: ${candidates.map(c => c.drawNo).join(", ")})`);
+    }
+
+    const winInfo = winnerCandidate.data;
+    setWinningInfo(winInfo);
+
+    const ticketNumbers = parsed.numbers;
+    if (!ticketNumbers || ticketNumbers.length !== 6) {
       throw new Error("연금복권 번호를 읽을 수 없습니다.");
     }
 
-    const { data: winInfo, error: fetchErr } = await getPensionResultByDrawNo(drawNo);
-    if (fetchErr || !winInfo) {
-      throw new Error(`해당 회차 연금복권 결과가 아직 등록되지 않았습니다. (제${drawNo}회)`);
-    }
-
-    setWinningInfo(winInfo);
-
-    // 연금복권 데이터 구조화 및 당첨 확인
-    const ticketNumbers = String(parsed.number).split('').map(Number);
-    const myTicket = { 
-      grade: Number(parsed.group), 
-      numbers: ticketNumbers
-    };
-    
-    // Firestore 데이터에서 당첨 번호 추출
     const winGroup = Number(winInfo.firstPrizeNumber?.group ?? 0);
     const winNumbers = Array.isArray(winInfo.firstPrizeNumber?.numbers) 
       ? winInfo.firstPrizeNumber.numbers.map(Number) 
       : [];
 
-    if (winNumbers.length !== 6) {
-      throw new Error(`제${drawNo}회 당첨번호 데이터가 불완전합니다.`);
-    }
-
-    const winResult = checkPensionRank(myTicket, { grade: winGroup, winning: winNumbers });
+    const winResult = checkPensionRank({ grade: Number(winnerCandidate.group), numbers: ticketNumbers }, { grade: winGroup, winning: winNumbers });
     
     const gameResults = [{
       label: "A",
       numbers: ticketNumbers,
-      group: Number(parsed.group),
+      group: Number(winnerCandidate.group),
       rank: winResult.rank,
       prize: winResult.prize,
-      resultLabel: winResult.label // label 대신 resultLabel로 구분 저장
+      resultLabel: winResult.label
     }];
 
     setResults(gameResults);
     setTopRank(winResult.rank);
-
     saveToHistory(parsed, winInfo, gameResults, winResult.rank);
   };
 
@@ -209,21 +247,42 @@ const CheckResult = () => {
           {error}
         </div>
         
-        {parsedData?.rawText && (
-          <div style={{ 
-            marginTop: '20px', padding: '12px', background: '#F8FAFC', borderRadius: '12px', 
-            border: '1px solid #E2E8F0', textAlign: 'left', marginBottom: '24px' 
-          }}>
-            <p style={{ fontSize: '0.75rem', fontWeight: '800', color: '#94A3B8', marginBottom: '8px' }}>디버그 정보 (QR 원문)</p>
-            <code style={{ fontSize: '0.7rem', color: '#475569', wordBreak: 'break-all', overflowWrap: 'anywhere' }}>
-              {parsedData.rawText}
-            </code>
-            {parsedData.qrValue && (
+        {/* 디버그 진단 섹션 */}
+        {debugInfo && (
+          <div style={{ textAlign: 'left', background: '#F8FAFC', borderRadius: '16px', padding: '16px', border: '1px solid #E2E8F0', marginBottom: '20px' }}>
+            <h3 style={{ fontSize: '0.85rem', fontWeight: '900', color: '#1E293B', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Info size={16} color="#2563EB" /> 연금복권 QR 분석 결과
+            </h3>
+            
+            <div style={{ fontSize: '0.75rem', color: '#475569', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div><span style={{ fontWeight: '800' }}>QR 원문:</span> <span style={{ wordBreak: 'break-all' }}>{debugInfo.rawText}</span></div>
+              <div><span style={{ fontWeight: '800' }}>v:</span> {debugInfo.qrValue}</div>
+              <div><span style={{ fontWeight: '800' }}>leftPart:</span> {debugInfo.leftPart}</div>
+              <div><span style={{ fontWeight: '800' }}>번호:</span> {debugInfo.numberText}</div>
+              
               <div style={{ marginTop: '8px', borderTop: '1px dashed #CBD5E1', paddingTop: '8px' }}>
-                <p style={{ fontSize: '0.75rem', fontWeight: '800', color: '#94A3B8', marginBottom: '4px' }}>추출된 값 (v)</p>
-                <code style={{ fontSize: '0.7rem', color: '#4F46E5' }}>{parsedData.qrValue}</code>
+                <p style={{ fontWeight: '800', marginBottom: '6px' }}>파싱 후보 및 Firestore 확인:</p>
+                {debugInfo.candidates.map((c, i) => (
+                  <div key={i} style={{ padding: '6px', background: c.exists ? '#ECFDF5' : '#FFF1F2', borderRadius: '6px', marginBottom: '4px', border: `1px solid ${c.exists ? '#10B981' : '#FECACA'}` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '800' }}>
+                      <span>제 {c.drawNo}회 ({c.group || '?'}조)</span>
+                      <span style={{ color: c.exists ? '#059669' : '#DC2626' }}>{c.exists ? '문서 있음' : '문서 없음'}</span>
+                    </div>
+                    <div style={{ fontSize: '0.65rem', color: '#64748B' }}>규칙: {c.rule}</div>
+                  </div>
+                ))}
               </div>
-            )}
+
+              <div style={{ marginTop: '8px', borderTop: '1px dashed #CBD5E1', paddingTop: '8px' }}>
+                <p style={{ fontWeight: '800', marginBottom: '6px' }}>Firestore 최신 회차 (pension_results):</p>
+                {debugInfo.latestDocs.map((d, i) => (
+                  <div key={i} style={{ fontSize: '0.7rem', color: '#64748B', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>제 {d.drawNo}회 ({d.drawDate})</span>
+                    <span>ID: {d.id}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { collection, getDocs, doc, getDoc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, writeBatch, query, orderBy, limit } from 'firebase/firestore';
 
 // 캐시 키 설정
 const CACHE_KEY_LOTTO = 'bokgwon24_lotto_cache';
@@ -248,4 +248,36 @@ export const getWinningStores = async () => {
     const snapshot = await getDocs(collection(db, "winning_stores"));
     return { data: snapshot.docs.map(d => ({ id: d.id, ...d.data() })), error: null };
   } catch (err) { return { data: [], error: err.message }; }
+};
+
+/**
+ * 연금복권 최신 회차 문서 일부 조회 (디버그용)
+ */
+export const getPensionResultsDebug = async (limitCount = 5) => {
+  try {
+    const q = query(collection(db, "pension_results"), orderBy("drawNo", "desc"), limit(limitCount));
+    const snapshot = await getDocs(q);
+    const results = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return { data: results, error: null };
+  } catch (error) {
+    console.error("getPensionResultsDebug error:", error);
+    return { data: null, error };
+  }
+};
+
+/**
+ * 특정 문서 존재 여부만 확인 (디버그용)
+ */
+export const getPensionDocStatus = async (drawNo) => {
+  try {
+    const docRef = doc(db, "pension_results", String(drawNo));
+    const docSnap = await getDoc(docRef);
+    return { 
+      exists: docSnap.exists(), 
+      drawNo: drawNo,
+      data: docSnap.exists() ? docSnap.data() : null 
+    };
+  } catch (error) {
+    return { exists: false, drawNo: drawNo, error };
+  }
 };

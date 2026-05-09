@@ -66,7 +66,6 @@ export const parseLotteryQr = (decodedText) => {
  * 예: pd1203151s269632
  */
 const parsePensionQrPdFormat = (v, rawText) => {
-  // s를 기준으로 왼쪽과 오른쪽(번호) 분리
   const match = v.match(/^pd(\d+)s(\d{6})$/i);
   
   if (match) {
@@ -81,20 +80,29 @@ const parsePensionQrPdFormat = (v, rawText) => {
       numbers
     });
 
-    // 1203151 에서 drawNo와 group 추출 시도 (가설: 120회차, 3조?)
-    // 아직 정확하지 않으므로 null 처리하되 pension720으로 분류
+    // 회차 후보들 (디버그용으로 여러 개 전달)
+    // 후보 1: pd120(prefix) + 315(drawNo) + 1(group) -> 1203151
+    let candidateDrawNo = null;
+    let candidateGroup = null;
+
+    if (leftPart.startsWith("120") && leftPart.length === 7) {
+      candidateDrawNo = Number(leftPart.substring(3, 6)); // "315"
+      candidateGroup = leftPart.substring(6, 7); // "1"
+    }
+
     return {
       type: "pension720",
-      drawNo: null,
-      group: null,
+      drawNo: candidateDrawNo,
+      group: candidateGroup,
       numbers: numbers,
       rawText,
       qrValue: v,
+      leftPart: leftPart,
+      numberText: numberText,
       reason: "pension_qr_pd_detected"
     };
   }
 
-  // 형식이 맞지 않더라도 pd로 시작하면 연금복권으로 분류
   return {
     type: "pension720",
     drawNo: null,
@@ -126,7 +134,6 @@ export const parseLottoQr = (decodedText) => {
   }
 
   if (!v || !/[a-z]/i.test(v) || v.toLowerCase().startsWith('pd') || v.toLowerCase().startsWith('p')) {
-    // pd는 연금복권 전용이므로 제외
     return { success: false, reason: "로또 QR 데이터 형식이 올바르지 않습니다.", rawQr };
   }
 
