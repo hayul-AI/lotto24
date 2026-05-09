@@ -21,6 +21,14 @@ async function fetchLatestPension() {
 
     console.log(`📊 Last known Pension Draw: ${lastSuccessfulNo}`);
 
+    // 기존 문서 존재 여부 확인
+    const existingDoc = await pensionRef.doc(String(lastSuccessfulNo)).get();
+    const exists = existingDoc.exists;
+    const oldSource = exists ? existingDoc.data().source : 'none';
+
+    console.log(`📝 Existing Document: ${exists ? 'Yes' : 'No'}`);
+    if (exists) console.log(`🔍 Previous Source: ${oldSource}`);
+
     // 현재 연금복권은 공식 API 부재로 인해 수동 업데이트가 필요함을 기록함
     // 하지만 "체크 완료" 시점의 최신 성공 회차는 유지함
     await db.collection('sync_status').doc('pension').set({
@@ -32,6 +40,7 @@ async function fetchLatestPension() {
       source: "github_actions_auto"
     }, { merge: true });
 
+    console.log(`📊 sync_status/pension Update: SUCCESS`);
     console.log(`✅ Pension status check complete. Last draw: ${lastSuccessfulNo}`);
 
   } catch (err) {

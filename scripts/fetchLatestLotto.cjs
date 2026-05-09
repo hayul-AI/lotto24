@@ -41,16 +41,27 @@ async function fetchLatestLotto() {
         const data = await response.json();
 
         if (data.returnValue === 'success' && data.drwNo) {
+          const drawNo = Number(data.drwNo);
+          console.log(`✨ Detected Draw: ${drawNo}`);
+
+          // 기존 문서 존재 여부 및 source 확인
+          const existingDoc = await lottoRef.doc(String(drawNo)).get();
+          const exists = existingDoc.exists;
+          const oldSource = exists ? existingDoc.data().source : 'none';
+          
+          console.log(`📝 Existing Document: ${exists ? 'Yes' : 'No'}`);
+          if (exists) console.log(`🔍 Previous Source: ${oldSource}`);
+
           const numbers = [data.drwtNo1, data.drwtNo2, data.drwtNo3, data.drwtNo4, data.drwtNo5, data.drwtNo6];
           if (numbers.some(n => !n) || numbers.length !== 6 || !data.bnusNo) {
-            console.warn(`⚠️ Invalid data for draw ${currentNo}, skipping.`);
+            console.warn(`⚠️ Invalid data for draw ${drawNo}, skipping.`);
             consecutiveFails++;
             currentNo++;
             continue;
           }
 
           const lottoData = {
-            drawNo: Number(data.drwNo),
+            drawNo: drawNo,
             drawDate: data.drwNoDate,
             numbers: numbers.sort((a, b) => a - b),
             bonusNo: Number(data.bnusNo),
@@ -62,11 +73,11 @@ async function fetchLatestLotto() {
             updatedAt: FieldValue.serverTimestamp()
           };
 
-          await lottoRef.doc(String(lottoData.drawNo)).set(lottoData, { merge: true });
+          await lottoRef.doc(String(drawNo)).set(lottoData, { merge: true });
           
-          console.log(`✅ Saved Lotto ${lottoData.drawNo}`);
+          console.log(`✅ Saved to collection: lotto_results / docId: ${drawNo}`);
           newFoundCount++;
-          lastSuccessfulNo = lottoData.drawNo;
+          lastSuccessfulNo = drawNo;
           consecutiveFails = 0;
         } else {
           console.log(`⏹️ No data for draw ${currentNo} (returnValue: ${data.returnValue})`);
@@ -90,6 +101,7 @@ async function fetchLatestLotto() {
       source: "github_actions_auto"
     }, { merge: true });
     
+    console.log(`📊 sync_status/lotto Update: SUCCESS`);
     console.log(`⭐ Lotto sync complete. Last successful draw: ${lastSuccessfulNo}`);
 
   } catch (err) {
