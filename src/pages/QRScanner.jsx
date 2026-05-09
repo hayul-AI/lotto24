@@ -22,9 +22,10 @@ const QRScannerPage = () => {
   const [urlInput, setUrlInput] = useState("");
   const [error, setError] = useState("");
   const [showScanner, setShowScanner] = useState(false);
-  const [lastFailedQr, setLastFailedQr] = useState("");
+  const [debugRawQr, setDebugRawQr] = useState("");
+  const [parseError, setParseError] = useState(null);
 
-  // 개발 디버그 모드 (출시 전 false로 변경하거나 환경변수 처리 가능)
+  // 개발 디버그 모드
   const DEV_MODE = true;
   
   // 디버그용 상태
@@ -85,60 +86,61 @@ const QRScannerPage = () => {
 
   // ── 결과 페이지 이동 ──
   const goToResult = (rawText) => {
-    // 1. 무조건 로그 먼저 출력
+    // 1. 무조건 로그 먼저 출력 (어떤 조건문으로도 return 하지 않음)
     console.log("[QR SCAN RAW]", rawText);
     console.log("[QR SCAN RAW TYPE]", typeof rawText);
     console.log("[QR SCAN RAW LENGTH]", rawText?.length);
 
-    // 2. 유효성 체크
+    // 2. State 저장
+    setDebugRawQr(String(rawText || ""));
+    setParseError(null);
+
+    // 3. 유효성 체크
     if (!rawText || typeof rawText !== "string") {
-      alert("QR 주소를 읽을 수 없습니다.");
+      setParseError({ title: "QR 주소를 읽을 수 없습니다.", raw: rawText });
       isDecodedRef.current = false;
       if (!isNative) startScanner();
       return;
     }
 
-    // 3. 파싱 시도
+    // 4. 파싱 시도
     const parsed = parseLotteryQr(rawText);
     console.log("[QR PARSED RESULT]", parsed);
 
-    // 4. 결과에 따른 분기
+    // 5. 결과에 따른 분기
     if (parsed && parsed.type !== "unknown") {
       localStorage.setItem("bokgwon24_last_qr_raw", rawText);
       setDebug(prev => ({ ...prev, lastText: rawText }));
-      setLastFailedQr(""); // 성공 시 초기화
       
       if (navigator.vibrate) navigator.vibrate(100);
       
       // 로또 또는 연금복권 결과 페이지로 이동
       navigate("/qr-result", { state: { rawQr: rawText, parsed }, replace: true });
     } else {
-      // 5. 실패 로그 (unknown 처리)
+      // 6. unknown 처리 시 로그 추가
       console.warn("[QR UNKNOWN FORMAT]", {
         rawText,
         parsed,
-        includesDhlottery: rawText.includes("dhlottery"),
-        includesQrDomain: rawText.includes("qr.dhlottery"),
-        includes720: rawText.includes("720"),
-        includesPension: rawText.toLowerCase().includes("pension"),
-        includesLotto: rawText.toLowerCase().includes("lotto")
+        includesDhlottery: String(rawText).includes("dhlottery"),
+        includesQrDomain: String(rawText).includes("qr.dhlottery"),
+        includes720: String(rawText).includes("720"),
+        includesPension: String(rawText).toLowerCase().includes("pension"),
+        includesLotto: String(rawText).toLowerCase().includes("lotto")
       });
 
-      // 디버그용으로 원문 저장
-      setLastFailedQr(rawText);
-
-      // 6. 에러 메시지 처리
-      let errorMsg = "지원하지 않는 QR 형식입니다.";
+      // 화면에 에러 표시
+      let errorTitle = "지원하지 않는 QR 형식입니다.";
       if (parsed?.reason === "연금복권 번호를 읽을 수 없습니다.") {
-        errorMsg = "연금복권 번호를 읽을 수 없습니다.";
+        errorTitle = "연금복권 번호를 읽을 수 없습니다.";
       }
       
-      alert(errorMsg);
+      setParseError({ title: errorTitle, raw: rawText });
 
       // 다시 스캔할 수 있도록 상태 초기화
       isDecodedRef.current = false;
+      // 웹 스캐너의 경우 에러 화면을 보여주기 위해 스캐너 일시 정지
       if (!isNative) {
-        startScanner();
+        stopScanner();
       }
     }
   };
@@ -311,8 +313,46 @@ const QRScannerPage = () => {
         <h1 style={{ flex: 1, textAlign: "center", fontSize: "1.1rem", fontWeight: 800, color: "#1E293B", marginRight: 28 }}>QR 당첨 확인</h1>
       </header>
 
-      <main style={{ flex: 1, padding: "24px 20px", display: "flex", flexDirection: "column" }}>
-        {error ? (
+      <main style={{ flex: 1, padding: "24px 20px", display: "flex", flexDirection: "column", paddingBottom: "100px" }}>
+        {parseError ? (
+          <div style={{ textAlign: "center", padding: "20px 0" }}>
+            <AlertCircle size={48} color="#EF4444" style={{ margin: "0 auto 16px" }} />
+            <h2 style={{ color: "#1E293B", fontWeight: "900", fontSize: "1.2rem", marginBottom: "12px" }}>{parseError.title}</h2>
+            
+            <div style={{ 
+              background: "#fff", padding: "16px", borderRadius: "16px", border: "1px solid #E2E8F0", 
+              textAlign: "left", marginBottom: "20px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
+            }}>
+              <p style={{ fontSize: "0.85rem", color: "#64748B", fontWeight: "800", marginBottom: "8px" }}>개발용 QR 원문 확인</p>
+              <p style={{ fontSize: "0.75rem", color: "#94A3B8", marginBottom: "12px", lineHeight: "1.4" }}>
+                이 값이 있어야 연금복권 QR 파싱 규칙을 정확히 추가할 수 있습니다. 아래 원문을 복사해서 개발자에게 전달해주세요.
+              </p>
+              <div style={{ 
+                background: "#F8FAFC", padding: "12px", borderRadius: "8px", border: "1px solid #CBD5E1",
+                fontSize: "0.7rem", color: "#1E293B", wordBreak: "break-all", overflowWrap: "anywhere",
+                fontFamily: "monospace", minHeight: "60px"
+              }}>
+                {parseError.raw}
+              </div>
+              <button 
+                onClick={() => {
+                  navigator.clipboard.writeText(parseError.raw);
+                  alert("QR 원문이 복사되었습니다.");
+                }}
+                style={{ 
+                  width: "100%", marginTop: "12px", padding: "10px", borderRadius: "8px", 
+                  border: "none", background: "#475569", color: "#fff", fontWeight: "800", fontSize: "0.85rem"
+                }}
+              >
+                QR 원문 복사
+              </button>
+            </div>
+
+            <button onClick={() => { setParseError(null); startScanner(); }} style={ctaBtnStyle}>
+              다시 스캔하기
+            </button>
+          </div>
+        ) : error ? (
           <div style={{ textAlign: "center", padding: "40px 20px" }}>
             <AlertCircle size={48} color="#EF4444" style={{ margin: "0 auto 20px" }} />
             <p style={{ color: "#1E293B", fontWeight: "900", fontSize: "1.1rem", marginBottom: "8px" }}>카메라 연결 오류</p>
@@ -322,7 +362,7 @@ const QRScannerPage = () => {
             <button onClick={() => { setError(""); startScanner(); }} style={ctaBtnStyle}>카메라 다시 켜기</button>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "20px", opacity: 0.6 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
             <div style={{ background: "#EEF2FF", borderRadius: 20, padding: "20px", border: "1px solid #C7D2FE" }}>
               <p style={{ fontWeight: 900, color: "#312E81", fontSize: "1rem", marginBottom: 12 }}>📱 당첨 확인 방법</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -335,44 +375,35 @@ const QRScannerPage = () => {
         )}
 
         <div style={{ marginTop: "auto" }}>
-          {/* 개발용 디버그 출력 */}
-          {DEV_MODE && lastFailedQr && (
-            <div style={{ 
-              marginBottom: "20px", padding: "12px", background: "#FEF2F2", border: "1px solid #FECACA", 
-              borderRadius: "12px", fontSize: "0.75rem", color: "#991B1B", wordBreak: "break-all" 
-            }}>
-              <p style={{ fontWeight: "900", marginBottom: "4px" }}>⚠️ 디버그: 인식 실패 QR 원문</p>
-              <code style={{ display: "block", background: "#fff", padding: "8px", borderRadius: "6px", border: "1px solid #FEE2E2" }}>
-                {lastFailedQr}
-              </code>
-              <p style={{ marginTop: "6px", fontSize: "0.7rem", color: "#B91C1C" }}>* 위 텍스트를 개발자에게 알려주세요.</p>
-            </div>
+          {/* 하단 보조 도구들 (파싱 에러가 없을 때만 표시) */}
+          {!parseError && (
+            <>
+              <p style={{ textAlign: "center", color: "#94A3B8", fontSize: "0.8rem", fontWeight: "700", marginBottom: "16px" }}>
+                카메라 인식이 안 될 경우 아래 방법을 이용하세요
+              </p>
+              
+              <button onClick={handlePaste} style={{ ...subBtnStyle, marginBottom: "12px", background: "#F8FAFC" }}>
+                <Clipboard size={18} /> 복사한 주소 붙여넣기
+              </button>
+
+              <div style={{ display: "flex", gap: 10 }}>
+                <label style={{ ...subBtnStyle, flex: 1 }}>
+                  <input type="file" accept="image/*" capture="environment" onChange={handlePhoto} style={{ display: "none" }} />
+                  <ImageIcon size={18} /> 사진 불러오기
+                </label>
+                <div style={{ flex: 1, display: "flex", gap: "8px" }}>
+                  <input
+                    type="text"
+                    value={urlInput}
+                    onChange={(e) => setUrlInput(e.target.value)}
+                    placeholder="주소 직접 입력"
+                    style={{ ...inputStyle, padding: "10px" }}
+                  />
+                  <button onClick={handleSubmit} style={okBtnStyle}>확인</button>
+                </div>
+              </div>
+            </>
           )}
-
-          <p style={{ textAlign: "center", color: "#94A3B8", fontSize: "0.8rem", fontWeight: "700", marginBottom: "16px" }}>
-            카메라 인식이 안 될 경우 아래 방법을 이용하세요
-          </p>
-          
-          <button onClick={handlePaste} style={{ ...subBtnStyle, marginBottom: "12px", background: "#F8FAFC" }}>
-            <Clipboard size={18} /> 복사한 주소 붙여넣기
-          </button>
-
-          <div style={{ display: "flex", gap: 10 }}>
-            <label style={{ ...subBtnStyle, flex: 1 }}>
-              <input type="file" accept="image/*" capture="environment" onChange={handlePhoto} style={{ display: "none" }} />
-              <ImageIcon size={18} /> 사진 불러오기
-            </label>
-            <div style={{ flex: 1, display: "flex", gap: "8px" }}>
-              <input
-                type="text"
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                placeholder="주소 직접 입력"
-                style={{ ...inputStyle, padding: "10px" }}
-              />
-              <button onClick={handleSubmit} style={okBtnStyle}>확인</button>
-            </div>
-          </div>
         </div>
       </main>
     </div>
