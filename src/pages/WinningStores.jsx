@@ -27,7 +27,7 @@ const WinningStores = () => {
   return (
     <div className="container fade-in" style={{ padding: '24px 20px 140px' }}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '32px' }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)' }}>
+        <button onClick={() => navigate("/")} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)' }}>
           <ChevronLeft size={24} />
         </button>
         <h2 className="title-lg" style={{ flex: 1, textAlign: 'center', marginRight: '24px' }}>1등 배출 명당</h2>

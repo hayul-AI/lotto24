@@ -352,7 +352,7 @@ const Admin = () => {
     <div className="container page-transition" style={{ paddingBottom: '120px' }}>
       <header className="flex-between mb-24">
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><ChevronLeft size={24} /></button>
+          <button onClick={() => navigate("/")} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><ChevronLeft size={24} /></button>
           <h1 className="title-md">데이터 마스터 파이프라인</h1>
         </div>
         <button onClick={loadStats} disabled={loading} className="btn-sub"><RefreshCw size={16} className={loading ? 'animate-spin' : ''} /></button>

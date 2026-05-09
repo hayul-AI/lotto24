@@ -148,7 +148,7 @@ const ManualNumbers = () => {
   return (
     <div className="page-transition" style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', paddingBottom: '120px' }}>
       <header style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '12px', backgroundColor: 'white', borderBottom: '1px solid #F1F5F9', position: 'sticky', top: 0, zIndex: 100 }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none' }}><ChevronLeft size={24} /></button>
+        <button onClick={() => navigate("/")} style={{ background: 'none', border: 'none' }}><ChevronLeft size={24} /></button>
         <h1 className="title-md">수동번호 보관함</h1>
       </header>
 

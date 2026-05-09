@@ -114,10 +114,7 @@ const MyTickets = () => {
       <header style={{ backgroundColor: 'white', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #E2E8F0', position: 'sticky', top: 0, zIndex: 10 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button 
-            onClick={() => {
-              if (window.history.length > 1) navigate(-1);
-              else navigate("/", { replace: true });
-            }} 
+            onClick={() => navigate("/")} 
             style={{ background: 'none', border: 'none', color: '#1E293B', padding: '4px' }}
           >
             <ChevronLeft size={24} />

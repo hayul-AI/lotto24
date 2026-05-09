@@ -8,7 +8,7 @@ const Guide = () => {
   return (
     <div className="page-transition" style={{ backgroundColor: '#F8FAFC', minHeight: '100vh', paddingBottom: '100px' }}>
       <header style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', backgroundColor: 'white', borderBottom: '1px solid #F1F5F9', position: 'sticky', top: 0, zIndex: 10 }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '12px' }}>
+        <button onClick={() => navigate("/")} style={{ background: 'none', border: 'none', cursor: 'pointer', marginRight: '12px' }}>
           <ChevronLeft size={24} color="#0F172A" />
         </button>
         <h1 className="title-md">당첨자 가이드</h1>

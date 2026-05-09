@@ -298,7 +298,7 @@ const CheckResult = () => {
     return (
       <div style={{ minHeight: '100vh', backgroundColor: '#F1F5F9', padding: '20px' }}>
         <header style={{ padding: '12px 0', marginBottom: '16px' }}>
-          <button onClick={() => navigate(-1)} style={backBtnStyle}><ChevronLeft size={24} /></button>
+          <button onClick={() => navigate("/")} style={backBtnStyle}><ChevronLeft size={24} /></button>
         </header>
         <div style={{ backgroundColor: 'white', borderRadius: '28px', padding: '32px 20px', textAlign: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: '950', color: '#1E293B', marginBottom: '16px' }}>추첨전입니다</h2>
@@ -354,7 +354,7 @@ const CheckResult = () => {
   if (error) return (
     <div style={{ minHeight: '100vh', backgroundColor: '#F8FAFC', padding: '20px' }}>
       <header style={{ padding: '12px 0', marginBottom: '16px' }}>
-        <button onClick={() => navigate(-1)} style={backBtnStyle}><ChevronLeft size={24} /></button>
+        <button onClick={() => navigate("/")} style={backBtnStyle}><ChevronLeft size={24} /></button>
       </header>
       <div style={{ backgroundColor: 'white', borderRadius: '28px', padding: '32px 20px', textAlign: 'center', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
         <AlertCircle size={56} color="#EF4444" style={{ margin: '0 auto 20px' }} />
@@ -396,7 +396,7 @@ const CheckResult = () => {
   return (
     <div style={{ backgroundColor: '#F1F5F9', minHeight: '100vh', paddingBottom: '100px' }}>
       <header style={{ backgroundColor: 'white', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px', position: 'sticky', top: 0, zIndex: 10, borderBottom: '1px solid #E2E8F0' }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', padding: '4px' }}><ChevronLeft size={24} color="#1E293B" /></button>
+        <button onClick={() => navigate("/")} style={{ background: 'none', border: 'none', padding: '4px' }}><ChevronLeft size={24} color="#1E293B" /></button>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
           <h1 style={{ fontSize: '0.95rem', fontWeight: '900', color: '#1E293B' }}>
             {parsedData?.type === 'lotto645' ? '로또 6/45' : '연금복권 720+'}
@@ -533,7 +533,7 @@ const CheckResult = () => {
           </div>
 
           <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
-            <button onClick={() => navigate('/scanner')} style={{ flex: 1, padding: '14px', borderRadius: '14px', border: '1px solid #E2E8F0', backgroundColor: 'white', color: '#1E293B', fontWeight: '800', fontSize: '0.9rem' }}>
+            <button onClick={() => navigate('/scanner', { replace: true })} style={{ flex: 1, padding: '14px', borderRadius: '14px', border: '1px solid #E2E8F0', backgroundColor: 'white', color: '#1E293B', fontWeight: '800', fontSize: '0.9rem' }}>
               다른 복권 스캔
             </button>
             <button onClick={() => navigate('/')} style={{ flex: 1, padding: '14px', borderRadius: '14px', border: 'none', backgroundColor: '#F1F5F9', color: '#64748B', fontWeight: '800', fontSize: '0.9rem' }}>

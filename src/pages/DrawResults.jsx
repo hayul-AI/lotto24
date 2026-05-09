@@ -53,7 +53,7 @@ const DrawResults = () => {
   return (
     <div className="container page-transition" style={{ paddingBottom: '140px' }}>
       <header className="flex-between mb-24">
-        <button onClick={() => navigate(-1)} style={circleBtn}><ChevronLeft size={24} /></button>
+        <button onClick={() => navigate("/")} style={circleBtn}><ChevronLeft size={24} /></button>
         <h1 className="title-md">회차별 당첨 결과</h1>
         <div style={{ width: 48 }} />
       </header>

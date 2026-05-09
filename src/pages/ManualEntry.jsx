@@ -44,7 +44,7 @@ const ManualEntry = () => {
   return (
     <div className="container fade-in" style={{ padding: '24px 20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', marginBottom: '32px' }}>
-        <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)' }}>
+        <button onClick={() => navigate("/")} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-main)' }}>
           <ArrowLeft size={24} />
         </button>
         <h2 style={{ flex: 1, textAlign: 'center', fontSize: '1.2rem', fontWeight: '900', marginRight: '24px' }}>수동 번호 입력</h2>
