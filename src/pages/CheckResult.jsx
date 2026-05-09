@@ -103,84 +103,131 @@ const CheckResult = () => {
       latestDocs: []
     };
 
-    // 후보군 생성 (사용자 요청 기반)
+    // 후보군 생성
     const candidates = [];
-    if (parsed.leftPart && parsed.leftPart.length === 7) {
-      // 후보 A: pd120 + drawNo(3) + group(1)
-      candidates.push({ 
-        drawNo: Number(parsed.leftPart.substring(3, 6)), 
-        group: parsed.leftPart.substring(6, 7),
-        rule: "pd120 + 315 + 1"
+    
+    // 1. pd120 확정 규칙 최우선
+    if (parsed.reason === "pension_pd120_format") {
+      candidates.push({
+        drawNo: parsed.drawNo,
+        group: parsed.group,
+        rule: `pd120 + ${parsed.drawNo} + ${parsed.group}`,
+        isValid: true
       });
-      // 후보 B: pd120 + drawNo(2) + group(2)
-      candidates.push({ 
-        drawNo: Number(parsed.leftPart.substring(3, 5)), 
-        group: parsed.leftPart.substring(5, 7),
-        rule: "pd120 + 31 + 51"
-      });
-      // 후보 C: pd1203 + drawNo(3)
-      candidates.push({ 
-        drawNo: Number(parsed.leftPart.substring(4, 7)), 
-        group: null,
-        rule: "pd1203 + 151"
-      });
+    } else if (parsed.leftPart) {
+      // 2. 기타 pd... 후보군 (보조 진단용)
+      const lp = parsed.leftPart;
+      if (lp.length === 7 && lp.startsWith("120")) {
+        // 후보 A: pd120 + drawNo(3) + group(1)
+        const d3 = Number(lp.substring(3, 6));
+        const g1 = lp.substring(6, 7);
+        candidates.push({ 
+          drawNo: d3, 
+          group: g1, 
+          rule: `pd120 + ${d3} + ${g1}`,
+          isValid: Number(g1) >= 1 && Number(g1) <= 5
+        });
+
+        // 후보 B: pd120 + drawNo(2) + group(2) -> 비유효 그룹 케이스 포함
+        const d2 = Number(lp.substring(3, 5));
+        const g2 = lp.substring(5, 7);
+        candidates.push({ 
+          drawNo: d2, 
+          group: g2, 
+          rule: `pd120 + ${d2} + ${g2}`,
+          isValid: Number(g2) >= 1 && Number(g2) <= 5
+        });
+      }
     }
 
-    // 기존 파서 결과가 있다면 그것도 후보에 추가
+    // 기존 파서 결과 보완
     if (parsed.drawNo && !candidates.some(c => c.drawNo === parsed.drawNo)) {
-      candidates.push({ drawNo: parsed.drawNo, group: parsed.group, rule: "default parser" });
+      candidates.push({ 
+        drawNo: parsed.drawNo, 
+        group: parsed.group, 
+        rule: "기존 파서 규칙",
+        isValid: Number(parsed.group) >= 1 && Number(parsed.group) <= 5
+      });
     }
 
-    // 각 후보에 대해 Firestore 존재 여부 확인
+    // 유효한 후보들에 대해 Firestore 존재 여부 확인
     for (const c of candidates) {
-      const status = await getPensionDocStatus(c.drawNo);
-      c.exists = status.exists;
-      c.data = status.data;
+      if (c.isValid) {
+        const status = await getPensionDocStatus(c.drawNo);
+        c.exists = status.exists;
+        c.data = status.data;
+      } else {
+        c.exists = false;
+        c.data = null;
+      }
     }
     diagnostics.candidates = candidates;
 
-    // 최신 문서 5개 조회
+    // 최신 문서 5개 조회 (진단용)
     const latest = await getPensionResultsDebug(5);
     diagnostics.latestDocs = latest.data || [];
-
     setDebugInfo(diagnostics);
 
-    console.log("[PENSION QR DEBUG]", diagnostics);
+    try {
+      // 3. 실제 결과 조회 대상 선정 (유효한 그룹 + 문서 존재)
+      const winnerCandidate = candidates.find(c => c.isValid && c.exists);
 
-    // 1. 실제 존재하는 문서 찾기
-    const winnerCandidate = candidates.find(c => c.exists);
+      if (!winnerCandidate) {
+        const validButNoDoc = candidates.find(c => c.isValid);
+        if (validButNoDoc) {
+          throw new Error(`연금복권 QR은 인식했지만 해당 회차 결과가 아직 등록되지 않았습니다.\n(조회 회차: 제${validButNoDoc.drawNo}회)`);
+        }
+        throw new Error(`연금복권 QR 인식 결과, 유효한 회차/조 정보를 찾을 수 없습니다.\n(진단 정보를 확인해주세요)`);
+      }
 
-    if (!winnerCandidate) {
-      throw new Error(`연금복권 QR은 인식했지만 해당 회차 결과가 등록되어 있지 않습니다.\n(조회된 후보: ${candidates.map(c => c.drawNo).join(", ")})`);
+      // 4. 당첨 확인 진행
+      const winInfo = winnerCandidate.data;
+      const ticketNumbers = parsed.numbers;
+
+      if (!winInfo || !ticketNumbers || ticketNumbers.length !== 6) {
+        console.error("[PENSION CHECK ERROR - DATA INCOMPLETE]", { parsed, winnerCandidate });
+        throw new Error("연금복권 당첨 정보를 확인할 수 없습니다 (데이터 불완전).");
+      }
+
+      // 당첨 정보 설정 (상단 헤더 등에서 사용)
+      setWinningInfo(winInfo);
+
+      // 당첨 번호 정규화 (문자열 비교용)
+      const winGroup = String(winInfo.firstPrizeNumber?.group ?? "0");
+      const winNumbers = Array.isArray(winInfo.firstPrizeNumber?.numbers) 
+        ? winInfo.firstPrizeNumber.numbers.map(String) 
+        : [];
+
+      // 내 번호 정규화
+      const myGroup = String(winnerCandidate.group);
+      const myNumbers = ticketNumbers.map(String);
+
+      // 당첨 등수 확인
+      const winResult = checkPensionRank(
+        { grade: Number(myGroup), numbers: myNumbers.map(Number) }, 
+        { grade: Number(winGroup), winning: winNumbers.map(Number) }
+      );
+      
+      const gameResults = [{
+        label: "A",
+        numbers: ticketNumbers,
+        group: myGroup,
+        rank: winResult.rank,
+        prize: winResult.prize,
+        resultLabel: winResult.label
+      }];
+
+      setResults(gameResults);
+      setTopRank(winResult.rank);
+      saveToHistory(parsed, winInfo, gameResults, winResult.rank);
+    } catch (checkErr) {
+      console.error("[PENSION CHECK ERROR]", {
+        parsed,
+        candidates,
+        error: checkErr
+      });
+      throw checkErr;
     }
-
-    const winInfo = winnerCandidate.data;
-    setWinningInfo(winInfo);
-
-    const ticketNumbers = parsed.numbers;
-    if (!ticketNumbers || ticketNumbers.length !== 6) {
-      throw new Error("연금복권 번호를 읽을 수 없습니다.");
-    }
-
-    const winGroup = Number(winInfo.firstPrizeNumber?.group ?? 0);
-    const winNumbers = Array.isArray(winInfo.firstPrizeNumber?.numbers) 
-      ? winInfo.firstPrizeNumber.numbers.map(Number) 
-      : [];
-
-    const winResult = checkPensionRank({ grade: Number(winnerCandidate.group), numbers: ticketNumbers }, { grade: winGroup, winning: winNumbers });
-    
-    const gameResults = [{
-      label: "A",
-      numbers: ticketNumbers,
-      group: Number(winnerCandidate.group),
-      rank: winResult.rank,
-      prize: winResult.prize,
-      resultLabel: winResult.label
-    }];
-
-    setResults(gameResults);
-    setTopRank(winResult.rank);
-    saveToHistory(parsed, winInfo, gameResults, winResult.rank);
   };
 
   const saveToHistory = (parsed, winInfo, gameResults, bestRank) => {
@@ -263,10 +310,20 @@ const CheckResult = () => {
               <div style={{ marginTop: '8px', borderTop: '1px dashed #CBD5E1', paddingTop: '8px' }}>
                 <p style={{ fontWeight: '800', marginBottom: '6px' }}>파싱 후보 및 Firestore 확인:</p>
                 {debugInfo.candidates.map((c, i) => (
-                  <div key={i} style={{ padding: '6px', background: c.exists ? '#ECFDF5' : '#FFF1F2', borderRadius: '6px', marginBottom: '4px', border: `1px solid ${c.exists ? '#10B981' : '#FECACA'}` }}>
+                  <div key={i} style={{ 
+                    padding: '6px', 
+                    background: c.exists ? '#ECFDF5' : (c.isValid ? '#FFF1F2' : '#F1F5F9'), 
+                    borderRadius: '6px', 
+                    marginBottom: '4px', 
+                    border: `1px solid ${c.exists ? '#10B981' : (c.isValid ? '#FECACA' : '#E2E8F0')}` 
+                  }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '800' }}>
                       <span>제 {c.drawNo}회 ({c.group || '?'}조)</span>
-                      <span style={{ color: c.exists ? '#059669' : '#DC2626' }}>{c.exists ? '문서 있음' : '문서 없음'}</span>
+                      {!c.isValid ? (
+                        <span style={{ color: '#94A3B8' }}>유효하지 않은 조</span>
+                      ) : (
+                        <span style={{ color: c.exists ? '#059669' : '#DC2626' }}>{c.exists ? '문서 있음' : '문서 없음'}</span>
+                      )}
                     </div>
                     <div style={{ fontSize: '0.65rem', color: '#64748B' }}>규칙: {c.rule}</div>
                   </div>

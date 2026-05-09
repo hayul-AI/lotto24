@@ -23,13 +23,37 @@ export const parseLotteryQr = (decodedText) => {
     console.warn("[QR URL PARSE FAILED]", e);
   }
 
-  // 2. 신규 연금복권 형식 감지 (v가 pd로 시작하는 경우)
+  // 2. 신규 연금복권 형식 감지 (v가 pd120으로 시작하는 경우 - 최우선)
+  if (url && url.hostname.includes("qr.dhlottery.co.kr") && v && v.toLowerCase().startsWith("pd120")) {
+    const pdMatch = v.match(/^pd120(\d+)([1-5])s(\d{6})$/i);
+    if (pdMatch) {
+      const drawNo = Number(pdMatch[1]);
+      const group = pdMatch[2];
+      const numberText = pdMatch[3];
+      const numbers = numberText.split("").map(Number);
+
+      console.log("[PENSION QR PD120 PARSED]", { drawNo, group, numbers });
+
+      return {
+        type: "pension720",
+        drawNo,
+        group,
+        numbers,
+        numberText,
+        rawText,
+        qrValue: v,
+        reason: "pension_pd120_format"
+      };
+    }
+  }
+
+  // 3. 기타 연금복권 형식 감지 (v가 pd로 시작하지만 위 패턴이 아닌 경우 등)
   if (url && url.hostname.includes("qr.dhlottery.co.kr") && v && v.toLowerCase().startsWith("pd")) {
-    console.log("[PENSION QR DETECTED]", { v, reason: "v starts with pd" });
+    console.log("[PENSION QR DETECTED]", { v, reason: "v starts with pd (unknown subformat)" });
     return parsePensionQrPdFormat(v, rawText);
   }
 
-  // 3. 기존 연금복권 패턴 감지
+  // 4. 기존 연금복권 패턴 감지
   const isPensionPattern = /pension|720|연금|l720|game720|lotto720|gr=|jo=|drwNo=|drawNo=/i.test(rawText);
   if (isPensionPattern || v.toLowerCase().startsWith('p')) {
     const pensionResult = parsePensionQr(rawText);
@@ -38,13 +62,13 @@ export const parseLotteryQr = (decodedText) => {
     }
   }
 
-  // 4. 로또 6/45 시도
+  // 5. 로또 6/45 시도
   const lottoResult = parseLottoQr(rawText);
   if (lottoResult.success) {
     return { ...lottoResult.data, rawText };
   }
 
-  // 5. 모든 시도 실패 시 unknown 반환
+  // 6. 모든 시도 실패 시 unknown 반환
   console.warn("[QR UNKNOWN FORMAT]", {
     rawText,
     parsedUrl: url?.href || null,
@@ -62,44 +86,26 @@ export const parseLotteryQr = (decodedText) => {
 };
 
 /**
- * v=pd...s... 형식의 연금복권 파싱
- * 예: pd1203151s269632
+ * v=pd...s... 형식의 연금복권 파싱 (하위 호환 및 디버그용)
  */
 const parsePensionQrPdFormat = (v, rawText) => {
   const match = v.match(/^pd(\d+)s(\d{6})$/i);
   
   if (match) {
-    const leftPart = match[1]; // "1203151"
-    const numberText = match[2]; // "269632"
+    const leftPart = match[1]; 
+    const numberText = match[2];
     const numbers = numberText.split("").map(Number);
-
-    console.log("[PENSION QR VALUE PARSED]", {
-      v,
-      leftPart,
-      numberText,
-      numbers
-    });
-
-    // 회차 후보들 (디버그용으로 여러 개 전달)
-    // 후보 1: pd120(prefix) + 315(drawNo) + 1(group) -> 1203151
-    let candidateDrawNo = null;
-    let candidateGroup = null;
-
-    if (leftPart.startsWith("120") && leftPart.length === 7) {
-      candidateDrawNo = Number(leftPart.substring(3, 6)); // "315"
-      candidateGroup = leftPart.substring(6, 7); // "1"
-    }
 
     return {
       type: "pension720",
-      drawNo: candidateDrawNo,
-      group: candidateGroup,
+      drawNo: null, // pd120 패턴이 아니면 회차를 확정하지 않음
+      group: null,
       numbers: numbers,
       rawText,
       qrValue: v,
       leftPart: leftPart,
       numberText: numberText,
-      reason: "pension_qr_pd_detected"
+      reason: "pension_qr_pd_detected_generic"
     };
   }
 
@@ -224,10 +230,10 @@ export const parsePensionQr = (decodedText) => {
     const drawNoStr = workV.substring(0, workV.length - 7);
 
     const numberArr = numberStr.split('').map(Number);
-    const group = Number(groupStr);
+    const groupNum = Number(groupStr);
     const drawNo = Number(drawNoStr);
 
-    if (numberArr.length === 6 && !isNaN(drawNo) && !isNaN(group)) {
+    if (numberArr.length === 6 && !isNaN(drawNo) && groupNum >= 1 && groupNum <= 5) {
       return {
         success: true,
         data: {
