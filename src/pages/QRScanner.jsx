@@ -22,6 +22,10 @@ const QRScannerPage = () => {
   const [urlInput, setUrlInput] = useState("");
   const [error, setError] = useState("");
   const [showScanner, setShowScanner] = useState(false);
+  const [lastFailedQr, setLastFailedQr] = useState("");
+
+  // 개발 디버그 모드 (출시 전 false로 변경하거나 환경변수 처리 가능)
+  const DEV_MODE = true;
   
   // 디버그용 상태
   const [debug, setDebug] = useState({
@@ -96,22 +100,32 @@ const QRScannerPage = () => {
 
     // 3. 파싱 시도
     const parsed = parseLotteryQr(rawText);
+    console.log("[QR PARSED RESULT]", parsed);
 
     // 4. 결과에 따른 분기
     if (parsed && parsed.type !== "unknown") {
       localStorage.setItem("bokgwon24_last_qr_raw", rawText);
       setDebug(prev => ({ ...prev, lastText: rawText }));
+      setLastFailedQr(""); // 성공 시 초기화
       
       if (navigator.vibrate) navigator.vibrate(100);
       
       // 로또 또는 연금복권 결과 페이지로 이동
       navigate("/qr-result", { state: { rawQr: rawText, parsed }, replace: true });
     } else {
-      // 5. 실패 로그
-      console.warn("[QR PARSE FAILED]", {
+      // 5. 실패 로그 (unknown 처리)
+      console.warn("[QR UNKNOWN FORMAT]", {
         rawText,
-        reason: parsed?.reason || "unknown format"
+        parsed,
+        includesDhlottery: rawText.includes("dhlottery"),
+        includesQrDomain: rawText.includes("qr.dhlottery"),
+        includes720: rawText.includes("720"),
+        includesPension: rawText.toLowerCase().includes("pension"),
+        includesLotto: rawText.toLowerCase().includes("lotto")
       });
+
+      // 디버그용으로 원문 저장
+      setLastFailedQr(rawText);
 
       // 6. 에러 메시지 처리
       let errorMsg = "지원하지 않는 QR 형식입니다.";
@@ -321,6 +335,20 @@ const QRScannerPage = () => {
         )}
 
         <div style={{ marginTop: "auto" }}>
+          {/* 개발용 디버그 출력 */}
+          {DEV_MODE && lastFailedQr && (
+            <div style={{ 
+              marginBottom: "20px", padding: "12px", background: "#FEF2F2", border: "1px solid #FECACA", 
+              borderRadius: "12px", fontSize: "0.75rem", color: "#991B1B", wordBreak: "break-all" 
+            }}>
+              <p style={{ fontWeight: "900", marginBottom: "4px" }}>⚠️ 디버그: 인식 실패 QR 원문</p>
+              <code style={{ display: "block", background: "#fff", padding: "8px", borderRadius: "6px", border: "1px solid #FEE2E2" }}>
+                {lastFailedQr}
+              </code>
+              <p style={{ marginTop: "6px", fontSize: "0.7rem", color: "#B91C1C" }}>* 위 텍스트를 개발자에게 알려주세요.</p>
+            </div>
+          )}
+
           <p style={{ textAlign: "center", color: "#94A3B8", fontSize: "0.8rem", fontWeight: "700", marginBottom: "16px" }}>
             카메라 인식이 안 될 경우 아래 방법을 이용하세요
           </p>
