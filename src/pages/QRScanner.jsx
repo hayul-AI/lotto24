@@ -147,7 +147,6 @@ const QRScannerPage = () => {
       scannerRef.current = null;
     }
     setShowScanner(false);
-    navigate("/", { replace: true });
   };
 
   const goHome = () => navigate("/");
@@ -159,7 +158,7 @@ const QRScannerPage = () => {
         <div style={{ position: "fixed", inset: 0, background: "#000", zIndex: 1000 }}>
           <video ref={videoRef} muted playsInline style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           <div style={{ position: "absolute", top: 16, left: 16, right: 16, display: "flex", justifyContent: "space-between", zIndex: 10 }}>
-            <button onClick={stopScanner} style={circleBtnStyle}>
+            <button onClick={() => { stopScanner(); navigate("/"); }} style={circleBtnStyle}>
               <ChevronLeft size={24} />
             </button>
           </div>

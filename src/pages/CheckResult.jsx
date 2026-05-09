@@ -298,7 +298,9 @@ const CheckResult = () => {
         prizeAmount: prizeAmount,
         prizeLabel: prizeLabel,
         totalPrizeAmount: prizeAmount,
-        totalPrizeLabel: totalLabel
+        totalPrizeLabel: totalLabel,
+        isBonusMatch: winResult.isBonusMatch || false,
+        matchCount: winResult.matchCount || 0
       };
 
       setResults(gameResults);
@@ -515,9 +517,9 @@ const CheckResult = () => {
               {topRank > 0 ? (
                 <>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ textAlign: 'left' }}>
+                    <div style={{ textAlign: 'center' }}>
                       <h2 style={{ fontSize: '1.05rem', fontWeight: '950', color: '#92400E' }}>
-                        {parsedData?.type === 'pension720' ? (results[0]?.resultLabel || `${topRank}등`) : `${topRank}등`} 당첨 축하합니다
+                        {parsedData?.type === 'pension720' ? (results[0]?.resultLabel || `${topRank}등`) : `${topRank}등`} 당첨을 확인했습니다
                       </h2>
                       {parsedData?.type === 'lotto645' && totalPrize.winCount > 1 && (
                         <p style={{ fontSize: '0.8rem', color: '#B45309', fontWeight: '700' }}>총 {totalPrize.winCount}게임 당첨</p>
