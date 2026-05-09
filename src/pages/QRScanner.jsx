@@ -23,37 +23,19 @@ const QRScannerPage = () => {
   const [error, setError] = useState("");
   const [showScanner, setShowScanner] = useState(false);
   const [parseError, setParseError] = useState(null);
-  const [isInitializing, setIsInitializing] = useState(true);
 
   const isNative = checkIsNative();
 
   // ── 초기화 및 자동 스캔 ──
   useEffect(() => {
     const init = async () => {
-      setIsInitializing(true);
       setError("");
       setParseError(null);
       isDecodedRef.current = false;
 
       // 네이티브 앱인 경우 즉시 스캔 실행
       if (isNative) {
-        // 네이티브는 약간의 지연 후 실행 (안정성)
-        const timer = setTimeout(() => {
-          startScanner();
-        }, 300);
-
-        const timeoutTimer = setTimeout(() => {
-          if (isStartingRef.current) {
-            console.warn("Native scanner initialization timed out.");
-            setIsInitializing(false);
-            setError("스캐너를 초기화할 수 없습니다. 다시 시도해주세요.");
-          }
-        }, 5000);
-
-        return () => {
-          clearTimeout(timer);
-          clearTimeout(timeoutTimer);
-        };
+        startScanner();
       } else {
         // 웹 환경에서도 즉시 실시간 스캔 시작
         startScanner();
@@ -115,7 +97,6 @@ const QRScannerPage = () => {
       } finally {
         isStartingRef.current = false;
         isScanningRef.current = false;
-        setIsInitializing(false);
       }
       return;
     }
@@ -123,47 +104,40 @@ const QRScannerPage = () => {
     if (scannerRef.current) return;
     setError("");
     isDecodedRef.current = false;
-    setIsInitializing(true);
 
     try {
       setShowScanner(true);
       
-      // 약간의 지연 후 비디오 엘리먼트 확인
-      setTimeout(async () => {
-        if (!videoRef.current) {
-          setError("카메라를 초기화할 수 없습니다.");
-          setShowScanner(false);
-          setIsInitializing(false);
-          return;
-        }
+      // 즉시 비디오 엘리먼트 확인 및 스캐너 시작
+      if (!videoRef.current) {
+        // 비디오 엘리먼트가 렌더링될 때까지 아주 짧게 대기
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
 
-        try {
-          const scanner = new QrScanner(
-            videoRef.current,
-            (result) => {
-              const text = typeof result === "string" ? result : result?.data;
-              if (text && !isDecodedRef.current) {
-                isDecodedRef.current = true;
-                stopScanner();
-                goToResult(text);
-              }
-            },
-            { preferredCamera: "environment", highlightScanRegion: true, maxScansPerSecond: 25 }
-          );
-          scannerRef.current = scanner;
-          await scanner.start();
-          setIsInitializing(false);
-        } catch (err) {
-          console.error("Web scanner start error:", err);
-          setError("카메라 권한이 없거나 카메라를 찾을 수 없습니다.");
-          setShowScanner(false);
-          setIsInitializing(false);
-        }
-      }, 300);
+      if (!videoRef.current) {
+        setError("카메라를 시작할 수 없습니다. 카메라 권한을 확인한 뒤 다시 시도해주세요.");
+        setShowScanner(false);
+        return;
+      }
+
+      const scanner = new QrScanner(
+        videoRef.current,
+        (result) => {
+          const text = typeof result === "string" ? result : result?.data;
+          if (text && !isDecodedRef.current) {
+            isDecodedRef.current = true;
+            stopScanner();
+            goToResult(text);
+          }
+        },
+        { preferredCamera: "environment", highlightScanRegion: true, maxScansPerSecond: 25 }
+      );
+      scannerRef.current = scanner;
+      await scanner.start();
     } catch (err) {
-      setError("스캐너 준비 중 오류가 발생했습니다.");
+      console.error("Scanner error:", err);
+      setError("카메라를 시작할 수 없습니다. 카메라 권한을 확인한 뒤 다시 시도해주세요.");
       setShowScanner(false);
-      setIsInitializing(false);
     }
   };
 
@@ -178,7 +152,7 @@ const QRScannerPage = () => {
   const goHome = () => navigate("/");
 
   return (
-    <div style={{ backgroundColor: "#F8FAFC", minHeight: "100vh", display: "flex", flexDirection: "column", position: "relative" }}>
+    <div style={{ backgroundColor: isNative && (isScanningRef.current || showScanner) ? "transparent" : "#F8FAFC", minHeight: "100vh", display: "flex", flexDirection: "column", position: "relative" }}>
       {/* 웹 스캐너 화면 overlay */}
       {showScanner && (
         <div style={{ position: "fixed", inset: 0, background: "#000", zIndex: 1000 }}>
@@ -193,17 +167,6 @@ const QRScannerPage = () => {
               사각형 안에 QR 코드를 맞춰주세요
             </p>
           </div>
-        </div>
-      )}
-
-      {/* 로딩/준비 중 화면 */}
-      {isInitializing && !showScanner && (
-        <div className="full-flex-center" style={{ 
-          position: "fixed", inset: 0, zIndex: 200, backgroundColor: "#fff",
-          flexDirection: "column", gap: "16px"
-        }}>
-          <Loader2 className="animate-spin" size={40} color="#2563EB" />
-          <p style={{ fontWeight: "800", color: "#1E293B" }}>QR 스캐너를 준비 중입니다...</p>
         </div>
       )}
 
@@ -238,19 +201,12 @@ const QRScannerPage = () => {
             <AlertCircle size={48} color="#EF4444" style={{ margin: "0 auto 20px" }} />
             <p style={{ color: "#1E293B", fontWeight: "900", fontSize: "1.1rem", marginBottom: "8px" }}>카메라를 시작할 수 없습니다</p>
             <p style={{ color: "#64748B", fontSize: "0.9rem", lineHeight: "1.5", marginBottom: "24px" }}>
-              {error}
+              카메라 권한을 확인한 뒤 다시 시도해주세요.
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <button onClick={() => { setError(""); startScanner(); }} style={ctaBtnStyle}>다시 시도하기</button>
               <button onClick={goHome} style={subBtnStyle}>홈으로 이동</button>
             </div>
-          </div>
-        ) : !showScanner && !isInitializing ? (
-          // 기본적으로 스캐너가 실행되어야 함. 혹시라도 안 켜진 경우 재시도 유도
-          <div style={{ textAlign: "center", padding: "40px 20px" }}>
-            <Camera size={48} color="#2563EB" style={{ margin: "0 auto 20px" }} />
-            <p style={{ color: "#1E293B", fontWeight: "900", fontSize: "1.1rem", marginBottom: "24px" }}>카메라를 실행해주세요</p>
-            <button onClick={startScanner} style={ctaBtnStyle}>카메라 켜기</button>
           </div>
         ) : null}
       </main>
