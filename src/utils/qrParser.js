@@ -1,39 +1,41 @@
 /**
  * 복권 QR 코드를 분석하여 로또 6/45 또는 연금복권 720+인지 판별하고 정보를 추출합니다.
  */
+/**
+ * 복권 QR 코드를 분석하여 로또 6/45 또는 연금복권 720+인지 판별하고 정보를 추출합니다.
+ */
 export const parseLotteryQr = (decodedText) => {
   const rawQr = String(decodedText || "").trim();
   
-  // 연금복권 여부 먼저 체크 (p로 시작하는 v 파라미터가 있는 경우 우선)
-  let v = "";
-  try {
-    const url = new URL(rawQr);
-    v = url.searchParams.get("v") || "";
-  } catch (e) {
-    const match = rawQr.match(/v=([^&]+)/);
-    v = match ? match[1] : "";
-  }
+  // 1. 연금복권 패턴 감지 (URL에 연금복권 관련 키워드가 있는 경우)
+  const isPensionPattern = /pension|720|연금|l720|game720|lotto720/i.test(rawQr);
 
-  // v값이 p로 시작하면 연금복권으로 우선 시도
-  if (v && v.toLowerCase().startsWith('p')) {
-    const pensionResult = parsePensionQr(decodedText);
+  if (isPensionPattern) {
+    const pensionResult = parsePensionQr(rawQr);
     if (pensionResult.success) return pensionResult.data;
   }
 
-  // 그 외에는 로또 먼저 시도
-  const lottoResult = parseLottoQr(decodedText);
+  // 2. 로또 먼저 시도
+  const lottoResult = parseLottoQr(rawQr);
   if (lottoResult.success) {
     return lottoResult.data;
   }
 
-  const pensionResult = parsePensionQr(decodedText);
+  // 3. 연금복권 다시 시도 (패턴 매칭이 안 되었더라도 시도)
+  const pensionResult = parsePensionQr(rawQr);
   if (pensionResult.success) {
     return pensionResult.data;
   }
 
+  // 모든 파싱 실패 시 로그
+  console.warn("[QR PARSE FAILED]", {
+    rawText: rawQr,
+    reason: "지원하지 않는 QR 형식이거나 데이터가 올바르지 않습니다."
+  });
+
   return {
     type: "unknown",
-    rawQr: decodedText || ""
+    rawQr: rawQr || ""
   };
 };
 
@@ -46,9 +48,13 @@ export const parseLottoQr = (decodedText) => {
   let v = "";
 
   try {
-    const url = new URL(rawQr);
-    v = url.searchParams.get("v") || "";
-  } catch (e) {
+    if (rawQr.includes('?')) {
+      const url = new URL(rawQr);
+      v = url.searchParams.get("v") || "";
+    }
+  } catch (e) {}
+
+  if (!v) {
     const match = rawQr.match(/v=([^&]+)/);
     v = match ? match[1] : rawQr;
   }
@@ -144,20 +150,24 @@ export const parsePensionQr = (decodedText) => {
   // 최근 회차는 3자리일 수도 있으므로 최소 10자리 이상 체크
   if (v && v.length >= 10 && v.length <= 13) {
     // 뒤에서부터 6자리는 번호, 그 앞 1자리는 조, 나머지는 회차
-    const number = v.substring(v.length - 6);
-    const group = v.substring(v.length - 7, v.length - 6);
-    const drawNo = v.substring(0, v.length - 7);
+    const numberStr = v.substring(v.length - 6);
+    const groupStr = v.substring(v.length - 7, v.length - 6);
+    const drawNoStr = v.substring(0, v.length - 7);
 
-    if (number.length === 6 && !isNaN(parseInt(drawNo)) && !isNaN(parseInt(group))) {
+    const numberArr = numberStr.split('').map(Number);
+    const group = Number(groupStr);
+    const drawNo = Number(drawNoStr);
+
+    if (numberArr.length === 6 && !isNaN(drawNo) && !isNaN(group)) {
       return {
         success: true,
         data: {
           type: "pension720",
-          drawNo: Number(drawNo),
-          group: Number(group),
-          number: String(number),
-          fullNumber: `${group}조 ${number}`,
-          rawQr
+          drawNo: drawNo,
+          group: groupStr, // 구체 요구사항 6번에 따라 String으로 전달 시도 (혹은 필요 시 처리)
+          numbers: numberArr,
+          fullNumber: `${groupStr}조 ${numberStr}`,
+          rawQr: rawQr
         }
       };
     }

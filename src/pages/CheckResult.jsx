@@ -94,7 +94,7 @@ const CheckResult = () => {
 
     const { data: winInfo, error: fetchErr } = await getPensionResultByDrawNo(drawNo);
     if (fetchErr || !winInfo) {
-      throw new Error(`제${drawNo}회 연금복권 당첨 데이터가 아직 없습니다.`);
+      throw new Error(`해당 회차 연금복권 결과가 아직 등록되지 않았습니다. (제${drawNo}회)`);
     }
 
     setWinningInfo(winInfo);

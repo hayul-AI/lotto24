@@ -81,6 +81,7 @@ const QRScannerPage = () => {
 
   // ── 결과 페이지 이동 ──
   const goToResult = (url) => {
+    console.log("[QR SCAN RAW]", url);
     const parsed = parseLotteryQr(url);
     if (parsed && parsed.type !== "unknown") {
       localStorage.setItem("bokgwon24_last_qr_raw", url);
