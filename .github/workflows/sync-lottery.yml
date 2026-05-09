@@ -1,6 +1,10 @@
 name: Sync Lottery Results
 
+# GitHub Actions cron은 UTC 기준이며, KST 토요일 21:00은 UTC 토요일 12:00이다.
 on:
+  schedule:
+    - cron: "0 12 * * 6"    # 토요일 21:00 KST
+    - cron: "20 12 * * 6"   # 토요일 21:20 KST
   workflow_dispatch:
     inputs:
       mode:
@@ -12,10 +16,6 @@ on:
           - lotto
           - pension
           - all
-
-  schedule:
-    - cron: "20 12 * * 6"
-    - cron: "0 11 * * 4"
 
 jobs:
   sync:
@@ -29,6 +29,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm install
@@ -43,22 +44,14 @@ jobs:
           fi
 
           if [ "${{ github.event_name }}" = "schedule" ]; then
-            if [ "${{ github.event.schedule }}" = "20 12 * * 6" ]; then
-              echo "Running Lotto 6/45 auto sync..."
-              npm run sync:lotto
-            elif [ "${{ github.event.schedule }}" = "0 11 * * 4" ]; then
-              echo "Running Pension Lottery 720+ auto sync..."
-              npm run sync:pension
-            else
-              echo "Unknown schedule. Running all sync..."
-              npm run sync:latest
-            fi
+            echo "Running scheduled sync (all)..."
+            npm run sync:latest
           else
-            echo "Running manual sync mode: ${{ github.event.inputs.mode }}"
-
-            if [ "${{ github.event.inputs.mode }}" = "lotto" ]; then
+            MODE="${{ github.event.inputs.mode }}"
+            echo "Running manual sync mode: $MODE"
+            if [ "$MODE" = "lotto" ]; then
               npm run sync:lotto
-            elif [ "${{ github.event.inputs.mode }}" = "pension" ]; then
+            elif [ "$MODE" = "pension" ]; then
               npm run sync:pension
             else
               npm run sync:latest

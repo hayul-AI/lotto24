@@ -76,6 +76,13 @@ h1, h2, h3, h4 {
   margin-bottom: 20px;
   box-shadow: var(--shadow-card);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%; /* Ensure card doesn't overflow container */
+}
+
+@media (max-width: 400px) {
+  .card {
+    padding: 16px; /* Reduce padding on small screens */
+  }
 }
 
 .card-clickable:active {
@@ -179,6 +186,37 @@ h1, h2, h3, h4 {
 .mb-16 { margin-bottom: 16px; }
 .mb-24 { margin-bottom: 24px; }
 .mb-32 { margin-bottom: 32px; }
+
+/* Form Elements */
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid #E2E8F0;
+  background-color: #FFFFFF;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input-field:focus {
+  border-color: var(--primary-blue);
+  background-color: #FBFCFF;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 360px) {
+  .grid-2 {
+    grid-template-columns: 1fr; /* Stack on very small screens */
+  }
+}
 
 /* Skeleton Loading */
 .skeleton {

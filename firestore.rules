@@ -1,20 +1,37 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // 시딩용 임시 허용 (시딩 후 write: if false로 복원 권장)
-    match /lotto_results/{document} {
-      allow read: if true;
-      allow write: if request.auth != null && request.auth.token.email == "medicalassistant9111@gmail.com";
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email == "medicalassistant9111@gmail.com";
     }
-    match /pension_results/{document} {
+
+    match /lotto_results/{docId} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.email == "medicalassistant9111@gmail.com";
+      allow write: if isAdmin();
     }
-    match /sync_status/{document} {
+
+    match /pension_results/{docId} {
       allow read: if true;
-      allow write: if request.auth != null && request.auth.token.email == "medicalassistant9111@gmail.com";
+      allow write: if isAdmin();
     }
-    
+
+    match /sync_status/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /lottery_stores/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /winning_stores/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     match /{document=**} {
       allow read: if true;
       allow write: if false;

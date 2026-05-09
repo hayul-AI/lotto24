@@ -148,11 +148,19 @@ const AdminLotteryPage = () => {
   // [수동 저장] 로또
   const saveLottoManual = async (e) => {
     e.preventDefault();
+    
+    // 1. 권한 확인
+    if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) {
+      setMessage({ type: 'error', text: '관리자 권한이 없습니다. 다시 로그인해 주세요.' });
+      return;
+    }
+
     if (!window.confirm(`${lottoForm.drawNo}회차 로또 결과를 수동으로 저장하시겠습니까?`)) return;
 
     setLoading(true);
+    const drawNo = Number(lottoForm.drawNo);
+
     try {
-      const drawNo = Number(lottoForm.drawNo);
       const numbers = [
         Number(lottoForm.num1), Number(lottoForm.num2), Number(lottoForm.num3),
         Number(lottoForm.num4), Number(lottoForm.num5), Number(lottoForm.num6)
@@ -181,6 +189,12 @@ const AdminLotteryPage = () => {
       setMessage({ type: 'success', text: `${drawNo}회차 로또 저장 완료!` });
       fetchSyncStatus();
     } catch (err) {
+      console.error("Lotto Save Error Log:", {
+        user: auth.currentUser?.email,
+        collection: "lotto_results",
+        drawNo: drawNo,
+        error: err.message
+      });
       setMessage({ type: 'error', text: `저장 실패: ${err.message}` });
     } finally { setLoading(false); }
   };
@@ -188,11 +202,19 @@ const AdminLotteryPage = () => {
   // [수동 저장] 연금복권
   const savePensionManual = async (e) => {
     e.preventDefault();
+
+    // 1. 권한 확인
+    if (!auth.currentUser || auth.currentUser.email !== ADMIN_EMAIL) {
+      setMessage({ type: 'error', text: '관리자 권한이 없습니다. 다시 로그인해 주세요.' });
+      return;
+    }
+
     if (!window.confirm(`${pensionForm.drawNo}회차 연금복권 결과를 수동으로 저장하시겠습니까?`)) return;
 
     setLoading(true);
+    const drawNo = Number(pensionForm.drawNo);
+
     try {
-      const drawNo = Number(pensionForm.drawNo);
       const numbers = pensionForm.numbers.map(Number);
       const data = {
         drawNo,
@@ -221,6 +243,12 @@ const AdminLotteryPage = () => {
       setMessage({ type: 'success', text: `${drawNo}회차 연금복권 저장 완료!` });
       fetchSyncStatus();
     } catch (err) {
+      console.error("Pension Save Error Log:", {
+        user: auth.currentUser?.email,
+        collection: "pension_results",
+        drawNo: drawNo,
+        error: err.message
+      });
       setMessage({ type: 'error', text: `저장 실패: ${err.message}` });
     } finally { setLoading(false); }
   };
@@ -324,38 +352,60 @@ const AdminLotteryPage = () => {
             <div className="card" style={{ padding: '20px' }}>
               {activeTab === 'lotto' ? (
                 <form onSubmit={saveLottoManual}>
-                  <div className="grid-2 mb-12">
-                    <Input label="회차" value={lottoForm.drawNo} onChange={v => setLottoForm({...lottoForm, drawNo: v})} />
-                    <Input label="추첨일" type="date" value={lottoForm.drawDate} onChange={v => setLottoForm({...lottoForm, drawDate: v})} />
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '16px' }}>
+                    <div style={{ flex: '1 1 120px' }}>
+                      <Input label="회차" value={lottoForm.drawNo} onChange={v => setLottoForm({...lottoForm, drawNo: v})} />
+                    </div>
+                    <div style={{ flex: '1 1 180px' }}>
+                      <Input label="추첨일" type="date" value={lottoForm.drawDate} onChange={v => setLottoForm({...lottoForm, drawDate: v})} />
+                    </div>
                   </div>
-                  <div className="mb-12">
-                    <label className="text-caption mb-4 block font-bold">당첨번호</label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px' }}>
+                  
+                  <div className="mb-16">
+                    <label className="text-caption mb-8 block font-bold" style={{ fontSize: '0.9rem', color: '#1E293B' }}>당첨번호 (1~45)</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                       {[1,2,3,4,5,6].map(i => (
-                        <input key={i} type="number" className="input-field" style={{ padding: '8px', textAlign: 'center' }} required
-                               value={lottoForm[`num${i}`]} onChange={e => setLottoForm({...lottoForm, [`num${i}`]: e.target.value})} />
+                        <div key={i} style={{ position: 'relative' }}>
+                          <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.7rem', color: '#94A3B8', fontWeight: '900' }}>#{i}</span>
+                          <input type="number" className="input-field" style={{ padding: '12px 12px 12px 30px', textAlign: 'center', fontSize: '1.1rem', fontWeight: '900' }} required
+                                 value={lottoForm[`num${i}`]} onChange={e => setLottoForm({...lottoForm, [`num${i}`]: e.target.value})} />
+                        </div>
                       ))}
                     </div>
                   </div>
-                  <div className="grid-2 mb-20">
-                    <Input label="보너스" value={lottoForm.bonusNo} onChange={v => setLottoForm({...lottoForm, bonusNo: v})} />
-                    <Input label="1등 금액" value={lottoForm.firstPrizeAmount} onChange={v => setLottoForm({...lottoForm, firstPrizeAmount: v})} />
+                  
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '24px' }}>
+                    <div style={{ flex: '1 1 100px' }}>
+                      <Input label="보너스" value={lottoForm.bonusNo} onChange={v => setLottoForm({...lottoForm, bonusNo: v})} />
+                    </div>
+                    <div style={{ flex: '1 1 200px' }}>
+                      <Input label="1등 금액 (원)" value={lottoForm.firstPrizeAmount} onChange={v => setLottoForm({...lottoForm, firstPrizeAmount: v})} />
+                    </div>
                   </div>
                   <button type="submit" disabled={loading} className="btn-cta w-full">수동 저장</button>
                 </form>
               ) : (
                 <form onSubmit={savePensionManual}>
-                  <div className="grid-2 mb-12">
-                    <Input label="회차" value={pensionForm.drawNo} onChange={v => setPensionForm({...pensionForm, drawNo: v})} />
-                    <Input label="추첨일" type="date" value={pensionForm.drawDate} onChange={v => setPensionForm({...pensionForm, drawDate: v})} />
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '16px' }}>
+                    <div style={{ flex: '1 1 120px' }}>
+                      <Input label="회차" value={pensionForm.drawNo} onChange={v => setPensionForm({...pensionForm, drawNo: v})} />
+                    </div>
+                    <div style={{ flex: '1 1 180px' }}>
+                      <Input label="추첨일" type="date" value={pensionForm.drawDate} onChange={v => setPensionForm({...pensionForm, drawDate: v})} />
+                    </div>
                   </div>
-                  <div className="grid-2 mb-20">
-                    <Input label="조" value={pensionForm.group} onChange={v => setPensionForm({...pensionForm, group: v})} />
-                    <div>
-                      <label className="text-caption mb-4 block font-bold">번호</label>
-                      <div style={{ display: 'flex', gap: '4px' }}>
+                  
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '16px' }}>
+                    <div style={{ flex: '1 1 70px' }}>
+                      <Input label="조" value={pensionForm.group} onChange={v => setPensionForm({...pensionForm, group: v})} />
+                    </div>
+                    <div style={{ flex: '4 1 200px', minWidth: 0 }}>
+                      <label className="text-caption mb-8 block font-bold" style={{ fontSize: '0.9rem', color: '#1E293B' }}>6자리 번호</label>
+                      <div style={{ display: 'flex', gap: '4px', width: '100%' }}>
                         {pensionForm.numbers.map((n, i) => (
-                          <input key={i} type="number" className="input-field" style={{ padding: '8px', textAlign: 'center' }} required
+                          <input key={i} type="number" className="input-field" 
+                                 style={{ padding: '12px 0', textAlign: 'center', fontSize: '1rem', fontWeight: '900', flex: 1, minWidth: 0 }} 
+                                 required
                                  value={n} onChange={e => {
                                    const newNums = [...pensionForm.numbers];
                                    newNums[i] = e.target.value.slice(-1);
@@ -365,9 +415,14 @@ const AdminLotteryPage = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="grid-2 mb-12">
-                    <Input label="1등 금액 (월)" value={pensionForm.firstPrizeAmount} onChange={v => setPensionForm({...pensionForm, firstPrizeAmount: v})} />
-                    <Input label="당첨자 수" value={pensionForm.firstWinnerCount} onChange={v => setPensionForm({...pensionForm, firstWinnerCount: v})} />
+                  
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '24px' }}>
+                    <div style={{ flex: '1 1 200px' }}>
+                      <Input label="1등 금액 (월)" value={pensionForm.firstPrizeAmount} onChange={v => setPensionForm({...pensionForm, firstPrizeAmount: v})} />
+                    </div>
+                    <div style={{ flex: '1 1 100px' }}>
+                      <Input label="당첨자 수" value={pensionForm.firstWinnerCount} onChange={v => setPensionForm({...pensionForm, firstWinnerCount: v})} />
+                    </div>
                   </div>
                   <button type="submit" disabled={loading} className="btn-cta w-full" style={{ backgroundColor: '#E11D48' }}>수동 저장</button>
                 </form>
@@ -407,9 +462,16 @@ const TabBtn = ({ active, color, onClick, children }) => (
 );
 
 const Input = ({ label, type = "number", value, onChange }) => (
-  <div>
-    <label className="text-caption mb-4 block font-bold">{label}</label>
-    <input type={type} className="input-field" value={value} onChange={e => onChange(e.target.value)} required />
+  <div style={{ width: '100%' }}>
+    <label className="text-caption mb-8 block font-bold" style={{ fontSize: '0.9rem', color: '#1E293B' }}>{label}</label>
+    <input 
+      type={type} 
+      className="input-field" 
+      style={{ padding: '14px', fontSize: '1rem', fontWeight: '800' }} 
+      value={value} 
+      onChange={e => onChange(e.target.value)} 
+      required 
+    />
   </div>
 );
 

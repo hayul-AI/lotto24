@@ -1,16 +1,26 @@
-# React + Vite
+# 복권24 (Lotto24)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+복권 당첨 결과 확인 및 관리 서비스입니다.
 
-Currently, two official plugins are available:
+## 자동 데이터 동기화 (GitHub Actions)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+본 프로젝트는 GitHub Actions를 통해 로또 및 연금복권 당첨 데이터를 자동으로 갱신합니다.
 
-## React Compiler
+- **설정 파일**: `.github/workflows/sync-lottery.yml`
+- **실행 시간**: 매주 토요일 KST 21:00, 21:20 (UTC 12:00, 12:20)
+- **실행 스크립트**: `scripts/syncLatestResults.cjs`
+- **저장 위치**: Firestore (`lotto_results`, `pension_results`)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 주의사항
+GitHub Actions의 `cron` 설정은 UTC 기준입니다. 
+- KST (한국 표준시) = UTC + 9시간
+- 토요일 21:00 KST = 토요일 12:00 UTC
 
-## Expanding the ESLint configuration
+## 관리자 모드
+관리자 이메일(`medicalassistant9111@gmail.com`)로 로그인 시 수동 데이터 보정 및 즉시 갱신 기능을 사용할 수 있습니다.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 기술 스택
+- **Frontend**: React, Vite, Lucide React
+- **Backend/DB**: Firebase (Auth, Firestore)
+- **Mobile**: Capacitor (Android/iOS)
+- **Automation**: GitHub Actions

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Trophy, AlertCircle, CheckCircle2, Info, Loader2, ExternalLink, Heart } from 'lucide-react';
-import { getLottoResultByDrawNo } from '../services/lottoService';
+import { getLottoResultByDrawNo, getPensionResultByDrawNo } from '../services/lottoService';
 import LottoBall from '../components/LottoBall';
 import { parseLotteryQr } from '../utils/qrParser';
 import { checkLottoWinning } from '../utils/checkLottoResult';
+import { checkPensionRank } from '../utils/checkPensionResult';
 import { normalizeHistoryItem } from '../services/localTicketService';
 import { nanoid } from 'nanoid';
 
@@ -47,8 +48,10 @@ const CheckResult = () => {
 
       if (parsed.type === "lotto645") {
         await handleLottoCheck(parsed);
+      } else if (parsed.type === "pension720") {
+        await handlePensionCheck(parsed);
       } else {
-        setError("현재는 로또 6/45 당첨 확인만 지원합니다.");
+        setError("지원하지 않는 복권 형식입니다.");
       }
 
     } catch (err) {
@@ -83,6 +86,44 @@ const CheckResult = () => {
     setTopRank(bestRank);
 
     saveToHistory(parsed, winInfo, gameResults, bestRank);
+  };
+
+  const handlePensionCheck = async (parsed) => {
+    const { data: winInfo, error: fetchErr } = await getPensionResultByDrawNo(parsed.drawNo);
+    if (fetchErr || !winInfo) {
+      throw new Error(`제${parsed.drawNo}회 연금복권 당첨 데이터가 아직 없습니다.`);
+    }
+
+    setWinningInfo(winInfo);
+
+    // 연금복권은 보통 한 번에 한 세트(조+번호)를 스캔하므로 1개 결과 처리
+    // parsed: { type, drawNo, group, number, fullNumber, rawQr }
+    // winInfo.firstPrizeNumber: { group, numbers: [n,n,n,n,n,n] }
+    
+    const myTicket = { 
+      grade: parsed.group, 
+      numbers: parsed.number.split('').map(Number) 
+    };
+    
+    const winNumbers = {
+      grade: Number(winInfo.firstPrizeNumber.group),
+      winning: winInfo.firstPrizeNumber.numbers.map(Number)
+    };
+
+    const winResult = checkPensionRank(myTicket, winNumbers);
+    
+    // 로또와 형식 통일
+    const gameResults = [{
+      label: "A",
+      numbers: myTicket.numbers,
+      group: parsed.group,
+      ...winResult
+    }];
+
+    setResults(gameResults);
+    setTopRank(winResult.rank);
+
+    saveToHistory(parsed, winInfo, gameResults, winResult.rank);
   };
 
   const saveToHistory = (parsed, winInfo, gameResults, bestRank) => {
@@ -157,7 +198,9 @@ const CheckResult = () => {
       <header style={{ backgroundColor: 'white', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '8px', position: 'sticky', top: 0, zIndex: 10, borderBottom: '1px solid #E2E8F0' }}>
         <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', padding: '4px' }}><ChevronLeft size={24} color="#1E293B" /></button>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-          <h1 style={{ fontSize: '0.95rem', fontWeight: '900', color: '#1E293B' }}>로또 6/45</h1>
+          <h1 style={{ fontSize: '0.95rem', fontWeight: '900', color: '#1E293B' }}>
+            {parsedData?.type === 'lotto645' ? '로또 6/45' : '연금복권 720+'}
+          </h1>
           <p style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: '700' }}>제 {parsedData?.drawNo ?? '-'}회 ({winningInfo?.drawDate ?? '-'})</p>
         </div>
       </header>
@@ -169,11 +212,28 @@ const CheckResult = () => {
           <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '12px', border: '1px solid #E2E8F0' }}>
             <p style={{ fontSize: '0.75rem', fontWeight: '900', color: '#64748B', marginBottom: '8px', textAlign: 'center' }}>당첨번호</p>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '5px', alignItems: 'center' }}>
-              {(winningInfo?.numbers || []).map((n, i) => (
-                <LottoBall key={i} number={n} size="30px" />
-              ))}
-              <span style={{ fontSize: '0.9rem', fontWeight: '900', color: '#CBD5E1' }}>+</span>
-              <LottoBall number={winningInfo?.bonusNo} size="30px" />
+              {parsedData?.type === 'lotto645' ? (
+                <>
+                  {(winningInfo?.numbers || []).map((n, i) => (
+                    <LottoBall key={i} number={n} size="30px" />
+                  ))}
+                  <span style={{ fontSize: '0.9rem', fontWeight: '900', color: '#CBD5E1' }}>+</span>
+                  <LottoBall number={winningInfo?.bonusNo} size="30px" />
+                </>
+              ) : (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '1rem', fontWeight: '900', color: '#1E293B' }}>{winningInfo?.firstPrizeNumber?.group}조</span>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    {(winningInfo?.firstPrizeNumber?.numbers || []).map((n, i) => (
+                      <span key={i} style={{ 
+                        width: '30px', height: '30px', borderRadius: '4px', 
+                        backgroundColor: '#F1F5F9', display: 'flex', alignItems: 'center', 
+                        justifyContent: 'center', fontWeight: '900', color: '#1E293B'
+                      }}>{n}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -212,38 +272,78 @@ const CheckResult = () => {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
                 <tr>
-                  <th style={{ ...thStyle, width: '15%' }}>게임</th>
+                  <th style={{ ...thStyle, width: '20%' }}>{parsedData?.type === 'lotto645' ? '게임' : '조'}</th>
                   <th style={{ ...thStyle, width: '20%' }}>결과</th>
-                  <th style={{ ...thStyle, textAlign: 'left', width: '65%' }}>선택번호</th>
+                  <th style={{ ...thStyle, textAlign: 'left', width: '60%' }}>선택번호</th>
                 </tr>
               </thead>
               <tbody>
                 {results.map((res, i) => (
                   <tr key={i} style={{ borderBottom: i === results.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
-                    <td style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.9rem' }}>{res.label}</td>
+                    <td style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.9rem' }}>
+                      {parsedData?.type === 'lotto645' ? res.label : `${res.group}조`}
+                    </td>
                     <td style={{ ...tdStyle, color: res.rank > 0 ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '0.9rem' }}>
-                      {res.rank > 0 ? `${res.rank}등` : '낙첨'}
+                      {res.rank > 0 ? `${res.label}` : '낙첨'}
                     </td>
                     <td style={{ ...tdStyle, textAlign: 'left', padding: '10px 8px' }}>
                       <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-                        {(res?.numbers || []).map((n, idx) => {
-                          const isMatch = (winningInfo?.numbers || []).includes(n);
-                          const isBonusMatch = n === winningInfo?.bonusNo;
-                          const ballBg = isMatch ? getBallColor(n) : (isBonusMatch ? '#F59E0B' : 'transparent');
-                          
-                          return (
-                            <span key={idx} style={{ 
-                              width: '28px', height: '28px', borderRadius: '50%', 
-                              display: 'flex', alignItems: 'center', justifyContent: 'center',
-                              fontSize: '0.85rem', fontWeight: '900',
-                              backgroundColor: ballBg,
-                              color: (isMatch || isBonusMatch) ? 'white' : '#64748B',
-                              border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0'
-                            }}>
-                              {n}
-                            </span>
-                          );
-                        })}
+                        {parsedData?.type === 'lotto645' ? (
+                          (res?.numbers || []).map((n, idx) => {
+                            const isMatch = (winningInfo?.numbers || []).includes(n);
+                            const isBonusMatch = n === winningInfo?.bonusNo;
+                            const ballBg = isMatch ? getBallColor(n) : (isBonusMatch ? '#F59E0B' : 'transparent');
+                            
+                            return (
+                              <span key={idx} style={{ 
+                                width: '28px', height: '28px', borderRadius: '50%', 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontSize: '0.85rem', fontWeight: '900',
+                                backgroundColor: ballBg,
+                                color: (isMatch || isBonusMatch) ? 'white' : '#64748B',
+                                border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0'
+                              }}>
+                                {n}
+                              </span>
+                            );
+                          })
+                        ) : (
+                          (res?.numbers || []).map((n, idx) => {
+                            const winNums = winningInfo?.firstPrizeNumber?.numbers?.map(Number) || [];
+                            // 뒤에서부터 일치 여부 확인 (연금복권 특성)
+                            const matchLen = 6 - idx; // 현재 위치 포함 뒤로 남은 길이
+                            // 실제 로직: 뒤에서부터 m개가 일치하는지 확인
+                            // 여기서는 시각적으로 뒤에서부터 일치하는 숫자를 강조
+                            const winAtIdx = winNums[idx];
+                            
+                            // 연금복권은 뒤에서부터 일치해야 하므로 간단히 체크
+                            let isMatch = false;
+                            const myNums = res.numbers;
+                            let currentMatchCount = 0;
+                            for (let k = 5; k >= 0; k--) {
+                              if (myNums[k] === winNums[k]) currentMatchCount++;
+                              else break;
+                            }
+                            
+                            // 현재 위치가 일치하는 범위 내에 있는지 확인
+                            if (idx >= (6 - currentMatchCount)) {
+                                isMatch = true;
+                            }
+
+                            return (
+                              <span key={idx} style={{ 
+                                width: '28px', height: '28px', borderRadius: '4px', 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                fontSize: '0.9rem', fontWeight: '900',
+                                backgroundColor: isMatch ? '#2563EB' : 'transparent',
+                                color: isMatch ? 'white' : '#64748B',
+                                border: isMatch ? 'none' : '1.2px solid #E2E8F0'
+                              }}>
+                                {n}
+                              </span>
+                            );
+                          })
+                        )}
                       </div>
                     </td>
                   </tr>
