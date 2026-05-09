@@ -88,39 +88,47 @@ const MyTickets = () => {
     const NumbersCell = (
       <td key="numbers" style={{ ...tdStyle, textAlign: 'left', padding: '12px 8px' }}>
         <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-          {(game?.numbers || []).map((n, i) => {
-            const isMatch = isPension 
-              ? (winNums[i] === n)
-              : winNums.includes(n);
-            
-            const isBonusMatch = !isPension && n === bonusNo;
-            
-            const ballBg = isMatch 
-              ? (isPension ? '#2563EB' : getBallColor(n)) 
-              : (isBonusMatch ? '#F59E0B' : 'transparent');
-            
-            return (
-              <span key={i} style={{
-                width: '28px', height: '28px', borderRadius: isPension ? '4px' : '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '0.9rem', fontWeight: '900',
-                backgroundColor: ballBg,
-                color: (isMatch || isBonusMatch) ? 'white' : '#64748B',
-                border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0'
-              }}>
-                {n}
-              </span>
-            );
-          })}
+          {(game?.numbers && Array.isArray(game.numbers) && game.numbers.length > 0) ? (
+            (game.numbers).map((n, i) => {
+              const isMatch = isPension 
+                ? (winNums[i] === n)
+                : winNums.includes(n);
+              
+              const isBonusMatch = !isPension && n === bonusNo;
+              
+              const ballBg = isMatch 
+                ? (isPension ? '#2563EB' : getBallColor(n)) 
+                : (isBonusMatch ? '#F59E0B' : 'transparent');
+              
+              return (
+                <span key={i} style={{
+                  width: '28px', height: '28px', borderRadius: isPension ? '4px' : '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.9rem', fontWeight: '900',
+                  backgroundColor: ballBg,
+                  color: (isMatch || isBonusMatch) ? 'white' : '#64748B',
+                  border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0'
+                }}>
+                  {n}
+                </span>
+              );
+            })
+          ) : (
+            <div style={{ fontSize: '1rem', fontWeight: '900', color: '#1E293B', padding: '4px 0' }}>
+              {displayNumberText}
+            </div>
+          )}
         </div>
       </td>
     );
 
     const ResultCell = (
-      <td key="result" style={{ ...tdStyle, color: (gameResult?.rank > 0) ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '1rem' }}>
+      <td key="result" style={{ ...tdStyle, color: (record.topRank > 0 || displayRankText.includes('당첨')) ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '1rem' }}>
         <div>{displayRankText}</div>
-        {gameResult?.rank > 0 && gameResult.prizeLabel && (
-          <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748B', marginTop: '2px' }}>{gameResult.prizeLabel}</div>
+        {(gameResult?.prizeLabel || record.totalPrizeLabel) && (record.topRank > 0) && (
+          <div style={{ fontSize: '0.75rem', fontWeight: '800', color: '#64748B', marginTop: '2px' }}>
+            {gameResult?.prizeLabel || record.totalPrizeLabel}
+          </div>
         )}
       </td>
     );

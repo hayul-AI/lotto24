@@ -29,7 +29,7 @@ export const normalizeHistoryItem = (item) => {
     return null;
   }
 
-  const games =
+  let games =
     Array.isArray(item?.games)
       ? item.games
       : Array.isArray(item?.parsed?.games)
@@ -42,6 +42,19 @@ export const normalizeHistoryItem = (item) => {
       : Array.isArray(item?.result?.results)
         ? item.result.results
         : [];
+
+  // 연금복권 하위 호환성: games가 없으면 가상으로 생성
+  const isPension = (item?.type || item?.parsed?.type) === "pension720";
+  if (isPension && games.length === 0) {
+    games = [{
+      label: "A",
+      group: item?.group || item?.selectedGroup || item?.pensionGroup || "-",
+      numberText: item?.numberText || item?.scannedNumberText || (Array.isArray(item?.numbers) ? item?.numbers.join("") : "") || item?.selectedNumber || "-",
+      numbers: Array.isArray(item?.numbers) ? item?.numbers : [],
+      rank: item?.rank,
+      result: item?.result || item?.rank
+    }];
+  }
 
   // 하위 호환성: 당첨금 정보가 없으면 재계산 시도
   let totalPrizeAmount = item?.totalPrizeAmount ?? 0;
