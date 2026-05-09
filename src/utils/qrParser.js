@@ -24,6 +24,7 @@ export const parseLotteryQr = (decodedText) => {
   }
 
   // 2. 신규 연금복권 형식 감지 (v가 pd120으로 시작하는 경우 - 최우선)
+  // 규칙: pd120{drawNo}{group}s{number6}
   if (url && url.hostname.includes("qr.dhlottery.co.kr") && v && v.toLowerCase().startsWith("pd120")) {
     const pdMatch = v.match(/^pd120(\d+)([1-5])s(\d{6})$/i);
     if (pdMatch) {

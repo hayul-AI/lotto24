@@ -9,6 +9,17 @@ import { checkPensionRank } from '../utils/checkPensionResult';
 import { normalizeHistoryItem } from '../services/localTicketService';
 import { nanoid } from 'nanoid';
 
+const PENSION_PRIZE_LABELS = {
+  "1등": "매월 700만원 x 20년",
+  "2등": "매월 100만원 x 10년",
+  "보너스": "매월 100만원 x 10년",
+  "3등": "1,000,000원",
+  "4등": "100,000원",
+  "5등": "50,000원",
+  "6등": "5,000원",
+  "7등": "1,000원"
+};
+
 const CheckResult = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -16,6 +27,7 @@ const CheckResult = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [parsedData, setParsedData] = useState(null);
+  const [winningInfo, setWinningInfo] = useState(null);
   const [results, setResults] = useState([]);
   const [topRank, setTopRank] = useState(0);
   const [debugInfo, setDebugInfo] = useState(null);
@@ -93,20 +105,17 @@ const CheckResult = () => {
   };
 
   const handlePensionCheck = async (parsed) => {
-    // 디버그 정보 초기화
     const diagnostics = {
       rawText: parsed.rawText,
       qrValue: parsed.qrValue,
       leftPart: parsed.leftPart,
-      numberText: parsed.numberText,
+      numberText: parsed.numberText || (parsed.numbers ? parsed.numbers.join("") : ""),
       candidates: [],
       latestDocs: []
     };
 
-    // 후보군 생성
     const candidates = [];
     
-    // 1. pd120 확정 규칙 최우선
     if (parsed.reason === "pension_pd120_format") {
       candidates.push({
         drawNo: parsed.drawNo,
@@ -115,42 +124,40 @@ const CheckResult = () => {
         isValid: true
       });
     } else if (parsed.leftPart) {
-      // 2. 기타 pd... 후보군 (보조 진단용)
       const lp = parsed.leftPart;
       if (lp.length === 7 && lp.startsWith("120")) {
-        // 후보 A: pd120 + drawNo(3) + group(1)
         const d3 = Number(lp.substring(3, 6));
         const g1 = lp.substring(6, 7);
+        const g1Num = Number(g1);
         candidates.push({ 
           drawNo: d3, 
           group: g1, 
           rule: `pd120 + ${d3} + ${g1}`,
-          isValid: Number(g1) >= 1 && Number(g1) <= 5
+          isValid: g1Num >= 1 && g1Num <= 5
         });
 
-        // 후보 B: pd120 + drawNo(2) + group(2) -> 비유효 그룹 케이스 포함
         const d2 = Number(lp.substring(3, 5));
         const g2 = lp.substring(5, 7);
+        const g2Num = Number(g2);
         candidates.push({ 
           drawNo: d2, 
           group: g2, 
           rule: `pd120 + ${d2} + ${g2}`,
-          isValid: Number(g2) >= 1 && Number(g2) <= 5
+          isValid: g2Num >= 1 && g2Num <= 5
         });
       }
     }
 
-    // 기존 파서 결과 보완
     if (parsed.drawNo && !candidates.some(c => c.drawNo === parsed.drawNo)) {
+      const gNum = Number(parsed.group);
       candidates.push({ 
         drawNo: parsed.drawNo, 
         group: parsed.group, 
         rule: "기존 파서 규칙",
-        isValid: Number(parsed.group) >= 1 && Number(parsed.group) <= 5
+        isValid: gNum >= 1 && gNum <= 5
       });
     }
 
-    // 유효한 후보들에 대해 Firestore 존재 여부 확인
     for (const c of candidates) {
       if (c.isValid) {
         const status = await getPensionDocStatus(c.drawNo);
@@ -163,46 +170,38 @@ const CheckResult = () => {
     }
     diagnostics.candidates = candidates;
 
-    // 최신 문서 5개 조회 (진단용)
     const latest = await getPensionResultsDebug(5);
     diagnostics.latestDocs = latest.data || [];
     setDebugInfo(diagnostics);
 
-    try {
-      // 3. 실제 결과 조회 대상 선정 (유효한 그룹 + 문서 존재)
-      const winnerCandidate = candidates.find(c => c.isValid && c.exists);
+    const winnerCandidate = candidates.find(c => c.isValid && c.exists);
 
-      if (!winnerCandidate) {
-        const validButNoDoc = candidates.find(c => c.isValid);
-        if (validButNoDoc) {
-          throw new Error(`연금복권 QR은 인식했지만 해당 회차 결과가 아직 등록되지 않았습니다.\n(조회 회차: 제${validButNoDoc.drawNo}회)`);
-        }
-        throw new Error(`연금복권 QR 인식 결과, 유효한 회차/조 정보를 찾을 수 없습니다.\n(진단 정보를 확인해주세요)`);
+    if (!winnerCandidate) {
+      const validButNoDoc = candidates.find(c => c.isValid);
+      if (validButNoDoc) {
+        throw new Error(`연금복권 QR 인식 완료\n회차: ${validButNoDoc.drawNo}회\n조: ${validButNoDoc.group}조\n번호: ${diagnostics.numberText}\n\n해당 회차 결과가 아직 등록되지 않았습니다.`);
       }
+      throw new Error(`연금복권 QR 인식 결과, 유효한 회차/조 정보를 찾을 수 없습니다.\n(진단 정보를 확인해주세요)`);
+    }
 
-      // 4. 당첨 확인 진행
+    try {
       const winInfo = winnerCandidate.data;
       const ticketNumbers = parsed.numbers;
 
       if (!winInfo || !ticketNumbers || ticketNumbers.length !== 6) {
-        console.error("[PENSION CHECK ERROR - DATA INCOMPLETE]", { parsed, winnerCandidate });
         throw new Error("연금복권 당첨 정보를 확인할 수 없습니다 (데이터 불완전).");
       }
 
-      // 당첨 정보 설정 (상단 헤더 등에서 사용)
       setWinningInfo(winInfo);
 
-      // 당첨 번호 정규화 (문자열 비교용)
       const winGroup = String(winInfo.firstPrizeNumber?.group ?? "0");
       const winNumbers = Array.isArray(winInfo.firstPrizeNumber?.numbers) 
         ? winInfo.firstPrizeNumber.numbers.map(String) 
         : [];
 
-      // 내 번호 정규화
       const myGroup = String(winnerCandidate.group);
       const myNumbers = ticketNumbers.map(String);
 
-      // 당첨 등수 확인
       const winResult = checkPensionRank(
         { grade: Number(myGroup), numbers: myNumbers.map(Number) }, 
         { grade: Number(winGroup), winning: winNumbers.map(Number) }
@@ -223,7 +222,9 @@ const CheckResult = () => {
     } catch (checkErr) {
       console.error("[PENSION CHECK ERROR]", {
         parsed,
-        candidates,
+        firestorePath: `pension_results/${winnerCandidate?.drawNo}`,
+        docExists: winnerCandidate?.exists,
+        docData: winnerCandidate?.data,
         error: checkErr
       });
       throw checkErr;
@@ -396,15 +397,49 @@ const CheckResult = () => {
           {/* 3. 추첨결과 카드 - 초슬림화 */}
           <div style={{ 
             backgroundColor: topRank > 0 ? '#FEF3C7' : 'white', 
-            borderRadius: '16px', padding: '10px 16px', textAlign: 'center',
+            borderRadius: '16px', padding: '12px 16px', textAlign: 'center',
             boxShadow: '0 2px 8px rgba(0,0,0,0.02)',
             border: topRank > 0 ? '2px solid #F59E0B' : '1px solid #E2E8F0'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
               {topRank > 0 ? (
                 <>
-                  <Trophy size={24} color="#F59E0B" />
-                  <h2 style={{ fontSize: '1.05rem', fontWeight: '950', color: '#92400E' }}>{topRank}등 당첨! 축하합니다</h2>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Trophy size={24} color="#F59E0B" />
+                    <h2 style={{ fontSize: '1.05rem', fontWeight: '950', color: '#92400E' }}>
+                      {parsedData?.type === 'pension720' ? (results[0]?.resultLabel || `${topRank}등`) : `${topRank}등`} 당첨! 축하합니다
+                    </h2>
+                  </div>
+                  {parsedData?.type === 'pension720' && (() => {
+                    const label = results[0]?.resultLabel || `${topRank}등`;
+                    const prizeLabel = PENSION_PRIZE_LABELS[label];
+                    
+                    if (prizeLabel) {
+                      console.log("[PENSION RESULT DISPLAY]", {
+                        rank: results[0]?.rank,
+                        resultLabel: label,
+                        prizeLabel,
+                        drawNo: parsedData?.drawNo,
+                        group: results[0]?.group,
+                        numberText: parsedData?.numberText
+                      });
+                      
+                      return (
+                        <div style={{ 
+                          marginTop: '2px', 
+                          padding: '6px 16px', 
+                          backgroundColor: 'rgba(245, 158, 11, 0.15)', 
+                          borderRadius: '10px',
+                          border: '1px solid rgba(245, 158, 11, 0.2)'
+                        }}>
+                          <p style={{ fontSize: '1rem', fontWeight: '950', color: '#B45309' }}>
+                            당첨금: {prizeLabel}
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </>
               ) : (
                 <>

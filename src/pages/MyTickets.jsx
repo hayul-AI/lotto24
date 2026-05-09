@@ -6,18 +6,27 @@ import { Trash2, ChevronLeft, Calendar, Trophy, History, ExternalLink, Filter, A
 const MyTickets = () => {
   const navigate = useNavigate();
   const [history, setHistory] = useState([]);
-  const [filter, setFilter] = useState('latest'); // latest, drawNo
+  const [sortFilter, setSortFilter] = useState('latest'); // latest, drawNo
+  const [typeFilter, setTypeFilter] = useState('all'); // all, lotto, pension
 
   useEffect(() => {
     loadHistory();
-  }, [filter]);
+  }, [sortFilter, typeFilter]);
 
   const loadHistory = () => {
     try {
       let data = getQrHistory();
       console.log(`[MyTickets] Raw history loaded: ${data.length} items`);
 
-      if (filter === 'drawNo') {
+      // 1. 종류 필터링
+      if (typeFilter === 'lotto') {
+        data = data.filter(item => item.type === 'lotto645');
+      } else if (typeFilter === 'pension') {
+        data = data.filter(item => item.type === 'pension720');
+      }
+
+      // 2. 정렬 필터링
+      if (sortFilter === 'drawNo') {
         data.sort((a, b) => (b?.drawNo ?? 0) - (a?.drawNo ?? 0));
       } else {
         data.sort((a, b) => new Date(b?.checkedAt || 0) - new Date(a?.checkedAt || 0));
@@ -53,26 +62,36 @@ const MyTickets = () => {
 
   const renderGameRow = (game, record) => {
     if (!game || !record) return null;
+    const isPension = record.type === 'pension720';
     const gameResult = record.results?.find(r => r?.label === game?.label);
     const winNums = record.winningNumbers || [];
     const bonusNo = record.bonusNo;
 
     return (
       <tr key={game.label} style={{ borderBottom: '1px solid #F1F5F9' }}>
-        <td style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.85rem' }}>{game?.label || '-'}</td>
+        <td style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.85rem' }}>
+          {isPension ? `${game?.group || '?'}조` : (game?.label || '-')}
+        </td>
         <td style={{ ...tdStyle, color: (gameResult?.rank > 0) ? '#2563EB' : '#94A3B8', fontWeight: '900', fontSize: '0.85rem' }}>
           {gameResult?.rank > 0 ? `${gameResult.rank}등` : '낙첨'}
         </td>
         <td style={{ ...tdStyle, textAlign: 'left', padding: '12px 8px' }}>
           <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
             {(game?.numbers || []).map((n, i) => {
-              const isMatch = winNums.includes(n);
-              const isBonusMatch = n === bonusNo;
-              const ballBg = isMatch ? getBallColor(n) : (isBonusMatch ? '#F59E0B' : 'transparent');
+              // 연금복권은 인덱스별 비교, 로또는 포함 여부 비교
+              const isMatch = isPension 
+                ? (winNums[i] === n)
+                : winNums.includes(n);
+              
+              const isBonusMatch = !isPension && n === bonusNo;
+              
+              const ballBg = isMatch 
+                ? (isPension ? '#2563EB' : getBallColor(n)) 
+                : (isBonusMatch ? '#F59E0B' : 'transparent');
               
               return (
                 <span key={i} style={{
-                  width: '26px', height: '26px', borderRadius: '50%',
+                  width: '26px', height: '26px', borderRadius: isPension ? '4px' : '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '0.8rem', fontWeight: '900',
                   backgroundColor: ballBg,
@@ -112,20 +131,45 @@ const MyTickets = () => {
         )}
       </header>
 
-      {/* 필터 영역 */}
-      <div style={{ padding: '12px 20px', display: 'flex', gap: '8px', overflowX: 'auto', backgroundColor: 'white', borderBottom: '1px solid #F1F5F9' }}>
-        <button 
-          onClick={() => setFilter('latest')}
-          style={{ ...filterBtnStyle, backgroundColor: filter === 'latest' ? '#2563EB' : '#F1F5F9', color: filter === 'latest' ? 'white' : '#64748B' }}
-        >
-          <ArrowUpDown size={14} /> 최신순
-        </button>
-        <button 
-          onClick={() => setFilter('drawNo')}
-          style={{ ...filterBtnStyle, backgroundColor: filter === 'drawNo' ? '#2563EB' : '#F1F5F9', color: filter === 'drawNo' ? 'white' : '#64748B' }}
-        >
-          <Filter size={14} /> 회차순
-        </button>
+      {/* 필터 및 정렬 영역 */}
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #F1F5F9' }}>
+        {/* 종류 필터 */}
+        <div style={{ padding: '12px 20px 6px', display: 'flex', gap: '8px', overflowX: 'auto', scrollbarWidth: 'none' }}>
+          <button 
+            onClick={() => setTypeFilter('all')}
+            style={{ ...filterBtnStyle, backgroundColor: typeFilter === 'all' ? '#1E293B' : '#F1F5F9', color: typeFilter === 'all' ? 'white' : '#64748B' }}
+          >
+            전체
+          </button>
+          <button 
+            onClick={() => setTypeFilter('lotto')}
+            style={{ ...filterBtnStyle, backgroundColor: typeFilter === 'lotto' ? '#2563EB' : '#F1F5F9', color: typeFilter === 'lotto' ? 'white' : '#64748B' }}
+          >
+            로또 6/45
+          </button>
+          <button 
+            onClick={() => setTypeFilter('pension')}
+            style={{ ...filterBtnStyle, backgroundColor: typeFilter === 'pension' ? '#10B981' : '#F1F5F9', color: typeFilter === 'pension' ? 'white' : '#64748B' }}
+          >
+            연금복권 720+
+          </button>
+        </div>
+
+        {/* 정렬 필터 */}
+        <div style={{ padding: '6px 20px 12px', display: 'flex', gap: '8px' }}>
+          <button 
+            onClick={() => setSortFilter('latest')}
+            style={{ ...sortBtnStyle, color: sortFilter === 'latest' ? '#1E293B' : '#94A3B8', fontWeight: sortFilter === 'latest' ? '900' : '700' }}
+          >
+            <ArrowUpDown size={14} /> 최신순
+          </button>
+          <button 
+            onClick={() => setSortFilter('drawNo')}
+            style={{ ...sortBtnStyle, color: sortFilter === 'drawNo' ? '#1E293B' : '#94A3B8', fontWeight: sortFilter === 'drawNo' ? '900' : '700' }}
+          >
+            <Filter size={14} /> 회차순
+          </button>
+        </div>
       </div>
 
       <div style={{ padding: '12px' }}>
@@ -151,15 +195,22 @@ const MyTickets = () => {
                 <div key={recordId} style={{ backgroundColor: 'white', borderRadius: '24px', overflow: 'hidden', border: '1px solid #E2E8F0', boxShadow: '0 4px 15px rgba(0,0,0,0.04)' }}>
                   {/* 카드 상단 정보 */}
                   <div style={{ padding: '14px 18px', backgroundColor: '#F8FAFC', borderBottom: '1px solid #F1F5F9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
-                      <span style={{ fontSize: '1.15rem', fontWeight: '950', color: '#1E293B' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                      <span style={{ 
+                        backgroundColor: record.type === 'pension720' ? '#ECFDF5' : '#EFF6FF', 
+                        color: record.type === 'pension720' ? '#059669' : '#2563EB', 
+                        fontSize: '0.65rem', fontWeight: '900', padding: '2px 8px', borderRadius: '6px' 
+                      }}>
+                        {record.type === 'pension720' ? '연금복권 720+' : '로또 6/45'}
+                      </span>
+                      <span style={{ fontSize: '1.05rem', fontWeight: '950', color: '#1E293B' }}>
                          제 {drawNo}회
                       </span>
-                      <span style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: '700' }}>
+                      <span style={{ fontSize: '0.7rem', color: '#94A3B8', fontWeight: '700' }}>
                         {record?.checkedAt ? new Date(record.checkedAt).toLocaleDateString().replace(/\./g, '/').slice(0, -1) : '-'}
                       </span>
                       {(record?.topRank ?? 0) > 0 && (
-                        <span style={{ backgroundColor: '#FEF3C7', color: '#B45309', fontSize: '0.7rem', fontWeight: '900', padding: '3px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '3px', marginLeft: '4px' }}>
+                        <span style={{ backgroundColor: '#FEF3C7', color: '#B45309', fontSize: '0.7rem', fontWeight: '900', padding: '3px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '3px' }}>
                           <Trophy size={12} /> {record.topRank}등
                         </span>
                       )}
@@ -223,6 +274,10 @@ const filterBtnStyle = {
 
 const thStyle = {
   padding: '12px 8px', fontSize: '0.75rem', fontWeight: '900', color: '#94A3B8', textAlign: 'center'
+};
+
+const sortBtnStyle = {
+  background: 'none', border: 'none', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 0'
 };
 
 const tdStyle = {
