@@ -41,7 +41,19 @@ const QRScannerPage = () => {
       const timer = setTimeout(() => {
         startScanner();
       }, 400);
-      return () => clearTimeout(timer);
+
+      // 5초 후에도 여전히 로딩 중이면 강제 취소/홈 이동 (행 방지)
+      const timeoutTimer = setTimeout(() => {
+        if (isStartingRef.current) {
+          console.warn("Native scanner initialization timed out.");
+          navigate("/", { replace: true });
+        }
+      }, 5500);
+
+      return () => {
+        clearTimeout(timer);
+        clearTimeout(timeoutTimer);
+      };
     }
 
     // 웹 환경에서는 클립보드 자동 감지
@@ -199,12 +211,26 @@ const QRScannerPage = () => {
   // ── 렌더링 분기: 네이티브 스캐닝 중 (안내 페이지 제거됨) ──
   if (isNative) {
     return (
-      <div className="full-flex-center" style={{ minHeight: "100vh", backgroundColor: "white", flexDirection: "column", gap: "20px" }}>
+      <div className="full-flex-center" style={{ minHeight: "100vh", backgroundColor: "white", flexDirection: "column", gap: "20px", padding: "20px" }}>
         <Loader2 className="animate-spin" size={48} color="var(--primary-blue)" />
         <div style={{ textAlign: "center" }}>
           <p style={{ fontWeight: "900", fontSize: "1.2rem", color: "#1E293B", marginBottom: "8px" }}>QR 스캐너를 여는 중...</p>
           <p style={{ color: "#64748B", fontSize: "0.9rem" }}>잠시만 기다려 주세요.</p>
         </div>
+        <div style={{ marginTop: "20px", width: "100%", maxWidth: "200px" }}>
+          <button 
+            onClick={() => navigate("/", { replace: true })}
+            style={{ 
+              width: "100%", padding: "12px", borderRadius: "12px", border: "1px solid #E2E8F0",
+              backgroundColor: "white", color: "#64748B", fontWeight: "800", fontSize: "0.9rem"
+            }}
+          >
+            취소하고 돌아가기
+          </button>
+        </div>
+        <p style={{ fontSize: "0.7rem", color: "#CBD5E1", textAlign: "center", marginTop: "20px" }}>
+          장시간 응답이 없으면 버튼을 눌러주세요.
+        </p>
       </div>
     );
   }
