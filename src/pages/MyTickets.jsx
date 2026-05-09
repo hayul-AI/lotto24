@@ -69,10 +69,10 @@ const MyTickets = () => {
 
     return (
       <tr key={game.label} style={{ borderBottom: '1px solid #F1F5F9' }}>
-        <td style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.85rem' }}>
+        <td style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '1rem' }}>
           {isPension ? `${game?.group || '?'}조` : (game?.label || '-')}
         </td>
-        <td style={{ ...tdStyle, color: (gameResult?.rank > 0) ? '#2563EB' : '#94A3B8', fontWeight: '900', fontSize: '0.85rem' }}>
+        <td style={{ ...tdStyle, color: (gameResult?.rank > 0) ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '1rem' }}>
           {gameResult?.rank > 0 ? `${gameResult.rank}등` : '낙첨'}
         </td>
         <td style={{ ...tdStyle, textAlign: 'left', padding: '12px 8px' }}>
@@ -91,9 +91,9 @@ const MyTickets = () => {
               
               return (
                 <span key={i} style={{
-                  width: '26px', height: '26px', borderRadius: isPension ? '4px' : '50%',
+                  width: '28px', height: '28px', borderRadius: isPension ? '4px' : '50%',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '0.8rem', fontWeight: '900',
+                  fontSize: '0.9rem', fontWeight: '900',
                   backgroundColor: ballBg,
                   color: (isMatch || isBonusMatch) ? 'white' : '#64748B',
                   border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0'
@@ -122,10 +122,10 @@ const MyTickets = () => {
           >
             <ChevronLeft size={24} />
           </button>
-          <h1 style={{ fontSize: '1.1rem', fontWeight: '900', color: '#1E293B' }}>확인 목록</h1>
+          <h1 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#1E293B' }}>확인 목록</h1>
         </div>
         {history.length > 0 && (
-          <button onClick={handleClear} style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: '0.75rem', fontWeight: '800' }}>
+          <button onClick={handleClear} style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: '0.85rem', fontWeight: '800' }}>
             전체 비우기
           </button>
         )}
@@ -178,7 +178,7 @@ const MyTickets = () => {
             <div style={{ width: '80px', height: '80px', backgroundColor: '#F1F5F9', borderRadius: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
               <History size={40} color="#CBD5E1" />
             </div>
-            <h2 style={{ fontSize: '1.1rem', fontWeight: '900', color: '#1E293B', marginBottom: '8px' }}>저장된 기록이 없습니다</h2>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#1E293B', marginBottom: '8px' }}>저장된 기록이 없습니다</h2>
             <button onClick={() => navigate('/scanner')} style={{ marginTop: '20px', padding: '12px 24px', borderRadius: '12px', border: 'none', backgroundColor: '#2563EB', color: 'white', fontWeight: '800' }}>스캔하러 가기</button>
           </div>
         ) : (
@@ -199,19 +199,19 @@ const MyTickets = () => {
                       <span style={{ 
                         backgroundColor: record.type === 'pension720' ? '#ECFDF5' : '#EFF6FF', 
                         color: record.type === 'pension720' ? '#059669' : '#2563EB', 
-                        fontSize: '0.65rem', fontWeight: '900', padding: '2px 8px', borderRadius: '6px' 
+                        fontSize: '0.75rem', fontWeight: '900', padding: '2px 8px', borderRadius: '6px' 
                       }}>
                         {record.type === 'pension720' ? '연금복권 720+' : '로또 6/45'}
                       </span>
-                      <span style={{ fontSize: '1.05rem', fontWeight: '950', color: '#1E293B' }}>
+                      <span style={{ fontSize: '1.15rem', fontWeight: '950', color: '#1E293B' }}>
                          제 {drawNo}회
                       </span>
-                      <span style={{ fontSize: '0.7rem', color: '#94A3B8', fontWeight: '700' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#94A3B8', fontWeight: '700' }}>
                         {record?.checkedAt ? new Date(record.checkedAt).toLocaleDateString().replace(/\./g, '/').slice(0, -1) : '-'}
                       </span>
                       {(record?.topRank ?? 0) > 0 && (
-                        <span style={{ backgroundColor: '#FEF3C7', color: '#B45309', fontSize: '0.7rem', fontWeight: '900', padding: '3px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                          <Trophy size={12} /> {record.topRank}등
+                        <span style={{ backgroundColor: '#FEF3C7', color: '#B45309', fontSize: '0.8rem', fontWeight: '900', padding: '3px 8px', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                          <Trophy size={14} /> {record.topRank}등
                         </span>
                       )}
                     </div>
@@ -269,19 +269,19 @@ const MyTickets = () => {
 };
 
 const filterBtnStyle = {
-  padding: '8px 14px', borderRadius: '20px', border: 'none', fontSize: '0.75rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0
+  padding: '10px 16px', borderRadius: '20px', border: 'none', fontSize: '0.85rem', fontWeight: '800', display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0
 };
 
 const thStyle = {
-  padding: '12px 8px', fontSize: '0.75rem', fontWeight: '900', color: '#94A3B8', textAlign: 'center'
+  padding: '12px 8px', fontSize: '0.85rem', fontWeight: '900', color: '#94A3B8', textAlign: 'center'
 };
 
 const sortBtnStyle = {
-  background: 'none', border: 'none', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 0'
+  background: 'none', border: 'none', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 0'
 };
 
 const tdStyle = {
-  padding: '14px 8px', textAlign: 'center'
+  padding: '14px 8px', textAlign: 'center', fontSize: '0.9rem'
 };
 
 export default MyTickets;
