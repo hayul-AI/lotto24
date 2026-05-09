@@ -30,7 +30,7 @@ const AdminLotteryPage = () => {
   const [lottoForm, setLottoForm] = useState({
     drawNo: '', drawDate: '',
     num1: '', num2: '', num3: '', num4: '', num5: '', num6: '',
-    bonusNo: '', firstPrizeAmount: ''
+    bonusNo: '', firstPrizeAmount: '', firstWinnerCount: ''
   });
 
   // 연금복권 입력 필드
@@ -172,6 +172,7 @@ const AdminLotteryPage = () => {
         bonusNo: Number(lottoForm.bonusNo),
         drawDate: lottoForm.drawDate,
         firstPrizeAmount: Number(lottoForm.firstPrizeAmount || 0),
+        firstWinnerCount: Number(lottoForm.firstWinnerCount || 0),
         verified: true,
         source: "admin_manual",
         updatedAt: serverTimestamp()
@@ -374,14 +375,17 @@ const AdminLotteryPage = () => {
                     </div>
                   </div>
                   
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '24px' }}>
-                    <div style={{ flex: '1 1 100px' }}>
-                      <Input label="보너스" value={lottoForm.bonusNo} onChange={v => setLottoForm({...lottoForm, bonusNo: v})} />
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '24px' }}>
+                      <div style={{ flex: '1 1 80px' }}>
+                        <Input label="보너스" value={lottoForm.bonusNo} onChange={v => setLottoForm({...lottoForm, bonusNo: v})} />
+                      </div>
+                      <div style={{ flex: '2 1 150px' }}>
+                        <Input label="1등 총 당첨금 (원)" value={lottoForm.firstPrizeAmount} onChange={v => setLottoForm({...lottoForm, firstPrizeAmount: v})} />
+                      </div>
+                      <div style={{ flex: '1 1 100px' }}>
+                        <Input label="당첨자 수" value={lottoForm.firstWinnerCount} onChange={v => setLottoForm({...lottoForm, firstWinnerCount: v})} />
+                      </div>
                     </div>
-                    <div style={{ flex: '1 1 200px' }}>
-                      <Input label="1등 금액 (원)" value={lottoForm.firstPrizeAmount} onChange={v => setLottoForm({...lottoForm, firstPrizeAmount: v})} />
-                    </div>
-                  </div>
                   <button type="submit" disabled={loading} className="btn-cta w-full">수동 저장</button>
                 </form>
               ) : (
