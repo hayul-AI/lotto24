@@ -116,38 +116,46 @@ export const parsePensionQr = (decodedText) => {
   const rawQr = String(decodedText || "").trim();
   let v = "";
 
+  // 1. URL에서 v 파라미터 추출 시도
   try {
-    const url = new URL(rawQr);
-    v = url.searchParams.get("v") || "";
-  } catch (e) {
-    const match = rawQr.match(/v=([^&]+)/);
-    v = match ? match[1] : "";
-  }
+    if (rawQr.includes('?')) {
+      const url = new URL(rawQr);
+      v = url.searchParams.get("v") || "";
+    }
+  } catch (e) {}
 
-  // v값이 없으면 원문에서 숫자만 추출 시도
+  // 2. v= 패턴으로 직접 추출 시도
   if (!v) {
-    const pureDigits = rawQr.replace(/[^0-9]/g, '');
-    if (pureDigits.length === 11) v = pureDigits;
+    const vMatch = rawQr.match(/v=([^&]+)/);
+    if (vMatch) v = vMatch[1];
   }
 
-  // 'p' 접두사 제거 (연금복권 특유의 접두사)
+  // 3. v값이 없으면 원문 자체를 v로 가정 (숫자와 'p'만 남김)
+  if (!v) {
+    v = rawQr.replace(/[^0-9pP]/g, '');
+  }
+
+  // 'p' 접두사 제거
   if (v.toLowerCase().startsWith('p')) {
     v = v.substring(1);
   }
 
-  if (v && v.length >= 11) {
-    const drawNo = parseInt(v.substring(0, 4));
-    const group = parseInt(v.substring(4, 5));
-    const number = v.substring(5, 11);
+  // 연금복권 데이터 형식: {회차4}{조1}{번호6} = 총 11자리
+  // 최근 회차는 3자리일 수도 있으므로 최소 10자리 이상 체크
+  if (v && v.length >= 10 && v.length <= 13) {
+    // 뒤에서부터 6자리는 번호, 그 앞 1자리는 조, 나머지는 회차
+    const number = v.substring(v.length - 6);
+    const group = v.substring(v.length - 7, v.length - 6);
+    const drawNo = v.substring(0, v.length - 7);
 
-    if (!isNaN(drawNo) && !isNaN(group) && number.length === 6) {
+    if (number.length === 6 && !isNaN(parseInt(drawNo)) && !isNaN(parseInt(group))) {
       return {
         success: true,
         data: {
           type: "pension720",
           drawNo: Number(drawNo),
           group: Number(group),
-          number,
+          number: String(number),
           fullNumber: `${group}조 ${number}`,
           rawQr
         }

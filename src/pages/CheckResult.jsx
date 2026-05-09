@@ -89,35 +89,42 @@ const CheckResult = () => {
   };
 
   const handlePensionCheck = async (parsed) => {
-    const { data: winInfo, error: fetchErr } = await getPensionResultByDrawNo(parsed.drawNo);
+    const drawNo = Number(parsed.drawNo);
+    if (isNaN(drawNo)) throw new Error("유효하지 않은 회차 번호입니다.");
+
+    const { data: winInfo, error: fetchErr } = await getPensionResultByDrawNo(drawNo);
     if (fetchErr || !winInfo) {
-      throw new Error(`제${parsed.drawNo}회 연금복권 당첨 데이터가 아직 없습니다.`);
+      throw new Error(`제${drawNo}회 연금복권 당첨 데이터가 아직 없습니다.`);
     }
 
     setWinningInfo(winInfo);
 
-    // 연금복권은 보통 한 번에 한 세트(조+번호)를 스캔하므로 1개 결과 처리
-    // parsed: { type, drawNo, group, number, fullNumber, rawQr }
-    // winInfo.firstPrizeNumber: { group, numbers: [n,n,n,n,n,n] }
-    
+    // 연금복권 데이터 구조화 및 당첨 확인
+    const ticketNumbers = String(parsed.number).split('').map(Number);
     const myTicket = { 
-      grade: parsed.group, 
-      numbers: parsed.number.split('').map(Number) 
+      grade: Number(parsed.group), 
+      numbers: ticketNumbers
     };
     
-    const winNumbers = {
-      grade: Number(winInfo.firstPrizeNumber.group),
-      winning: winInfo.firstPrizeNumber.numbers.map(Number)
-    };
+    // Firestore 데이터에서 당첨 번호 추출
+    const winGroup = Number(winInfo.firstPrizeNumber?.group ?? 0);
+    const winNumbers = Array.isArray(winInfo.firstPrizeNumber?.numbers) 
+      ? winInfo.firstPrizeNumber.numbers.map(Number) 
+      : [];
 
-    const winResult = checkPensionRank(myTicket, winNumbers);
+    if (winNumbers.length !== 6) {
+      throw new Error(`제${drawNo}회 당첨번호 데이터가 불완전합니다.`);
+    }
+
+    const winResult = checkPensionRank(myTicket, { grade: winGroup, winning: winNumbers });
     
-    // 로또와 형식 통일
     const gameResults = [{
       label: "A",
-      numbers: myTicket.numbers,
-      group: parsed.group,
-      ...winResult
+      numbers: ticketNumbers,
+      group: Number(parsed.group),
+      rank: winResult.rank,
+      prize: winResult.prize,
+      resultLabel: winResult.label // label 대신 resultLabel로 구분 저장
     }];
 
     setResults(gameResults);
@@ -284,7 +291,7 @@ const CheckResult = () => {
                       {parsedData?.type === 'lotto645' ? res.label : `${res.group}조`}
                     </td>
                     <td style={{ ...tdStyle, color: res.rank > 0 ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '0.9rem' }}>
-                      {res.rank > 0 ? `${res.label}` : '낙첨'}
+                      {res.rank > 0 ? (res.resultLabel || res.label || `${res.rank}등`) : '낙첨'}
                     </td>
                     <td style={{ ...tdStyle, textAlign: 'left', padding: '10px 8px' }}>
                       <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
