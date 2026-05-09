@@ -67,46 +67,82 @@ const MyTickets = () => {
     const winNums = record.winningNumbers || [];
     const bonusNo = record.bonusNo;
 
+    // 데이터 매핑 (사용자 요청 규칙 반영)
+    const displayGroup = isPension ? (game.group || record.group || record.selectedGroup || record.pensionGroup || "-") : "";
+    const displayNumberText = isPension ? (game.numberText || record.numberText || (game.numbers ? game.numbers.join("") : "") || record.selectedNumber || "-") : "";
+    
+    let displayRankText = "-";
+    if (gameResult) {
+      if (gameResult.rank > 0) {
+        displayRankText = gameResult.resultLabel || gameResult.label || `${gameResult.rank}등`;
+      } else if (gameResult.resultStatus === "pending") {
+        displayRankText = "추첨전";
+      } else {
+        displayRankText = "낙첨";
+      }
+    }
+
+    const NumbersCell = (
+      <td key="numbers" style={{ ...tdStyle, textAlign: 'left', padding: '12px 8px' }}>
+        <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+          {(game?.numbers || []).map((n, i) => {
+            const isMatch = isPension 
+              ? (winNums[i] === n)
+              : winNums.includes(n);
+            
+            const isBonusMatch = !isPension && n === bonusNo;
+            
+            const ballBg = isMatch 
+              ? (isPension ? '#2563EB' : getBallColor(n)) 
+              : (isBonusMatch ? '#F59E0B' : 'transparent');
+            
+            return (
+              <span key={i} style={{
+                width: '28px', height: '28px', borderRadius: isPension ? '4px' : '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '0.9rem', fontWeight: '900',
+                backgroundColor: ballBg,
+                color: (isMatch || isBonusMatch) ? 'white' : '#64748B',
+                border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0'
+              }}>
+                {n}
+              </span>
+            );
+          })}
+        </div>
+      </td>
+    );
+
+    const ResultCell = (
+      <td key="result" style={{ ...tdStyle, color: (gameResult?.rank > 0) ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '1rem' }}>
+        <div>{displayRankText}</div>
+        {gameResult?.rank > 0 && gameResult.prizeLabel && (
+          <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748B', marginTop: '2px' }}>{gameResult.prizeLabel}</div>
+        )}
+      </td>
+    );
+
+    const LabelCell = (
+      <td key="label" style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '1rem' }}>
+        {isPension ? `${displayGroup}조` : (game?.label || '-')}
+      </td>
+    );
+
     return (
       <tr key={game.label} style={{ borderBottom: '1px solid #F1F5F9' }}>
-        <td style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '1rem' }}>
-          {isPension ? `${game?.group || '?'}조` : (game?.label || '-')}
-        </td>
-        <td style={{ ...tdStyle, color: (gameResult?.rank > 0) ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '1rem' }}>
-          <div>{gameResult?.rank > 0 ? `${gameResult.rank}등` : '낙첨'}</div>
-          {gameResult?.rank > 0 && gameResult.prizeLabel && (
-            <div style={{ fontSize: '0.7rem', fontWeight: '800', color: '#64748B', marginTop: '2px' }}>{gameResult.prizeLabel}</div>
-          )}
-        </td>
-        <td style={{ ...tdStyle, textAlign: 'left', padding: '12px 8px' }}>
-          <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-            {(game?.numbers || []).map((n, i) => {
-              // 연금복권은 인덱스별 비교, 로또는 포함 여부 비교
-              const isMatch = isPension 
-                ? (winNums[i] === n)
-                : winNums.includes(n);
-              
-              const isBonusMatch = !isPension && n === bonusNo;
-              
-              const ballBg = isMatch 
-                ? (isPension ? '#2563EB' : getBallColor(n)) 
-                : (isBonusMatch ? '#F59E0B' : 'transparent');
-              
-              return (
-                <span key={i} style={{
-                  width: '28px', height: '28px', borderRadius: isPension ? '4px' : '50%',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '0.9rem', fontWeight: '900',
-                  backgroundColor: ballBg,
-                  color: (isMatch || isBonusMatch) ? 'white' : '#64748B',
-                  border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0'
-                }}>
-                  {n}
-                </span>
-              );
-            })}
-          </div>
-        </td>
+        {isPension ? (
+          <>
+            {LabelCell}
+            {NumbersCell}
+            {ResultCell}
+          </>
+        ) : (
+          <>
+            {LabelCell}
+            {ResultCell}
+            {NumbersCell}
+          </>
+        )}
       </tr>
     );
   };
@@ -252,9 +288,19 @@ const MyTickets = () => {
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                       <thead>
                         <tr style={{ backgroundColor: '#FBFCFE', borderBottom: '1.5px solid #F1F5F9' }}>
-                          <th style={{ ...thStyle, width: '15%' }}>게임</th>
-                          <th style={{ ...thStyle, width: '20%' }}>결과</th>
-                          <th style={{ ...thStyle, textAlign: 'left', width: '65%' }}>번호</th>
+                          {record.type === 'pension720' ? (
+                            <>
+                              <th style={{ ...thStyle, width: '15%' }}>조</th>
+                              <th style={{ ...thStyle, textAlign: 'left', width: '60%' }}>번호</th>
+                              <th style={{ ...thStyle, width: '25%' }}>결과</th>
+                            </>
+                          ) : (
+                            <>
+                              <th style={{ ...thStyle, width: '15%' }}>게임</th>
+                              <th style={{ ...thStyle, width: '20%' }}>결과</th>
+                              <th style={{ ...thStyle, textAlign: 'left', width: '65%' }}>번호</th>
+                            </>
+                          )}
                         </tr>
                       </thead>
                       <tbody>
@@ -263,11 +309,13 @@ const MyTickets = () => {
                             {renderGameRow(game, record)}
                           </React.Fragment>
                         )) : (
-                          <tr>
-                            <td colSpan="3" style={{ padding: '30px', textAlign: 'center', color: '#94A3B8', fontSize: '0.8rem' }}>
-                              게임 데이터 정보가 없습니다.
-                            </td>
-                          </tr>
+                          record.type !== 'pension720' && (
+                            <tr>
+                              <td colSpan="3" style={{ padding: '30px', textAlign: 'center', color: '#94A3B8', fontSize: '0.8rem' }}>
+                                게임 데이터 정보가 없습니다.
+                              </td>
+                            </tr>
+                          )
                         )}
                       </tbody>
                     </table>

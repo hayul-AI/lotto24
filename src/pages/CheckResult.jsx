@@ -546,37 +546,44 @@ const CheckResult = () => {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead style={{ backgroundColor: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
                 <tr>
-                  <th style={{ ...thStyle, width: '20%' }}>{parsedData?.type === 'lotto645' ? '게임' : '조'}</th>
-                  <th style={{ ...thStyle, width: '20%' }}>결과</th>
-                  <th style={{ ...thStyle, textAlign: 'left', width: '60%' }}>선택번호</th>
+                  {parsedData?.type === 'pension720' ? (
+                    <>
+                      <th style={{ ...thStyle, width: '15%' }}>조</th>
+                      <th style={{ ...thStyle, textAlign: 'left', width: '60%' }}>번호</th>
+                      <th style={{ ...thStyle, width: '25%' }}>결과</th>
+                    </>
+                  ) : (
+                    <>
+                      <th style={{ ...thStyle, width: '20%' }}>게임</th>
+                      <th style={{ ...thStyle, width: '20%' }}>결과</th>
+                      <th style={{ ...thStyle, textAlign: 'left', width: '60%' }}>선택번호</th>
+                    </>
+                  )}
                 </tr>
               </thead>
               <tbody>
-                {results.map((res, i) => (
-                  <tr key={i} style={{ borderBottom: i === results.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
-                    <td style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.9rem' }}>
-                      {parsedData?.type === 'lotto645' ? res.label : `${res.group}조`}
+                {results.map((res, i) => {
+                  const isPension = parsedData?.type === 'pension720';
+                  
+                  const LabelCell = (
+                    <td key="label" style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.9rem' }}>
+                      {isPension ? `${res.group || "-"}조` : (res.label || '-')}
                     </td>
-                    <td style={{ ...tdStyle, color: res.rank > 0 ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '0.9rem' }}>
+                  );
+
+                  const ResultCell = (
+                    <td key="result" style={{ ...tdStyle, color: res.rank > 0 ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '0.9rem' }}>
                       <div>{res.rank > 0 ? (res.resultLabel || res.label || `${res.rank}등`) : '낙첨'}</div>
                       {res.rank > 0 && res.prizeLabel && (
                         <div style={{ fontSize: '0.7rem', fontWeight: '700', color: '#64748B', marginTop: '2px' }}>{res.prizeLabel}</div>
                       )}
                     </td>
-                    <td style={{ ...tdStyle, textAlign: 'left', padding: '10px 8px' }}>
+                  );
+
+                  const NumbersCell = (
+                    <td key="numbers" style={{ ...tdStyle, textAlign: 'left', padding: '10px 8px' }}>
                       <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-                        {parsedData?.type === 'lotto645' ? (
-                          (res?.numbers || []).map((n, idx) => {
-                            const isMatch = (winningInfo?.numbers || []).includes(n);
-                            const isBonusMatch = n === winningInfo?.bonusNo;
-                            const ballBg = isMatch ? getBallColor(n) : (isBonusMatch ? '#F59E0B' : 'transparent');
-                            return (
-                              <span key={idx} style={{ width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '900', backgroundColor: ballBg, color: (isMatch || isBonusMatch) ? 'white' : '#64748B', border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0' }}>
-                                {n}
-                              </span>
-                            );
-                          })
-                        ) : (
+                        {isPension ? (
                           (res?.numbers || []).map((n, idx) => {
                             const winNums = winningInfo?.firstPrizeNumber?.numbers?.map(Number) || [];
                             let currentMatchCount = 0;
@@ -591,11 +598,40 @@ const CheckResult = () => {
                               </span>
                             );
                           })
+                        ) : (
+                          (res?.numbers || []).map((n, idx) => {
+                            const isMatch = (winningInfo?.numbers || []).includes(n);
+                            const isBonusMatch = n === winningInfo?.bonusNo;
+                            const ballBg = isMatch ? getBallColor(n) : (isBonusMatch ? '#F59E0B' : 'transparent');
+                            return (
+                              <span key={idx} style={{ width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '900', backgroundColor: ballBg, color: (isMatch || isBonusMatch) ? 'white' : '#64748B', border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0' }}>
+                                {n}
+                              </span>
+                            );
+                          })
                         )}
                       </div>
                     </td>
-                  </tr>
-                ))}
+                  );
+
+                  return (
+                    <tr key={i} style={{ borderBottom: i === results.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
+                      {isPension ? (
+                        <>
+                          {LabelCell}
+                          {NumbersCell}
+                          {ResultCell}
+                        </>
+                      ) : (
+                        <>
+                          {LabelCell}
+                          {ResultCell}
+                          {NumbersCell}
+                        </>
+                      )}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
