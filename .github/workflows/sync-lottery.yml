@@ -5,6 +5,7 @@ on:
   schedule:
     - cron: "0 12 * * 6"    # 토요일 21:00 KST
     - cron: "20 12 * * 6"   # 토요일 21:20 KST
+    - cron: "40 12 * * 6"   # 토요일 21:40 KST
   workflow_dispatch:
     inputs:
       mode:
