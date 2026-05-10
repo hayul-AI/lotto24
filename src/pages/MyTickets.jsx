@@ -292,7 +292,7 @@ const MyTickets = () => {
                     style={{ padding: '0', cursor: 'pointer' }} 
                     onClick={() => {
                       if (record && (record.rawQr || record.drawNo)) {
-                        navigate('/qr-result', { state: { rawQr: record.rawQr, parsed: record } });
+                        navigate('/qr-result', { state: { rawQr: record.rawQr, parsed: record, fromHistory: true } });
                       }
                     }}
                   >

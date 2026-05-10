@@ -84,8 +84,8 @@ const CheckResult = () => {
       
       if (msg.includes("데이터가 아직 없습니다") || msg.includes("등록되지 않았습니다")) {
         setIsPending(true);
-        // 추첨 전 복권도 중복 확인 및 저장 시도
-        if (parsedData || state.parsed) {
+        // 추첨 전 복권도 중복 확인 및 저장 시도 (확인목록에서 온 것이 아닐 때만)
+        if (!state.fromHistory && (parsedData || state.parsed)) {
           const target = parsedData || state.parsed;
           saveToHistory(target, null, [], 0, null, { result: "추첨전", resultStatus: "pending" });
         }
@@ -156,7 +156,9 @@ const CheckResult = () => {
     setTopRank(bestRank);
     setTotalPrize({ amount: totalAmt, label: totalLabel, hasUnknown, winCount });
 
-    saveToHistory(parsed, winInfo, gameResults, bestRank, { amount: totalAmt, label: totalLabel, hasUnknown, winCount });
+    if (!location.state?.fromHistory) {
+      saveToHistory(parsed, winInfo, gameResults, bestRank, { amount: totalAmt, label: totalLabel, hasUnknown, winCount });
+    }
   };
 
   const handlePensionCheck = async (parsed) => {
@@ -313,7 +315,10 @@ const CheckResult = () => {
       setResults(gameResults);
       setTopRank(winResult.rank);
       setTotalPrize({ amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 });
-      saveToHistory(parsed, winInfo, gameResults, winResult.rank, { amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 }, pensionResultData);
+      
+      if (!location.state?.fromHistory) {
+        saveToHistory(parsed, winInfo, gameResults, winResult.rank, { amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 }, pensionResultData);
+      }
     } catch (checkErr) {
       console.error("[PENSION CHECK ERROR]", checkErr);
       throw checkErr;
