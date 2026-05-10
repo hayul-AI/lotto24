@@ -137,9 +137,30 @@ const Guide = () => {
           </div>
         </section>
 
-        {/* 섹션 6: 주의사항 */}
+        {/* 섹션 6: 세금 안내 */}
+        <section className="mb-32">
+          <SectionTitle title="6. 당첨금 세금 안내" />
+          <div className="card" style={{ padding: '20px' }}>
+            <p style={{ fontSize: '0.9rem', color: '#334155', marginBottom: '16px', lineHeight: '1.5', fontWeight: '600' }}>
+              복권 당첨금은 관련 법에 따라 아래와 같은 세율을 적용한 후 원천징수하여 지급합니다.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <TaxRow label="200만원 이하" value="비과세 (0%)" />
+              <TaxRow label="200만원 초과 ~ 3억 이하" value="22% (소득세 20% + 지방소득세 2%)" />
+              <TaxRow label="3억원 초과" value="33% (소득세 30% + 지방소득세 3%)" />
+            </div>
+            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+              <p style={{ fontSize: '0.8rem', color: '#64748B', lineHeight: '1.5' }}>
+                * 연금복권 1, 2등과 같이 매월 지급받는 연금형 당첨금은 22%의 세율이 적용됩니다.<br/>
+                * 당첨금 지급 시 세금을 제외한 실수령액이 지급됩니다.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* 섹션 7: 주의사항 */}
         <section className="mb-40">
-          <SectionTitle title="6. 꼭 알아두세요 (주의사항)" />
+          <SectionTitle title="7. 꼭 알아두세요 (주의사항)" />
           <div className="card" style={{ padding: '20px' }}>
             <ul style={{ paddingLeft: '20px', margin: 0, display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.9rem', color: '#475569', lineHeight: '1.5' }}>
               <li>비인가 업체나 불법 사이트에서 구매한 복권은 번호가 일치해도 당첨금이 지급되지 않습니다.</li>
@@ -206,6 +227,13 @@ const PrizeCard = ({ rank, location, requires, color, desc }) => (
       </div>
       {desc && <p style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '4px' }}>{desc}</p>}
     </div>
+  </div>
+);
+
+const TaxRow = ({ label, value }) => (
+  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px dashed #F1F5F9' }}>
+    <span style={{ fontSize: '0.85rem', fontWeight: '800', color: '#64748B' }}>{label}</span>
+    <span style={{ fontSize: '0.85rem', fontWeight: '900', color: '#1E293B' }}>{value}</span>
   </div>
 );
 
