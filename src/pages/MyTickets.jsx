@@ -295,14 +295,7 @@ const MyTickets = () => {
                   )}
 
                   {/* 메인 결과표 영역 */}
-                  <div 
-                    style={{ padding: '0', cursor: 'pointer' }} 
-                    onClick={() => {
-                      if (record && (record.rawQr || record.drawNo)) {
-                        navigate('/qr-result', { state: { rawQr: record.rawQr, parsed: record, fromHistory: true } });
-                      }
-                    }}
-                  >
+                  <div style={{ padding: '0' }}>
                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                       <thead>
                         <tr style={{ backgroundColor: '#FBFCFE', borderBottom: '1.5px solid #F1F5F9' }}>
