@@ -721,7 +721,10 @@ const CheckResult = () => {
             </p>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button 
-                onClick={() => setDuplicateModal({ show: false, data: null })}
+                onClick={() => {
+                  setDuplicateModal({ show: false, data: null });
+                  navigate("/", { replace: true });
+                }}
                 style={{ flex: 1, padding: '14px', borderRadius: '12px', border: '1px solid #E2E8F0', backgroundColor: 'white', color: '#64748B', fontWeight: '800', fontSize: '0.9rem' }}
               >
                 아니오
