@@ -52,7 +52,7 @@ const QRScannerPage = () => {
 
   // ── 결과 페이지 이동 ──
   const goToResult = (rawText) => {
-    console.log("[QR SCAN RAW]", rawText);
+    if (import.meta.env.DEV) console.log("[QR SCAN RAW]", rawText);
     setParseError(null);
 
     if (!rawText || typeof rawText !== "string") {
@@ -92,7 +92,7 @@ const QRScannerPage = () => {
           navigate("/", { replace: true });
         }
       } catch (err) {
-        console.warn("Native scan error:", err);
+        if (import.meta.env.DEV) console.warn("Native scan error:", err);
         setError("카메라를 실행할 수 없습니다. 권한 설정을 확인해주세요.");
       } finally {
         isStartingRef.current = false;
@@ -135,7 +135,7 @@ const QRScannerPage = () => {
       scannerRef.current = scanner;
       await scanner.start();
     } catch (err) {
-      console.error("Scanner error:", err);
+      if (import.meta.env.DEV) console.error("Scanner error:", err);
       setError("카메라를 시작할 수 없습니다. 카메라 권한을 확인한 뒤 다시 시도해주세요.");
       setShowScanner(false);
     }

@@ -9,48 +9,59 @@ const MyTickets = () => {
   const [sortFilter, setSortFilter] = useState('latest'); // latest, drawNo
   const [typeFilter, setTypeFilter] = useState('all'); // all, lotto, pension
 
-  useEffect(() => {
-    loadHistory();
-  }, [sortFilter, typeFilter]);
-
-  const loadHistory = () => {
+  // 1. 원본 데이터 로드 및 메모이제이션
+  const rawHistory = React.useMemo(() => {
     try {
-      let data = getQrHistory();
-      console.log(`[MyTickets] Raw history loaded: ${data.length} items`);
-
-      // 1. 종류 필터링
-      if (typeFilter === 'lotto') {
-        data = data.filter(item => item.type === 'lotto645');
-      } else if (typeFilter === 'pension') {
-        data = data.filter(item => item.type === 'pension720');
-      }
-
-      // 2. 정렬 필터링
-      if (sortFilter === 'drawNo') {
-        data.sort((a, b) => (b?.drawNo ?? 0) - (a?.drawNo ?? 0));
-      } else {
-        data.sort((a, b) => new Date(b?.checkedAt || 0) - new Date(a?.checkedAt || 0));
-      }
-      setHistory(data);
+      const data = getQrHistory();
+      if (import.meta.env.DEV) console.log(`[MyTickets] Raw history loaded: ${data.length} items`);
+      return data;
     } catch (e) {
-      console.error("[MyTickets] Error loading history:", e);
-      setHistory([]);
+      if (import.meta.env.DEV) console.error("[MyTickets] Error loading history:", e);
+      return [];
     }
-  };
+  }, []); // 실제 앱에서는 삭제 시 이 값을 갱신해야 하므로 state와 연동 필요
 
-  const handleDelete = (id) => {
+  // 실제로는 삭제 기능이 있으므로 state로 관리하되 필터링만 useMemo로
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    setItems(getQrHistory());
+  }, []);
+
+  const filteredHistory = React.useMemo(() => {
+    let data = [...items];
+    
+    // 종류 필터링
+    if (typeFilter === 'lotto') {
+      data = data.filter(item => item.type === 'lotto645');
+    } else if (typeFilter === 'pension') {
+      data = data.filter(item => item.type === 'pension720');
+    }
+
+    // 정렬 필터링
+    if (sortFilter === 'drawNo') {
+      data.sort((a, b) => (Number(b?.drawNo) || 0) - (Number(a?.drawNo) || 0));
+    } else {
+      data.sort((a, b) => new Date(b?.checkedAt || 0) - new Date(a?.checkedAt || 0));
+    }
+
+    // 정규화 처리 (한 번만 수행)
+    return data.map(item => normalizeHistoryItem(item)).filter(Boolean);
+  }, [items, typeFilter, sortFilter]);
+
+  const handleDelete = React.useCallback((id) => {
     if (window.confirm('이 확인 기록을 삭제할까요?')) {
       deleteQrRecord(id);
-      loadHistory();
+      setItems(getQrHistory());
     }
-  };
+  }, []);
 
-  const handleClear = () => {
+  const handleClear = React.useCallback(() => {
     if (window.confirm('모든 기록을 삭제하시겠습니까?')) {
       clearQrHistory();
-      setHistory([]);
+      setItems([]);
     }
-  };
+  }, []);
 
   const getBallColor = (num) => {
     if (num <= 10) return '#fbc400'; // 노랑
@@ -171,7 +182,7 @@ const MyTickets = () => {
           </button>
           <h1 style={{ fontSize: '1.2rem', fontWeight: '900', color: '#1E293B' }}>확인 목록</h1>
         </div>
-        {history.length > 0 && (
+        {filteredHistory.length > 0 && (
           <button onClick={handleClear} style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: '0.85rem', fontWeight: '800' }}>
             전체 비우기
           </button>
@@ -220,7 +231,7 @@ const MyTickets = () => {
       </div>
 
       <div style={{ padding: '12px' }}>
-        {history.length === 0 ? (
+        {filteredHistory.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '80px 20px' }}>
             <div style={{ width: '80px', height: '80px', backgroundColor: '#F1F5F9', borderRadius: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
               <History size={40} color="#CBD5E1" />
@@ -230,11 +241,7 @@ const MyTickets = () => {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {history.map((rawItem) => {
-              // 1. 렌더링 직전 다시 한 번 정규화 (절대적 안정성)
-              const record = normalizeHistoryItem(rawItem);
-              if (!record) return null;
-              
+            {filteredHistory.map((record) => {
               const drawNo = record.drawNo;
               const recordId = record.id;
               

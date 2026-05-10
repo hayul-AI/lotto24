@@ -33,7 +33,7 @@ const Home = () => {
       }
       setLoading(false);
     }, (err) => {
-      console.error("Lotto sync error:", err);
+      if (import.meta.env.DEV) console.error("Lotto sync error:", err);
       setLottoError(err.message);
       setLoading(false);
     });
@@ -47,7 +47,7 @@ const Home = () => {
         setPension(results[0]);
       }
     }, (err) => {
-      console.error("Pension sync error:", err);
+      if (import.meta.env.DEV) console.error("Pension sync error:", err);
       setPensionError(err.message);
     });
 

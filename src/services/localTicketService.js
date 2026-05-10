@@ -165,13 +165,13 @@ export const getQrHistory = () => {
 
     // 손상된 데이터가 있었다면 정리된 리스트로 교체 저장
     if (normalized.length !== parsed.length) {
-      console.log(`[Storage] Cleaned ${parsed.length - normalized.length} broken items`);
+      if (import.meta.env.DEV) console.log(`[Storage] Cleaned ${parsed.length - normalized.length} broken items`);
       localStorage.setItem(STORAGE_QR_KEY, JSON.stringify(normalized));
     }
 
     return normalized;
   } catch (e) {
-    console.error("QR History parse error", e);
+    if (import.meta.env.DEV) console.error("QR History parse error", e);
     localStorage.removeItem(STORAGE_QR_KEY);
     return [];
   }

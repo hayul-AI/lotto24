@@ -79,7 +79,7 @@ const CheckResult = () => {
       }
 
     } catch (err) {
-      console.error(err);
+      if (import.meta.env.DEV) console.error(err);
       const msg = err.message;
       
       if (msg.includes("데이터가 아직 없습니다") || msg.includes("등록되지 않았습니다")) {
@@ -105,10 +105,12 @@ const CheckResult = () => {
     const { data: winInfo, error: fetchErr } = await getLottoResultByDrawNo(parsed.drawNo);
     
     if (fetchErr || !winInfo) {
-      console.log("[LOTTO QR PENDING]", {
-        drawNo: parsed.drawNo,
-        firestorePath: `lotto_results/${parsed.drawNo}`
-      });
+      if (import.meta.env.DEV) {
+        console.log("[LOTTO QR PENDING]", {
+          drawNo: parsed.drawNo,
+          firestorePath: `lotto_results/${parsed.drawNo}`
+        });
+      }
       throw new Error(`제${parsed.drawNo}회 당첨번호 데이터가 아직 없습니다.`);
     }
     
@@ -236,12 +238,14 @@ const CheckResult = () => {
     if (!winnerCandidate) {
       const validButNoDoc = candidates.find(c => c.isValid);
       if (validButNoDoc) {
-        console.log("[PENSION QR PENDING]", {
-          drawNo: validButNoDoc.drawNo,
-          group: validButNoDoc.group,
-          numberText: diagnostics.numberText,
-          firestorePath: `pension_results/${validButNoDoc.drawNo}`
-        });
+        if (import.meta.env.DEV) {
+          console.log("[PENSION QR PENDING]", {
+            drawNo: validButNoDoc.drawNo,
+            group: validButNoDoc.group,
+            numberText: diagnostics.numberText,
+            firestorePath: `pension_results/${validButNoDoc.drawNo}`
+          });
+        }
         throw new Error(`제${validButNoDoc.drawNo}회 연금복권 결과가 아직 등록되지 않았습니다.`);
       }
       throw new Error(`유효한 회차/조 정보를 해석할 수 없습니다.`);
@@ -320,7 +324,7 @@ const CheckResult = () => {
         saveToHistory(parsed, winInfo, gameResults, winResult.rank, { amount: prizeAmount, label: totalLabel, hasUnknown, winCount: winResult.rank > 0 ? 1 : 0 }, pensionResultData);
       }
     } catch (checkErr) {
-      console.error("[PENSION CHECK ERROR]", checkErr);
+      if (import.meta.env.DEV) console.error("[PENSION CHECK ERROR]", checkErr);
       throw checkErr;
     }
   };
@@ -394,7 +398,7 @@ const CheckResult = () => {
         setTimeout(() => setSaveSuccess(false), 2000);
       }
     } catch (e) {
-      console.error("History save error:", e);
+      if (import.meta.env.DEV) console.error("History save error:", e);
     }
   };
 
@@ -632,7 +636,7 @@ const CheckResult = () => {
                 </tr>
               </thead>
               <tbody>
-                {results.map((res, i) => {
+                {React.useMemo(() => results.map((res, i) => {
                   const isPension = parsedData?.type === 'pension720';
                   
                   const LabelCell = (
@@ -645,7 +649,7 @@ const CheckResult = () => {
                     <td key="result" style={{ ...tdStyle, color: res.rank > 0 ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '0.9rem' }}>
                       <div>{res.rank > 0 ? (res.resultLabel || res.label || `${res.rank}등`) : '낙첨'}</div>
                       {res.rank > 0 && res.prizeLabel && (
-                        <div style={{ fontSize: '0.7rem', fontWeight: '700', color: '#64748B', marginTop: '2px' }}>{res.prizeLabel}</div>
+                        <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748B', marginTop: '2px' }}>{res.prizeLabel}</div>
                       )}
                     </td>
                   );
@@ -701,7 +705,7 @@ const CheckResult = () => {
                       )}
                     </tr>
                   );
-                })}
+                }), [results, parsedData?.type, winningInfo])}
               </tbody>
             </table>
           </div>
