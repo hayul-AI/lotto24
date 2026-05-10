@@ -410,6 +410,80 @@ const CheckResult = () => {
     return '#b0d840';
   };
 
+  // 당첨 결과 테이블 행 렌더링 최적화 (훅 규칙 준수: 최상단 이동)
+  const renderedRows = React.useMemo(() => {
+    return results.map((res, i) => {
+      const isPension = parsedData?.type === 'pension720';
+      
+      const LabelCell = (
+        <td key="label" style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.9rem' }}>
+          {isPension ? `${res.group || "-"}조` : (res.label || '-')}
+        </td>
+      );
+
+      const ResultCell = (
+        <td key="result" style={{ ...tdStyle, color: res.rank > 0 ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '0.9rem' }}>
+          <div>{res.rank > 0 ? (res.resultLabel || res.label || `${res.rank}등`) : '낙첨'}</div>
+          {res.rank > 0 && res.prizeLabel && (
+            <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748B', marginTop: '2px' }}>{res.prizeLabel}</div>
+          )}
+        </td>
+      );
+
+      const NumbersCell = (
+        <td key="numbers" style={{ ...tdStyle, textAlign: 'left', padding: '10px 8px' }}>
+          <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
+            {isPension ? (
+              (res?.numbers || []).map((n, idx) => {
+                const winNums = winningInfo?.firstPrizeNumber?.numbers?.map(Number) || [];
+                let currentMatchCount = 0;
+                for (let k = 5; k >= 0; k--) {
+                  if (res.numbers[k] === winNums[k]) currentMatchCount++;
+                  else break;
+                }
+                const isMatch = idx >= (6 - currentMatchCount);
+                return (
+                  <span key={idx} style={{ width: '28px', height: '28px', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: '900', backgroundColor: isMatch ? '#2563EB' : 'transparent', color: isMatch ? 'white' : '#64748B', border: isMatch ? 'none' : '1.2px solid #E2E8F0' }}>
+                    {n}
+                  </span>
+                );
+              })
+            ) : (
+              (res?.numbers || []).map((n, idx) => {
+                const isMatch = (winningInfo?.numbers || []).includes(n);
+                const isBonusMatch = n === winningInfo?.bonusNo;
+                const ballBg = isMatch ? getBallColor(n) : (isBonusMatch ? '#F59E0B' : 'transparent');
+                return (
+                  <span key={idx} style={{ width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '900', backgroundColor: ballBg, color: (isMatch || isBonusMatch) ? 'white' : '#64748B', border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0' }}>
+                    {n}
+                  </span>
+                );
+              })
+            )}
+          </div>
+        </td>
+      );
+
+      return (
+        <tr key={i} style={{ borderBottom: i === results.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
+          {isPension ? (
+            <>
+              {ResultCell}
+              {LabelCell}
+              {NumbersCell}
+            </>
+          ) : (
+            <>
+              {LabelCell}
+              {ResultCell}
+              {NumbersCell}
+            </>
+          )}
+        </tr>
+      );
+    });
+  }, [results, parsedData?.type, winningInfo]);
+
   if (loading) return (
     <div style={{ minHeight: '100vh', backgroundColor: '#F8FAFC', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
       <Loader2 className="animate-spin" size={48} color="#2563EB" />
@@ -636,76 +710,7 @@ const CheckResult = () => {
                 </tr>
               </thead>
               <tbody>
-                {React.useMemo(() => results.map((res, i) => {
-                  const isPension = parsedData?.type === 'pension720';
-                  
-                  const LabelCell = (
-                    <td key="label" style={{ ...tdStyle, fontWeight: '900', color: '#1E293B', fontSize: '0.9rem' }}>
-                      {isPension ? `${res.group || "-"}조` : (res.label || '-')}
-                    </td>
-                  );
-
-                  const ResultCell = (
-                    <td key="result" style={{ ...tdStyle, color: res.rank > 0 ? '#2563EB' : '#94A3B8', fontWeight: '950', fontSize: '0.9rem' }}>
-                      <div>{res.rank > 0 ? (res.resultLabel || res.label || `${res.rank}등`) : '낙첨'}</div>
-                      {res.rank > 0 && res.prizeLabel && (
-                        <div style={{ fontSize: '0.75rem', fontWeight: '700', color: '#64748B', marginTop: '2px' }}>{res.prizeLabel}</div>
-                      )}
-                    </td>
-                  );
-
-                  const NumbersCell = (
-                    <td key="numbers" style={{ ...tdStyle, textAlign: 'left', padding: '10px 8px' }}>
-                      <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-                        {isPension ? (
-                          (res?.numbers || []).map((n, idx) => {
-                            const winNums = winningInfo?.firstPrizeNumber?.numbers?.map(Number) || [];
-                            let currentMatchCount = 0;
-                            for (let k = 5; k >= 0; k--) {
-                              if (res.numbers[k] === winNums[k]) currentMatchCount++;
-                              else break;
-                            }
-                            const isMatch = idx >= (6 - currentMatchCount);
-                            return (
-                              <span key={idx} style={{ width: '28px', height: '28px', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.9rem', fontWeight: '900', backgroundColor: isMatch ? '#2563EB' : 'transparent', color: isMatch ? 'white' : '#64748B', border: isMatch ? 'none' : '1.2px solid #E2E8F0' }}>
-                                {n}
-                              </span>
-                            );
-                          })
-                        ) : (
-                          (res?.numbers || []).map((n, idx) => {
-                            const isMatch = (winningInfo?.numbers || []).includes(n);
-                            const isBonusMatch = n === winningInfo?.bonusNo;
-                            const ballBg = isMatch ? getBallColor(n) : (isBonusMatch ? '#F59E0B' : 'transparent');
-                            return (
-                              <span key={idx} style={{ width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '900', backgroundColor: ballBg, color: (isMatch || isBonusMatch) ? 'white' : '#64748B', border: (isMatch || isBonusMatch) ? 'none' : '1.2px solid #E2E8F0' }}>
-                                {n}
-                              </span>
-                            );
-                          })
-                        )}
-                      </div>
-                    </td>
-                  );
-
-                  return (
-                    <tr key={i} style={{ borderBottom: i === results.length - 1 ? 'none' : '1px solid #F1F5F9' }}>
-                      {isPension ? (
-                        <>
-                          {ResultCell}
-                          {LabelCell}
-                          {NumbersCell}
-                        </>
-                      ) : (
-                        <>
-                          {LabelCell}
-                          {ResultCell}
-                          {NumbersCell}
-                        </>
-                      )}
-                    </tr>
-                  );
-                }), [results, parsedData?.type, winningInfo])}
+                {renderedRows}
               </tbody>
             </table>
           </div>
