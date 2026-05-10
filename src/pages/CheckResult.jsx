@@ -38,6 +38,8 @@ const CheckResult = () => {
   const [topRank, setTopRank] = useState(0);
   const [totalPrize, setTotalPrize] = useState({ amount: 0, label: "", hasUnknown: false, winCount: 0 });
   const [debugInfo, setDebugInfo] = useState(null);
+  const [duplicateModal, setDuplicateModal] = useState({ show: false, data: null });
+  const [saveSuccess, setSaveSuccess] = useState(false);
 
   const SHOW_DEBUG = import.meta.env.DEV || location.search.includes('debug=true');
 
@@ -82,6 +84,11 @@ const CheckResult = () => {
       
       if (msg.includes("데이터가 아직 없습니다") || msg.includes("등록되지 않았습니다")) {
         setIsPending(true);
+        // 추첨 전 복권도 중복 확인 및 저장 시도
+        if (parsedData || state.parsed) {
+          const target = parsedData || state.parsed;
+          saveToHistory(target, null, [], 0, null, { result: "추첨전", resultStatus: "pending" });
+        }
       } else if (msg.includes("번호를 읽을 수 없습니다") || 
                  msg.includes("회차/조 정보를 해석할 수 없습니다") ||
                  msg.includes("해석 규칙이 필요합니다")) {
@@ -313,38 +320,74 @@ const CheckResult = () => {
     }
   };
 
-  const saveToHistory = (parsed, winInfo, gameResults, bestRank, prizeSummary, extraData = null) => {
+  const saveToHistory = (parsed, winInfo, gameResults, bestRank, prizeSummary, extraData = null, force = false) => {
     try {
       const storageKey = "bokgwon24_qr_history";
       const historyRaw = localStorage.getItem(storageKey) || "[]";
       let history = JSON.parse(historyRaw);
-      
       if (!Array.isArray(history)) history = [];
-      if (history.some(h => h.rawQr === parsed.rawQr)) return;
 
-      const newRecord = normalizeHistoryItem({
+      const recordToSave = {
         id: nanoid(),
         type: parsed.type,
         drawNo: parsed.drawNo,
         drawDate: winInfo?.drawDate || "",
         rawQr: parsed.rawQr,
-        games: parsed.games,
+        games: parsed.games || [],
         winningNumbers: winInfo?.numbers || [],
         bonusNo: winInfo?.bonusNo,
-        results: gameResults,
-        topRank: bestRank,
+        results: gameResults || [],
+        topRank: bestRank || 0,
         totalPrizeAmount: prizeSummary?.amount || 0,
         totalPrizeLabel: prizeSummary?.label || "",
         hasUnknownPrizeAmount: prizeSummary?.hasUnknown || false,
         winCount: prizeSummary?.winCount || 0,
         checkedAt: new Date().toISOString(),
         ...(extraData || {})
-      });
+      };
 
+      const newRecord = normalizeHistoryItem(recordToSave);
       if (!newRecord) return;
+
+      // 중복 확인
+      if (!force) {
+        const isDuplicate = history.some(h => {
+          if (h.duplicateKey && newRecord.duplicateKey) {
+            return h.duplicateKey === newRecord.duplicateKey;
+          }
+          // duplicateKey가 없는 기존 데이터와 비교 (lotteryType, drawNo, group, numberText 등 기준)
+          const hType = h.type || h.lotteryType;
+          if (hType !== newRecord.type) return false;
+          if (h.drawNo !== newRecord.drawNo) return false;
+          
+          if (hType === "pension720") {
+            const hGroup = h.group || h.pensionGroup || h.selectedGroup;
+            const nGroup = newRecord.group || newRecord.pensionGroup || newRecord.selectedGroup;
+            const hNum = h.numberText || h.scannedNumberText || (Array.isArray(h.numbers) ? h.numbers.join("") : "");
+            const nNum = newRecord.numberText || newRecord.scannedNumberText || (Array.isArray(newRecord.numbers) ? newRecord.numbers.join("") : "");
+            return hGroup === nGroup && hNum === nNum;
+          } else {
+            // 로또는 rawQr 또는 게임 번호 조합 비교
+            if (h.rawQr && newRecord.rawQr && h.rawQr === newRecord.rawQr) return true;
+            const hGamesStr = (h.games || []).map(g => (g.numbers || []).join(",")).sort().join("|");
+            const nGamesStr = (newRecord.games || []).map(g => (g.numbers || []).join(",")).sort().join("|");
+            return hGamesStr === nGamesStr;
+          }
+        });
+
+        if (isDuplicate) {
+          setDuplicateModal({ show: true, data: { parsed, winInfo, gameResults, bestRank, prizeSummary, extraData, record: newRecord } });
+          return;
+        }
+      }
 
       history.unshift(newRecord);
       localStorage.setItem(storageKey, JSON.stringify(history.slice(0, 50)));
+      
+      if (force) {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2000);
+      }
     } catch (e) {
       console.error("History save error:", e);
     }
@@ -662,6 +705,48 @@ const CheckResult = () => {
           </div>
         </div>
       </div>
+      {/* 중복 확인 모달 */}
+      {duplicateModal.show && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2000, padding: '20px' }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '24px', padding: '24px', width: '100%', maxWidth: '320px', textAlign: 'center' }}>
+            <div style={{ backgroundColor: '#FEF3C7', width: '48px', height: '48px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+              <Info size={24} color="#F59E0B" />
+            </div>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: '900', color: '#1E293B', marginBottom: '8px' }}>이미 확인된 복권입니다</h3>
+            <p style={{ fontSize: '0.85rem', color: '#64748B', fontWeight: '600', marginBottom: '16px', lineHeight: '1.5' }}>
+              {duplicateModal.data?.parsed?.type === 'lotto645' 
+                ? `로또 6/45 제${duplicateModal.data.parsed.drawNo}회` 
+                : `연금복권720+ 제${duplicateModal.data.parsed.drawNo}회 ${duplicateModal.data.parsed.group}조 ${duplicateModal.data.parsed.numberText}`}
+              <br />확인목록에 다시 저장하시겠습니까?
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button 
+                onClick={() => setDuplicateModal({ show: false, data: null })}
+                style={{ flex: 1, padding: '14px', borderRadius: '12px', border: '1px solid #E2E8F0', backgroundColor: 'white', color: '#64748B', fontWeight: '800', fontSize: '0.9rem' }}
+              >
+                아니오
+              </button>
+              <button 
+                onClick={() => {
+                  const d = duplicateModal.data;
+                  saveToHistory(d.parsed, d.winInfo, d.gameResults, d.bestRank, d.prizeSummary, d.extraData, true);
+                  setDuplicateModal({ show: false, data: null });
+                }}
+                style={{ flex: 1, padding: '14px', borderRadius: '12px', border: 'none', backgroundColor: '#2563EB', color: 'white', fontWeight: '900', fontSize: '0.9rem' }}
+              >
+                예
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 저장 완료 토스트 */}
+      {saveSuccess && (
+        <div style={{ position: 'fixed', bottom: '120px', left: '50%', transform: 'translateX(-50%)', backgroundColor: '#1E293B', color: 'white', padding: '12px 24px', borderRadius: '30px', fontSize: '0.85rem', fontWeight: '800', zIndex: 3000, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
+          확인목록에 저장되었습니다.
+        </div>
+      )}
     </div>
   );
 };

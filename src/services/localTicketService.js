@@ -12,6 +12,34 @@ export const getTickets = () => {
 };
 
 /**
+ * 복권 고유 키 생성 (중복 확인용)
+ */
+export const generateDuplicateKey = (item) => {
+  if (!item) return null;
+  const type = item.type || item.lotteryType || (item.parsed?.type) || "unknown";
+  const drawNo = item.drawNo || item.parsed?.drawNo;
+  
+  if (type === "lotto645") {
+    const rawQr = item.rawQr || item.parsed?.rawQr || "";
+    // QR 원문이 있으면 그것을 키로 사용 (가장 정확)
+    if (rawQr) return `lotto645:${drawNo}:${rawQr}`;
+    
+    // QR이 없으면 게임 번호들을 정렬해서 키 생성
+    const games = item.games || item.parsed?.games || [];
+    const gamesStr = games.map(g => (g.numbers || []).join(",")).sort().join("|");
+    return `lotto645:${drawNo}:${gamesStr}`;
+  }
+  
+  if (type === "pension720") {
+    const group = item.group || item.pensionGroup || item.selectedGroup || "-";
+    const numberText = item.numberText || item.scannedNumberText || (Array.isArray(item.numbers) ? item.numbers.join("") : "");
+    return `pension720:${drawNo}:${group}:${numberText}`;
+  }
+  
+  return null;
+};
+
+/**
  * 확인목록 아이템 정규화 및 검증
  */
 export const normalizeHistoryItem = (item) => {
@@ -111,7 +139,8 @@ export const normalizeHistoryItem = (item) => {
     winningNumbers: item?.winningNumbers || item?.result?.winningNumbers || [],
     bonusNo: item?.bonusNo ?? item?.result?.bonusNo ?? null,
     parsed: item?.parsed || null,
-    resultData: item?.result || null
+    resultData: item?.result || null,
+    duplicateKey: item?.duplicateKey || generateDuplicateKey(item)
   };
 };
 
