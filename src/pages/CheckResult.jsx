@@ -731,6 +731,7 @@ const CheckResult = () => {
                   const d = duplicateModal.data;
                   saveToHistory(d.parsed, d.winInfo, d.gameResults, d.bestRank, d.prizeSummary, d.extraData, true);
                   setDuplicateModal({ show: false, data: null });
+                  navigate("/", { replace: true });
                 }}
                 style={{ flex: 1, padding: '14px', borderRadius: '12px', border: 'none', backgroundColor: '#2563EB', color: 'white', fontWeight: '900', fontSize: '0.9rem' }}
               >
